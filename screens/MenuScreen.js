@@ -6,6 +6,9 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: "<Restaurant> menu",
+      headerLeft: (
+        <Icon name="arrow-back" size={30} style={{ marginLeft: 10 }} />
+      ),
       headerRight: <Icon name="menu" size={30} style={{ marginRight: 10 }} />
     };
   };
