@@ -9,7 +9,14 @@ export default class HomeScreen extends React.Component {
       headerLeft: (
         <Icon name="arrow-back" size={30} style={{ marginLeft: 10 }} />
       ),
-      headerRight: <Icon name="menu" size={30} style={{ marginRight: 10 }} />
+      headerRight: (
+        <Icon
+          onPress={() => navigation.navigate("DrawerOpen")}
+          name="menu"
+          size={30}
+          style={{ marginRight: 10 }}
+        />
+      )
     };
   };
 
