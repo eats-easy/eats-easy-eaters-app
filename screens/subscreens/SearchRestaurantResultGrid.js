@@ -20,29 +20,34 @@ class SearchRestaurantResultGrid extends Component {
     };
   }
 
+  renderItem = (rest, i) => {
+    return (
+      <Row key={"rest_" + i + "_row"} style={styles.row}>
+        <TouchableNativeFeedback
+          key={"rest_" + i}
+          onPress={() =>
+            this.props.navigation.navigate("Restaurant", {
+              title: "TEST"
+            })
+          }
+        >
+          <Image
+            source={{ uri: rest.uri }}
+            key={rest.uri}
+            style={styles.image}
+          />
+        </TouchableNativeFeedback>
+      </Row>
+    );
+  };
+
   render() {
     return (
       <Grid>
-        <Col style={styles.column}>
-          {this.state.data.map(rest => (
-            <Row key={rest.uri + "_row"} style={styles.row}>
-              <TouchableNativeFeedback onPress={this._navigateToRestaurant}>
-                <Image
-                  source={{ uri: rest.uri }}
-                  key={rest.uri}
-                  style={styles.image}
-                />
-              </TouchableNativeFeedback>
-            </Row>
-          ))}
-        </Col>
+        <Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
       </Grid>
     );
   }
-
-  _navigateToRestaurant = () => {
-    this.props.navigation.navigate("Restaurant");
-  };
 }
 
 const styles = StyleSheet.create({
