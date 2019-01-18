@@ -1,14 +1,20 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 
 export default class CallServiceScreen extends React.Component {
-  static navigationOptions = {
-    title: "Call for service"
-  };
-
   render() {
-    return <View />;
+    return (
+      <View style={styles.container}>
+        <Text>Service screen</Text>
+      </View>
+    );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 5,
+    backgroundColor: "#fff"
+  }
+});

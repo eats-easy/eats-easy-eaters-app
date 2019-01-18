@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 
 export default class PaymentScreen extends React.Component {
   static navigationOptions = {
@@ -7,8 +7,18 @@ export default class PaymentScreen extends React.Component {
   };
 
   render() {
-    return <View />;
+    return (
+      <View style={styles.container}>
+        <Text>Payment screen</Text>
+      </View>
+    );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 5,
+    backgroundColor: "#fff"
+  }
+});

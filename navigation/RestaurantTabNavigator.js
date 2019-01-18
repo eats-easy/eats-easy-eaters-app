@@ -13,25 +13,65 @@ import PaymentScreen from "../screens/PaymentScreen";
 import RestaurantInfoScreen from "../screens/RestaurantInfoScreen";
 
 // Stacks
-const MenuStack = createStackNavigator({
-  Menu: MenuScreen
-});
+const MenuStack = createStackNavigator(
+  {
+    Menu: MenuScreen
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+);
 
-const OrderStack = createStackNavigator({
-  Order: OrderScreen
-});
+const OrderStack = createStackNavigator(
+  {
+    Order: OrderScreen
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+);
 
-const CallServiceStack = createStackNavigator({
-  Call: CallServiceScreen
-});
+const CallServiceStack = createStackNavigator(
+  {
+    Call: CallServiceScreen
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+);
 
-const PaymentStack = createStackNavigator({
-  Payment: PaymentScreen
-});
+const PaymentStack = createStackNavigator(
+  {
+    Payment: PaymentScreen
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+);
 
-const RestaurantInfoStack = createStackNavigator({
-  Info: RestaurantInfoScreen
-});
+const RestaurantInfoStack = createStackNavigator(
+  {
+    Info: RestaurantInfoScreen
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+);
 
 // Navigations
 MenuStack.navigationOptions = {

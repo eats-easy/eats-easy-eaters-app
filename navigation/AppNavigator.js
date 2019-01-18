@@ -5,10 +5,15 @@ import RootNavigator from "./RootNavigator";
 import RestaurantTabNavigator from "./RestaurantTabNavigator";
 
 export default createAppContainer(
-  createSwitchNavigator({
-    // TODO: add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Root: RootNavigator,
-    Main: RestaurantTabNavigator
-  })
+  createSwitchNavigator(
+    {
+      // TODO: add another route here for authentication.
+      // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+      Root: RootNavigator,
+      Main: RestaurantTabNavigator
+    },
+    {
+      initialRouteName: "Root"
+    }
+  )
 );

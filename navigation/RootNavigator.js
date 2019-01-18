@@ -1,12 +1,12 @@
-import React from "react";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { createStackNavigator } from "react-navigation";
 
 import SearchRestaurantScreen from "../screens/SearchRestaurantScreen";
+import RestaurantTabNavigator from "./RestaurantTabNavigator";
 
 // Stacks
 const RootStack = createStackNavigator({
-  Search: SearchRestaurantScreen
+  Search: SearchRestaurantScreen,
+  Restaurant: RestaurantTabNavigator
 });
 
 export default RootStack;

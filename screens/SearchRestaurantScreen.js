@@ -2,8 +2,9 @@ import React from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import SearchRestaurantResultGrid from "./subscreens/SearchRestaurantResultGrid";
+import { withNavigation } from "react-navigation";
 
-export default class SearchRestaurantScreen extends React.Component {
+class SearchRestaurantScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: "Find a restaurant near you",
@@ -22,10 +23,18 @@ export default class SearchRestaurantScreen extends React.Component {
   render() {
     return (
       <ScrollView>
-        <SearchRestaurantResultGrid />
+        <SearchRestaurantResultGrid onPress={this._showMoreApp} />
       </ScrollView>
     );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 5,
+    backgroundColor: "#fff"
+  }
+});
+
+export default withNavigation(SearchRestaurantScreen);

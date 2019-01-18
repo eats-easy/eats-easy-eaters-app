@@ -1,14 +1,22 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 
-export default class CallServiceScreen extends React.Component {
-  static navigationOptions = {
-    title: "<Restaurant> information"
-  };
+export default class RestaurantInfoScreen extends React.Component {
+  static navigationOptions = { title: "<Restaurant> information" };
 
   render() {
-    return <View />;
+    return (
+      <View style={styles.container}>
+        <Text>Info screen</Text>
+      </View>
+    );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 5,
+    backgroundColor: "#fff"
+  }
+});
