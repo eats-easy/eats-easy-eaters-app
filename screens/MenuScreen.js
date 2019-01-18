@@ -1,12 +1,16 @@
 import React from "react";
-import { AsyncStorage, Text, StyleSheet, View } from "react-native";
+import { Button, Text, StyleSheet, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class MenuScreen extends React.Component {
   render() {
+    const restName = this.props.navigation.getParam(
+      "restName",
+      "Unknown restaurant"
+    );
     return (
       <View style={styles.container}>
-        <Text>Menu screen</Text>
+        <Text>{restName} menu screen</Text>
       </View>
     );
   }

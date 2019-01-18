@@ -27,7 +27,7 @@ class SearchRestaurantResultGrid extends Component {
           key={"rest_" + i}
           onPress={() =>
             this.props.navigation.navigate("Restaurant", {
-              title: "TEST"
+              restName: "<Rest name>"
             })
           }
         >
