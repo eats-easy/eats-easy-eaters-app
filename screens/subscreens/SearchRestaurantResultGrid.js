@@ -1,15 +1,8 @@
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableNativeFeedback
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { Tile } from "react-native-elements";
 import { Col, Row, Grid } from "react-native-easy-grid";
-// import { data } from "../../mock_data/mockDishImages";
 import { withNavigation } from "react-navigation";
 import { getApiAllRestaurants } from "../../network/getApiAllRestaurants";
 
@@ -17,7 +10,7 @@ class SearchRestaurantResultGrid extends Component {
   constructor() {
     super();
     this.state = {
-      data: {},
+      data: [],
       status: "loading"
     };
   }
@@ -42,13 +35,13 @@ class SearchRestaurantResultGrid extends Component {
     try {
       const restaurants = await getApiAllRestaurants();
       this.setState({
-        data: restaurants,
+        data: restaurants || [],
         status: "loaded"
       });
     } catch (err) {
       console.error(err);
       this.setState({
-        data: {},
+        data: [],
         status: "failed"
       });
     }
@@ -63,9 +56,15 @@ class SearchRestaurantResultGrid extends Component {
             title={rest.name}
             contentContainerStyle={{ height: 100 }}
             onPress={() =>
-              this.props.navigation.navigate("Restaurant", {
-                restName: "<Rest name>",
-                restaurantId: rest.restaurantId
+              this.props.navigation.navigate({
+                routeName: "Restaurant",
+                action: this.props.navigation.navigate({
+                  routeName: "MenuStack",
+                  params: {
+                    restName: rest.name,
+                    restaurantId: rest.restaurantId
+                  }
+                })
               })
             }
           >
@@ -93,17 +92,3 @@ const styles = StyleSheet.create({
 });
 
 export default withNavigation(SearchRestaurantResultGrid);
-
-/*
-
-  <View
-    style={{
-      flex: 1,
-      flexDirection: "row",
-      justifyContent: "space-between"
-    }}
-  >
-    <Text>{rest.address}</Text>
-  </View>
-</Tile>
-*/

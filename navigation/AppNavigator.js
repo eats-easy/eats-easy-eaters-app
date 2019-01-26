@@ -9,8 +9,8 @@ export default createAppContainer(
     {
       // TODO: add another route here for authentication.
       // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-      Root: RootNavigator,
-      Main: RestaurantTabNavigator
+      Root: RootNavigator
+      // TODO: add draw navigation
     },
     {
       initialRouteName: "Root"
