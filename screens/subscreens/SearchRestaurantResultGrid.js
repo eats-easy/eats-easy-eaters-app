@@ -6,65 +6,104 @@ import {
   Image,
   TouchableNativeFeedback
 } from "react-native";
+
+import { Tile } from "react-native-elements";
 import { Col, Row, Grid } from "react-native-easy-grid";
-import { data } from "../../mock_data/mockDishImages";
+// import { data } from "../../mock_data/mockDishImages";
 import { withNavigation } from "react-navigation";
+import { getApiAllRestaurants } from "../../network/getApiAllRestaurants";
 
 class SearchRestaurantResultGrid extends Component {
   constructor() {
     super();
     this.state = {
-      columns: 2,
-      padding: 5,
-      data: data
+      data: {},
+      status: "loading"
     };
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.state.data !== {} && this.state.status !== "loading" ? (
+          <Grid>
+            <Col style={styles.column}>
+              {this.state.data.map(this.renderItem)}
+            </Col>
+          </Grid>
+        ) : (
+          <Text>Loading...</Text>
+        )}
+      </View>
+    );
+  }
+
+  async componentWillMount() {
+    try {
+      const restaurants = await getApiAllRestaurants();
+      this.setState({
+        data: restaurants,
+        status: "loaded"
+      });
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        data: {},
+        status: "failed"
+      });
+    }
   }
 
   renderItem = (rest, i) => {
     return (
-      <Row key={"rest_" + i + "_row"} style={styles.row}>
-        <TouchableNativeFeedback
-          key={"rest_" + i}
-          onPress={() =>
-            this.props.navigation.navigate("Restaurant", {
-              restName: "<Rest name>"
-            })
-          }
-        >
-          <Image
-            source={{ uri: rest.uri }}
-            key={rest.uri}
-            style={styles.image}
-          />
-        </TouchableNativeFeedback>
-      </Row>
+      <View key={"rest_" + i} style={{ flex: 1 }}>
+        <Row style={styles.row}>
+          <Tile
+            imageSrc={{ uri: rest.image_url }}
+            title={rest.name}
+            contentContainerStyle={{ height: 100 }}
+            onPress={() =>
+              this.props.navigation.navigate("Restaurant", {
+                restName: "<Rest name>",
+                restaurantId: rest.restaurantId
+              })
+            }
+          >
+            <Text>{rest.address}</Text>
+          </Tile>
+        </Row>
+      </View>
     );
   };
-
-  render() {
-    return (
-      <Grid>
-        <Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
-      </Grid>
-    );
-  }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 5,
+    backgroundColor: "#fff"
+  },
   row: {
     flex: 1
   },
   column: {
     flex: 1,
     marginBottom: 8
-  },
-  image: {
-    flex: 1,
-    height: 180,
-    marginTop: 8,
-    marginLeft: 8,
-    marginRight: 8
   }
 });
 
 export default withNavigation(SearchRestaurantResultGrid);
+
+/*
+
+  <View
+    style={{
+      flex: 1,
+      flexDirection: "row",
+      justifyContent: "space-between"
+    }}
+  >
+    <Text>{rest.address}</Text>
+  </View>
+</Tile>
+*/
