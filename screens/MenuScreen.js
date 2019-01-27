@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, StyleSheet, View } from 'react-native';
+import { AsyncStorage, ScrollView, Text, StyleSheet, View } from 'react-native';
 import { Tile, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
@@ -40,6 +40,8 @@ export default class MenuScreen extends React.Component {
         restaurantId: this.props.navigation.dangerouslyGetParent().getParam('restaurantId')
       });
 
+      this._storeRestaurantData();
+
       const dishes = await getApiRestaurantMenu(this.state.restaurantId);
 
       this.setState({
@@ -54,6 +56,15 @@ export default class MenuScreen extends React.Component {
       });
     }
   }
+
+  _storeRestaurantData = async () => {
+    try {
+      await AsyncStorage.setItem('@RestaurantViewStore:restName', this.state.restName);
+      await AsyncStorage.setItem('@RestaurantViewStore:restaurantId', this.state.restaurantId);
+    } catch (error) {
+      // TODO: Log error saving data
+    }
+  };
 
   renderItem = (dish, i) => {
     return (
