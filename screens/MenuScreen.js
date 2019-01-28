@@ -2,19 +2,63 @@ import React from 'react';
 import { AsyncStorage, ScrollView, Text, StyleSheet, View } from 'react-native';
 import { Tile, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import LoadingCircle from '../components/LoadingCircle';
 
 import { getApiRestaurantMenu } from '../network/getApiRestaurantMenu';
-import LoadingCircle from '../components/LoadingCircle';
 
 export default class MenuScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      restName: null,
-      restaurantId: null,
+      restaurant: null,
       data: [],
-      status: 'loading'
+      status: 'loading',
+      order: []
     };
+  }
+
+  async addOrderItem(item) {
+    await this.setState({ order: [ ...this.state.order, item ] });
+    this._storeOrderData();
+  }
+
+  _storeRestaurantData = async () => {
+    try {
+      await AsyncStorage.setItem('@RestaurantViewStore:restaurant', JSON.stringify(this.state.restaurant));
+    } catch (error) {
+      // TODO: Log error saving data
+    }
+  };
+
+  _storeOrderData = async () => {
+    try {
+      await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
+    } catch (error) {
+      // TODO: Log error saving data
+    }
+  };
+
+  async componentWillMount() {
+    try {
+      await this.setState({
+        restaurant: this.props.navigation.dangerouslyGetParent().getParam('restaurant')
+      });
+
+      this._storeRestaurantData();
+
+      const dishes = await getApiRestaurantMenu(this.state.restaurant.restaurantId);
+
+      this.setState({
+        data: dishes || [],
+        status: 'loaded'
+      });
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        data: [],
+        status: 'failed'
+      });
+    }
   }
 
   render() {
@@ -33,39 +77,6 @@ export default class MenuScreen extends React.Component {
     );
   }
 
-  async componentWillMount() {
-    try {
-      await this.setState({
-        restName: this.props.navigation.dangerouslyGetParent().getParam('restName'),
-        restaurantId: this.props.navigation.dangerouslyGetParent().getParam('restaurantId')
-      });
-
-      this._storeRestaurantData();
-
-      const dishes = await getApiRestaurantMenu(this.state.restaurantId);
-
-      this.setState({
-        data: dishes || [],
-        status: 'loaded'
-      });
-    } catch (err) {
-      console.error(err);
-      this.setState({
-        data: [],
-        status: 'failed'
-      });
-    }
-  }
-
-  _storeRestaurantData = async () => {
-    try {
-      await AsyncStorage.setItem('@RestaurantViewStore:restName', this.state.restName);
-      await AsyncStorage.setItem('@RestaurantViewStore:restaurantId', this.state.restaurantId);
-    } catch (error) {
-      // TODO: Log error saving data
-    }
-  };
-
   renderItem = (dish, i) => {
     return (
       <View key={'dish_' + i} style={{ flex: 1 }}>
@@ -82,7 +93,12 @@ export default class MenuScreen extends React.Component {
               </Row>
               <Row>
                 <Col>
-                  <Icon name="add-shopping-cart" />
+                  <Icon
+                    name="add-shopping-cart"
+                    onPress={() => {
+                      this.addOrderItem(dish);
+                    }}
+                  />
                 </Col>
                 <Col>
                   <Icon name="comment" />
@@ -101,6 +117,8 @@ export default class MenuScreen extends React.Component {
     );
   };
 }
+
+// TODO: Create global styling service
 
 const styles = StyleSheet.create({
   container: {

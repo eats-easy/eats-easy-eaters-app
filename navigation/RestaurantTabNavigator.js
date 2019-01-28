@@ -72,7 +72,7 @@ const RestaurantInfoStack = createStackNavigator(
 // Navigations
 MenuStack.navigationOptions = {
   tabBarLabel: 'Menu',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'restaurant-menu'} />
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'restaurant'} />
 };
 
 OrderStack.navigationOptions = {

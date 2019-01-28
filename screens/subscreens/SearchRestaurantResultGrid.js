@@ -47,13 +47,13 @@ class SearchRestaurantResultGrid extends Component {
     }
   }
 
-  renderItem = (rest, i) => {
+  renderItem = (restaurant, i) => {
     return (
-      <View key={'rest_' + i} style={{ flex: 1 }}>
+      <View key={'restaurant_' + i} style={{ flex: 1 }}>
         <Row style={styles.row}>
           <Tile
-            imageSrc={{ uri: rest.image_url }}
-            title={rest.name}
+            imageSrc={{ uri: restaurant.image_url }}
+            title={restaurant.name}
             contentContainerStyle={{ height: 100 }}
             onPress={() =>
               this.props.navigation.navigate({
@@ -61,13 +61,12 @@ class SearchRestaurantResultGrid extends Component {
                 action: this.props.navigation.navigate({
                   routeName: 'MenuStack',
                   params: {
-                    restName: rest.name,
-                    restaurantId: rest.restaurantId
+                    restaurant: restaurant
                   }
                 })
               })}
           >
-            <Text>{rest.address}</Text>
+            <Text>{restaurant.address}</Text>
           </Tile>
         </Row>
       </View>
