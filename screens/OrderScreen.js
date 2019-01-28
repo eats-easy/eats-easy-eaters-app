@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, Text, StyleSheet, View } from 'react-native';
+import { AsyncStorage, ScrollView, Text, StyleSheet, View } from 'react-native';
 import { Tile, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
@@ -10,10 +10,10 @@ export default class OrderScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      restaurant: null,
-      order: [],
-      data: [],
-      status: 'loading'
+      restaurant : null,
+      order      : [],
+      data       : [],
+      status     : 'loading',
     };
   }
 
@@ -23,8 +23,8 @@ export default class OrderScreen extends React.Component {
       const order = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order'));
 
       this.setState({
-        restaurant: restaurant,
-        order: order
+        restaurant : restaurant,
+        order      : order,
       });
 
       if (value !== null) {
@@ -41,19 +41,20 @@ export default class OrderScreen extends React.Component {
     } catch (err) {
       console.error(err);
       this.setState({
-        status: 'failed'
+        status : 'failed',
       });
     }
   }
 
   render() {
-    return this.state.restaurant && this.state.restaurant.name ? (
-      <View style={styles.container}>
-        {this.state.order != []} ? (<Grid>
-          <Col style={styles.column}>{this.state.order.map(this.renderItem)}</Col>
-        </Grid>) :
-        <Text>There are no dishes in your cart...</Text>
-      </View>
+    return this.state.restaurant && this.state.restaurant.name && this.state.order ? (
+      <ScrollView>
+        <View style={styles.container}>
+          <Grid>
+            <Col style={styles.column}>{this.state.order.map(this.renderItem)}</Col>
+          </Grid>
+        </View>
+      </ScrollView>
     ) : (
       <LoadingCircle />
     );
@@ -76,20 +77,20 @@ export default class OrderScreen extends React.Component {
               <Row>
                 <Col>
                   <Icon
-                    name="remove-shopping-cart"
+                    name='remove-shopping-cart'
                     onPress={() => {
                       this.addOrderItem(dish.dishId);
                     }}
                   />
                 </Col>
                 <Col>
-                  <Icon name="comment" />
+                  <Icon name='comment' />
                 </Col>
                 <Col>
-                  <Icon name="thumb-up" />
+                  <Icon name='thumb-up' />
                 </Col>
                 <Col>
-                  <Icon name="share" />
+                  <Icon name='share' />
                 </Col>
               </Row>
             </Grid>
@@ -101,19 +102,19 @@ export default class OrderScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 5,
-    backgroundColor: '#fff'
+  container  : {
+    flex            : 1,
+    padding         : 5,
+    backgroundColor : '#fff',
   },
-  row: {
-    flex: 1
+  row        : {
+    flex : 1,
   },
-  column: {
-    flex: 1,
-    marginBottom: 8
+  column     : {
+    flex         : 1,
+    marginBottom : 8,
   },
-  small: { fontSize: 14 },
-  smallRight: { fontSize: 14, textAlign: 'right' },
-  micro: { fontSize: 10 }
+  small      : { fontSize: 14 },
+  smallRight : { fontSize: 14, textAlign: 'right' },
+  micro      : { fontSize: 10 },
 });

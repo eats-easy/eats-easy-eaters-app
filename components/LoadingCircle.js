@@ -12,13 +12,13 @@ export default class LoadingCircle extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 600
+  container : {
+    justifyContent : 'center',
+    alignItems     : 'center',
+    height         : 600,
   },
-  logo: {
-    width: 50,
-    height: 50
-  }
+  logo      : {
+    width  : 50,
+    height : 50,
+  },
 });

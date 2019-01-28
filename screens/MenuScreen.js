@@ -3,6 +3,7 @@ import { AsyncStorage, ScrollView, Text, StyleSheet, View } from 'react-native';
 import { Tile, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
+import { Snackbar } from 'react-native-material-ui';
 
 import { getApiRestaurantMenu } from '../network/getApiRestaurantMenu';
 
@@ -10,16 +11,20 @@ export default class MenuScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      restaurant: null,
-      data: [],
-      status: 'loading',
-      order: []
+      restaurant   : null,
+      data         : [],
+      status       : 'loading',
+      order        : [],
+      snackVisible : false,
     };
   }
 
   async addOrderItem(item) {
-    await this.setState({ order: [ ...this.state.order, item ] });
+    await this.setState({ order: [ ...this.state.order, item ], snackVisible: true });
     this._storeOrderData();
+    setTimeout(() => {
+      this.setState({ snackVisible: false });
+    }, 3000);
   }
 
   _storeRestaurantData = async () => {
@@ -41,7 +46,7 @@ export default class MenuScreen extends React.Component {
   async componentWillMount() {
     try {
       await this.setState({
-        restaurant: this.props.navigation.dangerouslyGetParent().getParam('restaurant')
+        restaurant : this.props.navigation.dangerouslyGetParent().getParam('restaurant'),
       });
 
       this._storeRestaurantData();
@@ -49,31 +54,40 @@ export default class MenuScreen extends React.Component {
       const dishes = await getApiRestaurantMenu(this.state.restaurant.restaurantId);
 
       this.setState({
-        data: dishes || [],
-        status: 'loaded'
+        data   : dishes || [],
+        status : 'loaded',
       });
     } catch (err) {
       console.error(err);
       this.setState({
-        data: [],
-        status: 'failed'
+        data   : [],
+        status : 'failed',
       });
     }
   }
 
   render() {
+    const { snackVisible } = this.state;
+
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          {this.state.data !== {} && this.state.status !== 'loading' ? (
-            <Grid>
-              <Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
-            </Grid>
-          ) : (
-            <LoadingCircle />
-          )}
-        </View>
-      </ScrollView>
+      <View>
+        <Snackbar
+          visible={snackVisible}
+          message='The dish has been added to your order'
+          onRequestClose={() => this.setState({ snackVisible: false })}
+        />
+        <ScrollView>
+          <View style={styles.container}>
+            {this.state.data !== {} && this.state.status !== 'loading' ? (
+              <Grid>
+                <Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
+              </Grid>
+            ) : (
+              <LoadingCircle />
+            )}
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 
@@ -94,20 +108,20 @@ export default class MenuScreen extends React.Component {
               <Row>
                 <Col>
                   <Icon
-                    name="add-shopping-cart"
+                    name='add-shopping-cart'
                     onPress={() => {
                       this.addOrderItem(dish);
                     }}
                   />
                 </Col>
                 <Col>
-                  <Icon name="comment" />
+                  <Icon name='comment' />
                 </Col>
                 <Col>
-                  <Icon name="thumb-up" />
+                  <Icon name='thumb-up' />
                 </Col>
                 <Col>
-                  <Icon name="share" />
+                  <Icon name='share' />
                 </Col>
               </Row>
             </Grid>
@@ -121,19 +135,19 @@ export default class MenuScreen extends React.Component {
 // TODO: Create global styling service
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 5,
-    backgroundColor: '#fff'
+  container  : {
+    flex            : 1,
+    padding         : 5,
+    backgroundColor : '#fff',
   },
-  row: {
-    flex: 1
+  row        : {
+    flex : 1,
   },
-  column: {
-    flex: 1,
-    marginBottom: 8
+  column     : {
+    flex         : 1,
+    marginBottom : 8,
   },
-  small: { fontSize: 14 },
-  smallRight: { fontSize: 14, textAlign: 'right' },
-  micro: { fontSize: 10 }
+  small      : { fontSize: 14 },
+  smallRight : { fontSize: 14, textAlign: 'right' },
+  micro      : { fontSize: 10 },
 });
