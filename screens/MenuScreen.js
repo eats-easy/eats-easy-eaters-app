@@ -22,12 +22,14 @@ export default class MenuScreen extends React.Component {
   async addOrderItem(item) {
     await this.setState({ order: [ ...this.state.order, item ], snackVisible: true });
     this._storeOrderData();
+
     setTimeout(() => {
       this.setState({ snackVisible: false });
-    }, 3000);
+    }, 1000);
   }
 
   _storeRestaurantData = async () => {
+    // TODO: Create service that makes all the store/retrieve actions
     try {
       await AsyncStorage.setItem('@RestaurantViewStore:restaurant', JSON.stringify(this.state.restaurant));
     } catch (error) {
@@ -36,6 +38,7 @@ export default class MenuScreen extends React.Component {
   };
 
   _storeOrderData = async () => {
+    // TODO: Create service that makes all the store/retrieve actions
     try {
       await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
     } catch (error) {
@@ -115,13 +118,13 @@ export default class MenuScreen extends React.Component {
                   />
                 </Col>
                 <Col>
-                  <Icon name='comment' />
+                  <Icon name='comment' disabled color='#ccc' />
                 </Col>
                 <Col>
-                  <Icon name='thumb-up' />
+                  <Icon name='thumb-up' disabled color='#ccc' />
                 </Col>
                 <Col>
-                  <Icon name='share' />
+                  <Icon name='share' disabled color='#ccc' />
                 </Col>
               </Row>
             </Grid>
