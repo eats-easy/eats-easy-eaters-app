@@ -20,7 +20,10 @@ export default class MenuScreen extends React.Component {
   }
 
   async addOrderItem(item) {
-    await this.setState({ order: [ ...this.state.order, item ], snackVisible: true });
+    await this.setState({
+      order        : [ ...this.state.order, item ],
+      snackVisible : true,
+    });
     this._storeOrderData();
 
     setTimeout(() => {
@@ -31,7 +34,10 @@ export default class MenuScreen extends React.Component {
   _storeRestaurantData = async () => {
     // TODO: Create service that makes all the store/retrieve actions
     try {
-      await AsyncStorage.setItem('@RestaurantViewStore:restaurant', JSON.stringify(this.state.restaurant));
+      await AsyncStorage.setItem(
+        '@RestaurantViewStore:restaurant',
+        JSON.stringify(this.state.restaurant)
+      );
     } catch (error) {
       // TODO: Log error saving data
     }
@@ -40,7 +46,10 @@ export default class MenuScreen extends React.Component {
   _storeOrderData = async () => {
     // TODO: Create service that makes all the store/retrieve actions
     try {
-      await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
+      await AsyncStorage.setItem(
+        '@RestaurantViewStore:order',
+        JSON.stringify(this.state.order)
+      );
     } catch (error) {
       // TODO: Log error saving data
     }
@@ -49,12 +58,16 @@ export default class MenuScreen extends React.Component {
   async componentWillMount() {
     try {
       await this.setState({
-        restaurant : this.props.navigation.dangerouslyGetParent().getParam('restaurant'),
+        restaurant : this.props.navigation
+          .dangerouslyGetParent()
+          .getParam('restaurant'),
       });
 
       this._storeRestaurantData();
 
-      const dishes = await getApiRestaurantMenu(this.state.restaurant.restaurantId);
+      const dishes = await getApiRestaurantMenu(
+        this.state.restaurant.restaurantId
+      );
 
       this.setState({
         data   : dishes || [],
@@ -83,7 +96,9 @@ export default class MenuScreen extends React.Component {
           <View style={styles.container}>
             {this.state.data !== {} && this.state.status !== 'loading' ? (
               <Grid>
-                <Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
+                <Col style={styles.column}>
+                  {this.state.data.map(this.renderItem)}
+                </Col>
               </Grid>
             ) : (
               <LoadingCircle />
@@ -98,37 +113,41 @@ export default class MenuScreen extends React.Component {
     return (
       <View key={'dish_' + i} style={{ flex: 1 }}>
         <Row style={styles.row}>
-          <Tile imageSrc={{ uri: dish.imageUrl }} title={dish.dishName} contentContainerStyle={{ height: 150 }}>
-            <Grid>
-              <Row>
-                <Col>
-                  <Text style={styles.small}>{dish.description}</Text>
-                </Col>
-                <Col>
-                  <Text style={styles.smallRight}>{dish.price} NIS</Text>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Icon
-                    name='add-shopping-cart'
-                    onPress={() => {
-                      this.addOrderItem(dish);
-                    }}
-                  />
-                </Col>
-                <Col>
-                  <Icon name='comment' disabled color='#ccc' />
-                </Col>
-                <Col>
-                  <Icon name='thumb-up' disabled color='#ccc' />
-                </Col>
-                <Col>
-                  <Icon name='share' disabled color='#ccc' />
-                </Col>
-              </Row>
-            </Grid>
-          </Tile>
+          <View style={styles.tile}>
+            <Tile
+              imageSrc={{ uri: dish.imageUrl }}
+              title={dish.dishName}
+              onPress={() => {
+                this.addOrderItem(dish);
+              }}
+              contentContainerStyle={{ height: 150 }}
+            >
+              <Grid>
+                <Row>
+                  <Col>
+                    <Text style={styles.small}>{dish.description}</Text>
+                  </Col>
+                  <Col>
+                    <Text style={styles.smallRight}>{dish.price} NIS</Text>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Icon name='add-shopping-cart' />
+                  </Col>
+                  <Col>
+                    <Icon name='comment' disabled color='#ccc' />
+                  </Col>
+                  <Col>
+                    <Icon name='thumb-up' disabled color='#ccc' />
+                  </Col>
+                  <Col>
+                    <Icon name='share' disabled color='#ccc' />
+                  </Col>
+                </Row>
+              </Grid>
+            </Tile>
+          </View>
         </Row>
       </View>
     );
@@ -140,15 +159,27 @@ export default class MenuScreen extends React.Component {
 const styles = StyleSheet.create({
   container  : {
     flex            : 1,
-    padding         : 5,
+    padding         : 0,
     backgroundColor : '#fff',
   },
   row        : {
-    flex : 1,
+    flex          : 1,
+    margin        : 0,
+    paddingBottom : 8,
+  },
+  tile       : {
+    shadowColor     : '#000',
+    shadowOffset    : {
+      width  : 100,
+      height : 5,
+    },
+    shadowOpacity   : 0.22,
+    shadowRadius    : 2.22,
+    elevation       : 3,
+    backgroundColor : '#fff',
   },
   column     : {
-    flex         : 1,
-    marginBottom : 8,
+    flex : 1,
   },
   small      : { fontSize: 14 },
   smallRight : { fontSize: 14, textAlign: 'right' },
