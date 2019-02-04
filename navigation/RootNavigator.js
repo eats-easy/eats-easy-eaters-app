@@ -5,8 +5,8 @@ import RestaurantTabNavigator from './RestaurantTabNavigator';
 
 // Stacks
 const RootStack = createStackNavigator({
-  Search: SearchRestaurantScreen,
-  Restaurant: RestaurantTabNavigator
+	Search: SearchRestaurantScreen,
+	Restaurant: RestaurantTabNavigator
 });
 
 export default RootStack;
