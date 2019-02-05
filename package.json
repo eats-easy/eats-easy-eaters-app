@@ -17,6 +17,7 @@
 		"react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
 		"react-native-easy-grid": "^0.2.0",
 		"react-native-elements": "^0.19.1",
+		"react-native-js-stepper": "^0.2.1",
 		"react-native-material-design": "^0.3.7",
 		"react-native-material-kit": "^0.5.1",
 		"react-native-material-snackbar": "0.0.1",

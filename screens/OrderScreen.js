@@ -3,6 +3,7 @@ import { Button, AsyncStorage, ScrollView, TouchableNativeFeedback, Image, Text,
 import { Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
+import DishStatusStepper from '../components/DishStatusStepper';
 
 // import { getApiRestaurantMenu } from '../network/getApiRestaurantMenu';
 
@@ -76,21 +77,8 @@ export default class OrderScreen extends React.Component {
 	render() {
 		return this.state.restaurant && this.state.restaurant.name ? (
 			<View style={styles.container}>
-				<View style={{ height: 40 }}>
-					<Grid>
-						<Col size={3} style={styles.trackerColReady}>
-							<Text>Order placed</Text>
-						</Col>
-						<Col size={2} style={styles.trackerCol}>
-							<Text>Prep.</Text>
-						</Col>
-						<Col size={3} style={styles.trackerCol}>
-							<Text>Processing</Text>
-						</Col>
-						<Col size={2} style={styles.trackerCol}>
-							<Text>Delivery</Text>
-						</Col>
-					</Grid>
+				<View style={styles.dishStatus}>
+					<DishStatusStepper />
 				</View>
 				<Grid>
 					<Row style={styles.row}>
@@ -238,5 +226,18 @@ const styles = StyleSheet.create({
 		margin: 2,
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	dishStatus: {
+		height: 70,
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2
+		},
+		shadowOpacity: 0.18,
+		shadowRadius: 4.0,
+
+		elevation: 2,
+		backgroundColor: '#fff'
 	}
 });
