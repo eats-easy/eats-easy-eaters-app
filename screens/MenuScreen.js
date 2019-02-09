@@ -28,7 +28,7 @@ export default class MenuScreen extends React.Component {
 
 		setTimeout(() => {
 			this.setState({ snackVisible: false });
-		}, 1000);
+		}, 500);
 	}
 
 	_storeRestaurantData = async () => {

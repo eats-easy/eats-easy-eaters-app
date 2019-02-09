@@ -103,7 +103,7 @@ export default class OrderScreen extends React.Component {
 										this._storeOrderData();
 									}}
 								>
-									<Text style={styles.text}>{'Clear all'.toUpperCase()}</Text>
+									<Text style={styles.text}>{'Remove all'.toUpperCase()}</Text>
 								</TouchableNativeFeedback>
 							</Col>
 							<Col>
@@ -116,7 +116,7 @@ export default class OrderScreen extends React.Component {
 										// });
 									}}
 									icon={<Icon name="arrow-right" size={15} color="white" />}
-									title="Create order"
+									title="Order"
 									disabled={this.state.order.length == 0}
 								/>
 							</Col>
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	dishStatus: {
-		height: 70,
+		height: 62,
 		shadowColor: '#000',
 		shadowOffset: {
 			width: 0,

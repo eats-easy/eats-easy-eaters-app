@@ -65,17 +65,20 @@ const styles = StyleSheet.create({
 	},
 	activeStepTitle: {
 		fontWeight: '500',
-		textAlign: 'center'
+		textAlign: 'center',
+		fontSize: 10
 	},
 	inactiveStepTitle: {
 		fontWeight: '400',
 		textAlign: 'center',
-		color: 'grey'
+		color: 'grey',
+		fontSize: 10
 	},
 	doneStepTitle: {
 		fontWeight: '400',
 		textAlign: 'center',
-		color: 'grey'
+		color: 'grey',
+		fontSize: 10
 	},
 	activeStepNumber: {
 		fontWeight: '500',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
 
 import { Tile } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -48,10 +48,11 @@ class SearchRestaurantResultGrid extends Component {
 	}
 
 	renderItem = (restaurant, i) => {
+		const isLast = i + 1 == this.state.data.length;
 		return (
 			<View key={'restaurant_' + i} style={{ flex: 1 }}>
 				<Row style={styles.row}>
-					<View style={styles.tile}>
+					<View style={[ styles.tile, isLast ? styles.last : {} ]}>
 						<Tile
 							imageSrc={{ uri: restaurant.image_url }}
 							title={restaurant.name}
@@ -97,6 +98,9 @@ const styles = StyleSheet.create({
 		shadowRadius: 2.22,
 		elevation: 3,
 		backgroundColor: '#fff'
+	},
+	last: {
+		marginBottom: 50
 	},
 	column: {
 		flex: 1
