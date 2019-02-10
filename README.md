@@ -1,13 +1,16 @@
 # eats-easy-eaters-app
+Prerequisites:
+- npm (Node package manager) is installed on your computer
+- Expo app is installed on your phone
+- Your computer and phone are connected to the same network (same subnet)
 
 To install the reqired modules:
 ```sh
 npm install
 ```
 
-To run in Expo app on your phone:
-- Connect your computer and phone to the same network (same subnet)
-- Install and run the Expo app on you phone
+To run the app inside the Expo app on your phone:
+- Run the Expo app on you phone
 - Run in current directory
   ```sh
   npm start
