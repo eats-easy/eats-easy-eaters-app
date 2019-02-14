@@ -14,20 +14,23 @@ export default class OrderScreen extends React.Component {
 			restaurant: null,
 			order: [],
 			data: [],
-			status: 'loading'
+			status: 'loading',
+			orderStatus: 0
 		};
 	}
 
 	async removeOrderItem(dishId) {
 		var found = false;
 
-		let order = await this.state.order.map((x) => {
-			if (!found && x && x.dishId && x.dishId === dishId) {
+		let order = [];
+
+		for (let item of this.state.order) {
+			if (!found && item && item.dishId && item.dishId === dishId) {
 				found = true;
 			} else {
-				return x;
+				order.push(item);
 			}
-		});
+		}
 
 		this.setState({
 			order: order
@@ -36,12 +39,26 @@ export default class OrderScreen extends React.Component {
 		await this._storeOrderData();
 	}
 
-	async createOrder() {}
+	async createOrder() {
+		this.setState({
+			orderStatus: 1
+		});
+	}
 
 	_storeOrderData = async () => {
 		// TODO: Create service that makes all the store/retrieve actions
 		try {
 			await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
+		} catch (error) {
+			// TODO: Log error saving data
+		}
+	};
+
+	_removeAll = async () => {
+		// TODO: Create service that makes all the store/retrieve actions
+		try {
+			this.setState({ order: [] });
+			await AsyncStorage.setItem('@RestaurantViewStore:order', '');
 		} catch (error) {
 			// TODO: Log error saving data
 		}
@@ -75,10 +92,10 @@ export default class OrderScreen extends React.Component {
 	}
 
 	render() {
-		return this.state.restaurant && this.state.restaurant.name ? (
+		return this.state.restaurant && this.state.restaurant.restaurantId ? (
 			<View style={styles.container}>
 				<View style={styles.dishStatus}>
-					<DishStatusStepper />
+					<DishStatusStepper status={this.state.orderStatus} />
 				</View>
 				<Grid>
 					<Row style={styles.row}>
@@ -109,11 +126,7 @@ export default class OrderScreen extends React.Component {
 							<Col>
 								<Button
 									onPress={() => {
-										this._storeOrderData();
-										this.createOrder();
-										// this.props.navigation.navigate({
-										//   routeName : 'PaymentStack',
-										// });
+										this._removeAll();
 									}}
 									icon={<Icon name="arrow-right" size={15} color="white" />}
 									title="Order"

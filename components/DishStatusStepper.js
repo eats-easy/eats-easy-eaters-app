@@ -4,42 +4,58 @@ import { Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 export default class DishStatusStepper extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			status: props.status,
+			statuses: [ 'Order placed', 'Preparing', 'Cooking', 'Serving', 'Completed' ]
+		};
+	}
+
+	componentWillReceiveProps(newProps) {
+		this.setState({ status: newProps.status });
+	}
+
 	render() {
 		return (
 			<View>
 				<Grid>
 					<Row>
-						<Col style={styles.centered}>
-							<View style={[ styles.circle, styles.doneDot ]}>
-								{/* <Text style={styles.doneStepNumber}>1</Text> */}
-								<Icon name="done" color="#fff" />
-							</View>
-							<Text style={styles.doneStepTitle}>Order placed</Text>
-						</Col>
-						<Col style={styles.centered}>
-							<View style={[ styles.circle, styles.activeDot ]}>
-								<Text style={styles.activeStepNumber}>2</Text>
-							</View>
-							<Text style={styles.activeStepTitle}>Preparing</Text>
-						</Col>
-						<Col style={styles.centered}>
-							<View style={[ styles.circle, styles.inactiveDot ]}>
-								<Text style={styles.inactiveStepNumber}>3</Text>
-							</View>
-							<Text style={styles.inactiveStepTitle}>Cooking</Text>
-						</Col>
-						<Col style={styles.centered}>
-							<View style={[ styles.circle, styles.inactiveDot ]}>
-								<Text style={styles.inactiveStepNumber}>4</Text>
-							</View>
-							<Text style={styles.inactiveStepTitle}>Serving</Text>
-						</Col>
-						<Col style={styles.centered}>
-							<View style={[ styles.circle, styles.inactiveDot ]}>
-								<Text style={styles.inactiveStepNumber}>5</Text>
-							</View>
-							<Text style={styles.inactiveStepTitle}>Completed</Text>
-						</Col>
+						{this.state.statuses.map((title, index) => {
+							return (
+								<Col style={styles.centered} key={'status_' + index}>
+									<View
+										style={[
+											styles.circle,
+											this.state.status > index
+												? styles.doneDot
+												: this.state.status === index ? styles.activeDot : styles.inactiveDot
+										]}
+									>
+										{this.state.status > index ? (
+											<Icon name="done" color="#fff" />
+										) : (
+											<Text style={this.state.status === index ? styles.activeStepNumber : styles.inactiveStepNumber}>
+												{index + 1}
+											</Text>
+										)}
+									</View>
+									<Text
+										style={
+											this.state.status > index ? (
+												styles.doneStepTitle
+											) : this.state.status === index ? (
+												styles.activeStepTitle
+											) : (
+												styles.inactiveStepTitle
+											)
+										}
+									>
+										{title}
+									</Text>
+								</Col>
+							);
+						})}
 					</Row>
 				</Grid>
 			</View>

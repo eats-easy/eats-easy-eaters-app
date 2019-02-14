@@ -20,11 +20,14 @@ export default class MenuScreen extends React.Component {
 	}
 
 	async addOrderItem(item) {
+		order = await this._retrieveOrderData();
 		await this.setState({
-			order: [ ...this.state.order, item ],
+			order: [ ...order, item ],
 			snackVisible: true
 		});
 		this._storeOrderData();
+
+		console.warn(await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order')));
 
 		setTimeout(() => {
 			this.setState({ snackVisible: false });
@@ -46,6 +49,15 @@ export default class MenuScreen extends React.Component {
 			await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
 		} catch (error) {
 			// TODO: Log error saving data
+		}
+	};
+
+	_retrieveOrderData = async () => {
+		try {
+			const order = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order'));
+			return order;
+		} catch (error) {
+			// TODO: Log error retrieving data
 		}
 	};
 
