@@ -1,12 +1,11 @@
 import React from 'react';
-import { Button, AsyncStorage, ScrollView, TouchableNativeFeedback, Image, Text, StyleSheet, View } from 'react-native';
+import { Button, ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
+import StorageManager from '../services/storage_manager';
 import orderScreenStyles from '../styles';
-
-// import { getApiRestaurantMenu } from '../network/getApiRestaurantMenu';
 
 export default class OrderScreen extends React.Component {
 	constructor() {
@@ -37,7 +36,7 @@ export default class OrderScreen extends React.Component {
 			order: order
 		});
 
-		await this._storeOrderData();
+		await dataManager._storeOrderData(this.state.order);
 	}
 
 	async createOrder() {
@@ -46,42 +45,7 @@ export default class OrderScreen extends React.Component {
 		});
 	}
 
-	_storeOrderData = async () => {
-		// TODO: Create service that makes all the store/retrieve actions
-		try {
-			await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
-		} catch (error) {
-			// TODO: Log error saving data
-		}
-	};
-
-	_removeAll = async () => {
-		// TODO: Create service that makes all the store/retrieve actions
-		try {
-			this.setState({ order: [] });
-			await AsyncStorage.setItem('@RestaurantViewStore:order', '');
-		} catch (error) {
-			// TODO: Log error saving data
-		}
-	};
-
-	_retrieveData = async () => {
-		try {
-			const restaurant = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:restaurant'));
-			const order = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order'));
-
-			this.setState({
-				restaurant: restaurant,
-				order: order.map((x) => {
-					if (x.restId == restaurant.restaurantId) return x;
-				})
-			});
-		} catch (error) {
-			// TODO: Log error retrieving data
-		}
-	};
-
-	async componentWillMount() {
+	componentWillMount() {
 		try {
 			this._retrieveData();
 		} catch (err) {
