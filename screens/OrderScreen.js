@@ -17,26 +17,8 @@ export default class OrderScreen extends React.Component {
 			status: 'loading',
 			orderStatus: 0
 		};
-	}
 
-	async removeOrderItem(dishId) {
-		var found = false;
-
-		let order = [];
-
-		for (let item of this.state.order) {
-			if (!found && item && item.dishId && item.dishId === dishId) {
-				found = true;
-			} else {
-				order.push(item);
-			}
-		}
-
-		this.setState({
-			order: order
-		});
-
-		await dataManager._storeOrderData(this.state.order);
+		this.onPress = this.onPress.bind(this);
 	}
 
 	async createOrder() {
@@ -47,7 +29,7 @@ export default class OrderScreen extends React.Component {
 
 	componentWillMount() {
 		try {
-			this._retrieveData();
+			StorageManager._retrieveData();
 		} catch (err) {
 			console.error(err);
 			this.setState({
@@ -73,7 +55,14 @@ export default class OrderScreen extends React.Component {
 					<Grid>
 						<Row style={styles.row}>
 							<Col>
-								<TouchableNativeFeedback style={styles.buttonClear} onPress={this._retrieveData}>
+								<TouchableNativeFeedback
+									style={styles.buttonClear}
+									onPress={() => {
+										this.setState({
+											orders: StorageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
+										});
+									}}
+								>
 									<Text style={styles.text}>{'Reload'.toUpperCase()}</Text>
 								</TouchableNativeFeedback>
 							</Col>
@@ -81,8 +70,10 @@ export default class OrderScreen extends React.Component {
 								<TouchableNativeFeedback
 									style={styles.buttonClear}
 									onPress={() => {
-										this.setState({ order: [] });
-										this._storeOrderData();
+										StorageManager._removeAllOrdersOfRest(this.state.restaurant.restaurantId);
+										this.setState({
+											orders: StorageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
+										});
 									}}
 								>
 									<Text style={styles.text}>{'Remove all'.toUpperCase()}</Text>
@@ -91,7 +82,7 @@ export default class OrderScreen extends React.Component {
 							<Col>
 								<Button
 									onPress={() => {
-										this._removeAll();
+										// TODO: Send order
 									}}
 									icon={<Icon name="arrow-right" size={15} color="white" />}
 									title="Order"
@@ -125,7 +116,7 @@ export default class OrderScreen extends React.Component {
 								<Icon
 									name="remove-shopping-cart"
 									onPress={() => {
-										this.removeOrderItem(dish.dishId);
+										StorageManager._removeDishFromOrders(dish.dishId);
 									}}
 								/>
 							</Col>
