@@ -1,7 +1,5 @@
 import React from 'react';
-import { Button, AsyncStorage, ScrollView, TouchableNativeFeedback, Image, Text, StyleSheet, View } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import { StyleSheet, View } from 'react-native';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
 
@@ -30,40 +28,12 @@ export default class CallServiceScreen extends React.Component {
 		this.setState({
 			order: order
 		});
-
-		await this._storeOrderData();
 	}
 
 	async createOrder() {}
 
-	_storeOrderData = async () => {
-		// TODO: Create service that makes all the store/retrieve actions
-		try {
-			await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
-		} catch (error) {
-			// TODO: Log error saving data
-		}
-	};
-
-	_retrieveData = async () => {
-		try {
-			const restaurant = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:restaurant'));
-			const order = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order'));
-
-			this.setState({
-				restaurant: restaurant,
-				order: order.map((x) => {
-					if (x.restId == restaurant.restaurantId) return x;
-				})
-			});
-		} catch (error) {
-			// TODO: Log error retrieving data
-		}
-	};
-
 	async componentWillMount() {
 		try {
-			this._retrieveData();
 		} catch (err) {
 			console.error(err);
 			this.setState({

@@ -1,9 +1,10 @@
 import React from 'react';
-import { AsyncStorage, ScrollView, Text, StyleSheet, View } from 'react-native';
+import { ScrollView, Text, StyleSheet, View } from 'react-native';
 import { Tile, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import { Snackbar } from 'react-native-material-ui';
+import StorageManager from '../services/storage_manager';
 
 import { getApiRestaurantMenu } from '../network/getApiRestaurantMenu';
 
@@ -14,61 +15,17 @@ export default class MenuScreen extends React.Component {
 			restaurant: null,
 			data: [],
 			status: 'loading',
-			order: [],
 			snackVisible: false
 		};
+		this.storageManager = new StorageManager();
 	}
-
-	async addOrderItem(item) {
-		order = await this._retrieveOrderData();
-		await this.setState({
-			order: [ ...order, item ],
-			snackVisible: true
-		});
-		this._storeOrderData();
-
-		console.warn(await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order')));
-
-		setTimeout(() => {
-			this.setState({ snackVisible: false });
-		}, 500);
-	}
-
-	_storeRestaurantData = async () => {
-		// TODO: Create service that makes all the store/retrieve actions
-		try {
-			await AsyncStorage.setItem('@RestaurantViewStore:restaurant', JSON.stringify(this.state.restaurant));
-		} catch (error) {
-			// TODO: Log error saving data
-		}
-	};
-
-	_storeOrderData = async () => {
-		// TODO: Create service that makes all the store/retrieve actions
-		try {
-			await AsyncStorage.setItem('@RestaurantViewStore:order', JSON.stringify(this.state.order));
-		} catch (error) {
-			// TODO: Log error saving data
-		}
-	};
-
-	_retrieveOrderData = async () => {
-		try {
-			const order = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order'));
-			return order;
-		} catch (error) {
-			// TODO: Log error retrieving data
-		}
-	};
 
 	async componentWillMount() {
 		try {
 			await this.setState({
 				restaurant: this.props.navigation.dangerouslyGetParent().getParam('restaurant')
 			});
-
-			this._storeRestaurantData();
-
+			await this.storageManager._storeRestaurantData(this.state.restaurant);
 			const dishes = await getApiRestaurantMenu(this.state.restaurant.restaurantId);
 
 			this.setState({
@@ -118,7 +75,11 @@ export default class MenuScreen extends React.Component {
 							imageSrc={{ uri: dish.imageUrl }}
 							title={dish.dishName}
 							onPress={() => {
-								this.addOrderItem(dish);
+								this.setState({ snackVisible: true });
+								this.storageManager._addToOrdersData(dish);
+								setTimeout(() => {
+									this.setState({ snackVisible: false });
+								}, 500);
 							}}
 							contentContainerStyle={{ height: 150 }}
 						>

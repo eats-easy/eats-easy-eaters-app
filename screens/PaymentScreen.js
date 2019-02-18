@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 
 export default class PaymentScreen extends React.Component {
 	constructor() {
@@ -12,27 +12,8 @@ export default class PaymentScreen extends React.Component {
 		};
 	}
 
-	_retrieveData = async () => {
-		try {
-			const restaurant = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:restaurant'));
-			const order = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:order'));
-
-			this.setState({
-				restaurant: restaurant,
-				order: order.map((x) => {
-					if (x.restId == restaurant.restaurantId) return x;
-				})
-			});
-		} catch (error) {
-			// TODO: Log error retrieving data
-
-			console.warn('Got error', error);
-		}
-	};
-
 	async componentWillMount() {
 		try {
-			this._retrieveData();
 		} catch (err) {
 			console.error(err);
 			this.setState({

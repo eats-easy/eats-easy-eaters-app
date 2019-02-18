@@ -12,46 +12,38 @@ export default class OrderScreen extends React.Component {
 		super();
 		this.state = {
 			restaurant: null,
-			order: [],
+			orders: [],
 			data: [],
 			status: 'loading',
 			orderStatus: 0
 		};
-
-		this.onPress = this.onPress.bind(this);
+		this.storageManager = new StorageManager();
 	}
 
-	async createOrder() {
-		this.setState({
-			orderStatus: 1
+	async createOrder() {}
+
+	async componentWillMount() {
+		await this.setState({
+			status: 'loaded',
+			restaurant: await this.storageManager._retrieveRestaurantData()
 		});
-	}
-
-	componentWillMount() {
-		try {
-			StorageManager._retrieveData();
-		} catch (err) {
-			console.error(err);
-			this.setState({
-				status: 'failed'
-			});
-		}
+		await this.setState({
+			orders: await this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
+		});
 	}
 
 	render() {
 		return this.state.restaurant && this.state.restaurant.restaurantId ? (
-			<View style={styles.container}>
-				<View style={styles.dishStatus}>
+			<View>
+				{/* <View style={styles.dishStatus}>
 					<DishStatusStepper status={this.state.orderStatus} />
-				</View>
+        </View> */}
 				<Grid>
-					<Row style={styles.row}>
-						<Col style={styles.column}>
-							<ScrollView>{this.state.order.map(this.renderItem)}</ScrollView>
-						</Col>
+					<Row>
+						<Col>{this.state.orders.map(this.renderItem)}</Col>
 					</Row>
 				</Grid>
-				<View style={{ height: 60, padding: 10 }}>
+				{/* <View style={{ height: 60, padding: 10 }}>
 					<Grid>
 						<Row style={styles.row}>
 							<Col>
@@ -59,7 +51,7 @@ export default class OrderScreen extends React.Component {
 									style={styles.buttonClear}
 									onPress={() => {
 										this.setState({
-											orders: StorageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
+											orders: this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
 										});
 									}}
 								>
@@ -70,9 +62,9 @@ export default class OrderScreen extends React.Component {
 								<TouchableNativeFeedback
 									style={styles.buttonClear}
 									onPress={() => {
-										StorageManager._removeAllOrdersOfRest(this.state.restaurant.restaurantId);
+										this.storageManager._removeAllOrdersOfRest(this.state.restaurant.restaurantId);
 										this.setState({
-											orders: StorageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
+											orders: this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId)
 										});
 									}}
 								>
@@ -86,12 +78,12 @@ export default class OrderScreen extends React.Component {
 									}}
 									icon={<Icon name="arrow-right" size={15} color="white" />}
 									title="Order"
-									disabled={this.state.order.length == 0}
+									disabled={this.state.orders.length == 0}
 								/>
 							</Col>
 						</Row>
 					</Grid>
-				</View>
+				</View> */}
 			</View>
 		) : (
 			<LoadingCircle />
@@ -116,7 +108,7 @@ export default class OrderScreen extends React.Component {
 								<Icon
 									name="remove-shopping-cart"
 									onPress={() => {
-										StorageManager._removeDishFromOrders(dish.dishId);
+										this.storageManager._removeDishFromOrders(dish.dishId);
 									}}
 								/>
 							</Col>
@@ -125,7 +117,9 @@ export default class OrderScreen extends React.Component {
 				</Row>
 			</View>
 		) : (
-			<View key={'no_dish_' + i} />
+			<View key={'no_dish_' + i}>
+				<Text>Or here!</Text>
+			</View>
 		);
 	};
 }
