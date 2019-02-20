@@ -1,14 +1,22 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { commonStyles, dishStatusStepperStyles } from '../styles';
+import Colors from '../constants/Colors';
 
 export default class DishStatusStepper extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			status: props.status,
-			statuses: [ 'Order placed', 'Preparing', 'Cooking', 'Serving', 'Completed' ]
+			statuses: [
+				'Order placed',
+				'Preparing',
+				'Cooking',
+				'Serving',
+				'Completed'
+			]
 		};
 	}
 
@@ -23,19 +31,29 @@ export default class DishStatusStepper extends React.Component {
 					<Row>
 						{this.state.statuses.map((title, index) => {
 							return (
-								<Col style={styles.centered} key={'status_' + index}>
+								<Col style={commonStyles.textCenter} key={'status_' + index}>
 									<View
 										style={[
-											styles.circle,
+											dishStatusStepperStyles.circle,
 											this.state.status > index
-												? styles.doneDot
-												: this.state.status === index ? styles.activeDot : styles.inactiveDot
+												? dishStatusStepperStyles.trackerDotDone
+												: this.state.status === index
+													? dishStatusStepperStyles.trackerDotActive
+													: dishStatusStepperStyles.trackerDotInactive
 										]}
 									>
 										{this.state.status > index ? (
-											<Icon name="done" color="#fff" />
+											<Icon name="done" color={Colors.trackerStepNumberDone} />
 										) : (
-											<Text style={this.state.status === index ? styles.activeStepNumber : styles.inactiveStepNumber}>
+											<Text
+												style={
+													this.state.status === index ? (
+														dishStatusStepperStyles.trackerStepNumberActive
+													) : (
+														dishStatusStepperStyles.trackerStepNumberInactive
+													)
+												}
+											>
 												{index + 1}
 											</Text>
 										)}
@@ -43,11 +61,11 @@ export default class DishStatusStepper extends React.Component {
 									<Text
 										style={
 											this.state.status > index ? (
-												styles.doneStepTitle
+												dishStatusStepperStyles.trackerStepTitleDone
 											) : this.state.status === index ? (
-												styles.activeStepTitle
+												dishStatusStepperStyles.trackerStepTitleActive
 											) : (
-												styles.inactiveStepTitle
+												dishStatusStepperStyles.trackerStepTitleInctive
 											)
 										}
 									>
@@ -62,67 +80,3 @@ export default class DishStatusStepper extends React.Component {
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	activeDot: {
-		backgroundColor: 'grey'
-	},
-	inactiveDot: {
-		backgroundColor: '#ededed'
-	},
-	doneDot: {
-		backgroundColor: '#54c645'
-	},
-	activeStep: {
-		backgroundColor: 'grey'
-	},
-	inactiveStep: {
-		backgroundColor: '#ededed'
-	},
-	activeStepTitle: {
-		fontWeight: '500',
-		textAlign: 'center',
-		fontSize: 10
-	},
-	inactiveStepTitle: {
-		fontWeight: '400',
-		textAlign: 'center',
-		color: 'grey',
-		fontSize: 10
-	},
-	doneStepTitle: {
-		fontWeight: '400',
-		textAlign: 'center',
-		color: 'grey',
-		fontSize: 10
-	},
-	activeStepNumber: {
-		fontWeight: '500',
-		color: 'white',
-		textAlign: 'center'
-	},
-	inactiveStepNumber: {
-		fontWeight: '400',
-		color: 'black',
-		textAlign: 'center'
-	},
-	doneStepNumber: {
-		fontWeight: '400',
-		color: '#fff',
-		textAlign: 'center'
-	},
-	circle: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		width: 30,
-		height: 30,
-		borderRadius: 15
-	},
-	centered: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: 60,
-		margin: 1
-	}
-});
