@@ -1,13 +1,12 @@
 import React from 'react';
 import {
-	Button,
 	ScrollView,
 	TouchableNativeFeedback,
 	Image,
 	Text,
 	View
 } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
@@ -31,39 +30,54 @@ export default class OrderScreen extends React.Component {
 	async createOrder() {}
 
 	async componentWillMount() {
+		let restaurant = await this.storageManager._retrieveRestaurantData();
 		await this.setState({
 			status: 'loaded',
-			restaurant: await this.storageManager._retrieveRestaurantData()
-		});
-		await this.setState({
+			restaurant: restaurant,
 			orders: await this.storageManager._retrieveAllOrdersOfRest(
-				this.state.restaurant.restaurantId
+				restaurant.restaurantId
+			),
+			orderStatus: await this.storageManager._retrieveOrderStatusOfRest(
+				restaurant.restaurantId
 			)
 		});
 	}
 
 	render() {
 		return this.state.restaurant && this.state.restaurant.restaurantId ? (
-			<View>
-				<View style={dishStatusStepperStyles.dishStatusContainer}>
+			<View style={commonStyles.container}>
+				<View style={[ dishStatusStepperStyles.dishStatusContainer ]}>
 					<DishStatusStepper status={this.state.orderStatus} />
 				</View>
-				<Grid>
-					<Row>
-						<Col>{this.state.orders.map(this.renderItem)}</Col>
-					</Row>
-				</Grid>
+				<ScrollView style={commonStyles.flexed}>
+					<Grid>
+						<Row style={commonStyles.row}>
+							<Col style={[ commonStyles.column ]}>
+								{this.state.orders.length > 0 ? (
+									this.state.orders.map(this.renderItem)
+								) : (
+									<Text style={{ paddingTop: 30, textAlign: 'center' }}>
+										No items in your cart...
+									</Text>
+								)}
+							</Col>
+						</Row>
+					</Grid>
+				</ScrollView>
 				<View style={{ height: 60, padding: 10 }}>
 					<Grid>
 						<Row style={commonStyles.row}>
-							<Col>
+							<Col
+								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
+							>
 								<TouchableNativeFeedback
 									style={commonStyles.buttonClear}
-									onPress={() => {
+									onPress={async () => {
+										let orders = await this.storageManager._retrieveAllOrdersOfRest(
+											this.state.restaurant.restaurantId
+										);
 										this.setState({
-											orders: this.storageManager._retrieveAllOrdersOfRest(
-												this.state.restaurant.restaurantId
-											)
+											orders: orders
 										});
 									}}
 								>
@@ -72,17 +86,18 @@ export default class OrderScreen extends React.Component {
 									</Text>
 								</TouchableNativeFeedback>
 							</Col>
-							<Col>
+							<Col
+								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
+							>
 								<TouchableNativeFeedback
 									style={commonStyles.buttonClear}
-									onPress={() => {
-										this.storageManager._removeAllOrdersOfRest(
+									onPress={async () => {
+										await this.storageManager._removeAllOrdersOfRest(
 											this.state.restaurant.restaurantId
 										);
+										debugger;
 										this.setState({
-											orders: this.storageManager._retrieveAllOrdersOfRest(
-												this.state.restaurant.restaurantId
-											)
+											orders: []
 										});
 									}}
 								>
@@ -91,16 +106,31 @@ export default class OrderScreen extends React.Component {
 									</Text>
 								</TouchableNativeFeedback>
 							</Col>
-							<Col>
+							<Col
+								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
+							>
 								<Button
-									onPress={() => {
+									title={'Order'.toUpperCase()}
+									onPress={async () => {
 										// TODO: Send order
+										await this.storageManager._addToOrdersStatusesData({
+											restaurantId: this.state.restaurant.restaurantId,
+											orderStatus: (this.state.orderStatus + 1) % 6
+										});
+										let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
+											this.state.restaurant.restaurantId
+										);
+										this.setState({ orderStatus: newOrderStatus });
 									}}
-									icon={
-										<Icon name="arrow-right" size={15} color={Colors.white} />
-									}
-									title="Order"
+									icon={{
+										name: 'send',
+										type: 'font-awesome',
+										size: 15,
+										color: 'white'
+									}}
+									rounded
 									disabled={this.state.orders.length == 0}
+									backgroundColor={Colors.tintColor}
 								/>
 							</Col>
 						</Row>
@@ -114,28 +144,56 @@ export default class OrderScreen extends React.Component {
 
 	renderItem = (dish, i) => {
 		return dish ? (
-			<View key={'dish_' + i} style={commonStyles.container}>
+			<View
+				key={'dish_' + i}
+				style={[
+					commonStyles.container,
+					commonStyles.shadowSmall,
+					{ height: 100, marginBottom: 5 }
+				]}
+			>
 				<Row style={commonStyles.row}>
 					<Grid>
 						<Row style={commonStyles.rowList}>
-							<Col size={3} style={commonStyles.columnList}>
+							<Col
+								size={3}
+								style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
+							>
 								<Image
 									style={{ width: 100, height: 80 }}
 									source={{ uri: dish.imageUrl }}
 								/>
 							</Col>
-							<Col size={6} style={commonStyles.columnList}>
+							<Col
+								size={6}
+								style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
+							>
 								<Text style={commonStyles.textMedium}>{dish.dishName}</Text>
 								<Text style={commonStyles.textSmall}>{dish.description}</Text>
 								<Text style={commonStyles.textSmall}>{dish.price} NIS</Text>
 							</Col>
-							<Col size={1} style={commonStyles.columnList}>
-								<Icon
-									name="remove-shopping-cart"
-									onPress={() => {
-										this.storageManager._removeDishFromOrders(dish.dishId);
+							<Col
+								size={1}
+								style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
+							>
+								<TouchableNativeFeedback
+									onPress={async () => {
+										await this.storageManager._removeDishFromOrders(
+											dish.dishId
+										);
+										let orders = await this.storageManager._retrieveAllOrdersOfRest(
+											this.state.restaurant.restaurantId
+										);
+										this.setState({ orders: orders });
 									}}
-								/>
+									style={[
+										{ width: 40, height: 40, padding: 0, margin: 0 },
+										commonStyles.centered,
+										commonStyles.justifyCenter
+									]}
+								>
+									<Icon name="clear" size={30} />
+								</TouchableNativeFeedback>
 							</Col>
 						</Row>
 					</Grid>

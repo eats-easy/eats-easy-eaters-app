@@ -11,25 +11,23 @@ export default class CallServiceScreen extends React.Component {
 			restaurant: null,
 			order: [],
 			data: [],
-			status: 'loading'
+			status: 'loading',
+			orderStatus: 0
 		};
 	}
 
 	async componentWillMount() {
-		try {
-		} catch (err) {
-			console.error(err);
-			this.setState({
-				status: 'failed'
-			});
-		}
+		await this.setState({
+			status: 'loaded',
+			restaurant: await this.storageManager._retrieveRestaurantData()
+		});
 	}
 
 	render() {
 		return this.state.restaurant && this.state.restaurant.restaurantId ? (
 			<View style={commonStyles.container}>
 				<View style={dishStatusStepperStyles.dishStatusContainer}>
-					<DishStatusStepper />
+					<DishStatusStepper status={this.state.orderStatus} />
 				</View>
 			</View>
 		) : (

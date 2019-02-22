@@ -69,7 +69,7 @@ export default class DishStatusStepper extends React.Component {
 												? dishStatusStepperStyles.trackerStepTitleDone
 												: this.state.status === index
 													? dishStatusStepperStyles.trackerStepTitleActive
-													: dishStatusStepperStyles.trackerStepTitleInctive
+													: dishStatusStepperStyles.trackerStepTitleInactive
 										]}
 									>
 										{title}

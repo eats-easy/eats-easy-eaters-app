@@ -3,11 +3,25 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import { commonStyles } from './styles';
+import StorageManager from './services/storage_manager';
 
 export default class App extends React.Component {
-	state = {
-		isLoadingComplete: false
-	};
+	constructor() {
+		super();
+		this.state = {
+			isLoadingComplete: false
+		};
+		this.storageManager = new StorageManager();
+	}
+
+	async componentWillMount() {
+		let DEBUG = true;
+		if (DEBUG) {
+			console.log(await this.storageManager._retrieveRestaurantData());
+			console.log(await this.storageManager._retrieveAllOrdersData());
+			console.log(await this.storageManager._retrieveAllOrderStatuses());
+		}
+	}
 
 	render() {
 		if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {

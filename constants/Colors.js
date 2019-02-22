@@ -44,13 +44,13 @@ export default {
 	trackerDotActive: grey,
 	trackerDotInactive: lightGrey,
 	trackerDotDone: green,
-	trackerStepActive: grey,
-	trackerStepInactive: lightGrey,
+	trackerStepActive: lightGrey,
+	trackerStepInactive: grey,
 	trackerStepDone: green,
-	trackerStepTitleActive: grey,
+	trackerStepTitleActive: black,
 	trackerStepTitleInactive: lightGrey,
 	trackerStepTitleDone: green,
-	trackerStepNumberActive: white,
-	trackerStepNumberInactive: black,
+	trackerStepNumberActive: black,
+	trackerStepNumberInactive: white,
 	trackerStepNumberDone: white
 };
