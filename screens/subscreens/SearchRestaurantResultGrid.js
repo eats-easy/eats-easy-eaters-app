@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { Tile } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { withNavigation } from 'react-navigation';
 import { getApiAllRestaurants } from '../../network/getApiAllRestaurants';
+import { commonStyles, searchRestaurantStyles } from '../../styles';
 
 import LoadingCircle from '../../components/LoadingCircle';
 
@@ -19,10 +20,12 @@ class SearchRestaurantResultGrid extends Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<View style={[ commonStyles.container, commonStyles.paddingNone ]}>
 				{this.state.data !== {} && this.state.status !== 'loading' ? (
 					<Grid>
-						<Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
+						<Col style={commonStyles.column}>
+							{this.state.data.map(this.renderItem)}
+						</Col>
 					</Grid>
 				) : (
 					<LoadingCircle />
@@ -50,9 +53,15 @@ class SearchRestaurantResultGrid extends Component {
 	renderItem = (restaurant, i) => {
 		const isLast = i + 1 == this.state.data.length;
 		return (
-			<View key={'restaurant_' + i} style={{ flex: 1 }}>
-				<Row style={styles.row}>
-					<View style={[ styles.tile, isLast ? styles.last : {} ]}>
+			<View key={'restaurant_' + i} style={commonStyles.flexed}>
+				<Row style={commonStyles.row}>
+					<View
+						style={[
+							commonStyles.shadowMedium,
+							{ marginBottom: 10 },
+							isLast ? commonStyles.tileLast : {}
+						]}
+					>
 						<Tile
 							imageSrc={{ uri: restaurant.image_url }}
 							title={restaurant.name}
@@ -76,35 +85,5 @@ class SearchRestaurantResultGrid extends Component {
 		);
 	};
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 0,
-		backgroundColor: '#fff'
-	},
-	row: {
-		flex: 1,
-		margin: 0,
-		paddingBottom: 8
-	},
-	tile: {
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 100,
-			height: 5
-		},
-		shadowOpacity: 0.22,
-		shadowRadius: 2.22,
-		elevation: 3,
-		backgroundColor: '#fff'
-	},
-	last: {
-		marginBottom: 50
-	},
-	column: {
-		flex: 1
-	}
-});
 
 export default withNavigation(SearchRestaurantResultGrid);

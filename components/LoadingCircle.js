@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image } from 'react-native';
 import { commonStyles } from '../styles';
 
 export default class LoadingCircle extends React.Component {

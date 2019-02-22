@@ -1,7 +1,7 @@
 import React, { StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 
-export const commonStyles = StyleSheet.create({
+export const commonStyles = {
 	// Margins and Paddings
 	marginNone: { margin: 0 },
 	marginSmall: { margin: 2 },
@@ -17,6 +17,12 @@ export const commonStyles = StyleSheet.create({
 	textCenter: { textAlign: 'center' },
 	justifyCenter: {
 		justifyContent: 'center'
+	},
+	stretch: {
+		alignItems: 'stretch'
+	},
+	centered: {
+		alignItems: 'center'
 	},
 	elevationNone: {
 		elevation: 0
@@ -61,28 +67,49 @@ export const commonStyles = StyleSheet.create({
 		width: 50,
 		height: 50
 	},
+	miniIcons: {
+		width: 40,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	tileLast: {
+		marginBottom: 60
+	},
 	// Effects
 	shadowSmall: {
 		shadowColor: Colors.shadowColor,
-		shadowOpacity: 0.18,
-		shadowRadius: 1.0,
-		shadowOffset: {
-			width: 0,
-			height: 1
-		}
-	},
-	shadowMedium: {
-		shadowColor: Colors.shadowColor,
-		shadowOpacity: 0.18,
-		shadowRadius: 4.0,
 		shadowOffset: {
 			width: 0,
 			height: 2
-		}
+		},
+		shadowOpacity: 0.18,
+		shadowRadius: 10.0,
+		elevation: 2,
+		backgroundColor: Colors.white
+	},
+	shadowMedium: {
+		shadowColor: Colors.shadowColor,
+		shadowOffset: {
+			width: 0,
+			height: 2
+		},
+		shadowOpacity: 0.18,
+		shadowRadius: 10.0,
+		elevation: 3,
+		backgroundColor: Colors.white
 	}
-});
+};
 
-export const dishStatusStepperStyles = StyleSheet.create({
+export const searchRestaurantStyles = {
+	searchBar: {
+		flex: 1,
+		paddingLeft: 0,
+		paddingRight: 10,
+		marginBottom: 7
+	}
+};
+
+export const dishStatusStepperStyles = {
 	dishStatusContainer: {
 		height: 62
 	},
@@ -127,4 +154,4 @@ export const dishStatusStepperStyles = StyleSheet.create({
 		height: 30,
 		borderRadius: 15
 	}
-});
+};

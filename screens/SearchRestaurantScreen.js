@@ -1,10 +1,17 @@
 import React from 'react';
-import { TouchableNativeFeedback, TextInput, StyleSheet, View, ScrollView } from 'react-native';
+import {
+	TouchableNativeFeedback,
+	TextInput,
+	View,
+	ScrollView
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { withNavigation } from 'react-navigation';
 import SearchFilters from '../components/SearchFilters';
 import SearchRestaurantResultGrid from './subscreens/SearchRestaurantResultGrid';
+import { commonStyles, searchRestaurantStyles } from '../styles';
+import Colors from '../constants/Colors';
 
 class SearchRestaurantScreen extends React.Component {
 	constructor() {
@@ -18,42 +25,44 @@ class SearchRestaurantScreen extends React.Component {
 		return {
 			headerTitle: 'Find a restaurant near you',
 			headerLeft: (
-				<Icon onPress={() => navigation.navigate('DrawerOpen')} name="menu" size={30} style={{ marginLeft: 10 }} />
+				<Icon
+					onPress={() => navigation.navigate('DrawerOpen')}
+					name="menu"
+					size={30}
+				/>
 			)
 		};
 	};
+
+	handleInput() {
+		// TODO: Create an API search call with filter
+	}
 
 	render() {
 		return (
 			<View>
 				<View style={{ height: this.state.filterExpanded ? 350 : 55 }}>
-					<Grid style={[ styles.searchBar, { flex: 1 } ]}>
+					<Grid
+						style={[
+							searchRestaurantStyles.searchBar,
+							commonStyles.shadowMedium
+						]}
+					>
 						<Row style={{ height: 50 }}>
-							<Col
-								style={{
-									justifyContent: 'center',
-									alignItems: 'stretch'
-								}}
-							>
+							<Col style={[ commonStyles.justifyCenter, commonStyles.stretch ]}>
 								<TextInput
-									style={[
-										styles.input,
-										{
-											fontSize: 16,
-											flex: 1
-										}
-									]}
+									style={[ commonStyles.input, commonStyles.textSmall ]}
 									underlineColorAndroid="transparent"
 									placeholder="Start typying a name or type..."
-									placeholderTextColor="#ddd"
+									placeholderTextColor={Colors.lightGrey}
 									autoCapitalize="none"
-									onChangeText={this.handleEmail}
+									onChangeText={this.handleInput}
 								/>
 							</Col>
-							<Col style={{ width: 40, justifyContent: 'center', alignItems: 'center' }}>
+							<Col style={commonStyles.miniIcons}>
 								<Icon name="search" size={25} />
 							</Col>
-							<Col style={{ width: 40, justifyContent: 'center', alignItems: 'center' }}>
+							<Col style={commonStyles.miniIcons}>
 								<TouchableNativeFeedback
 									onPress={() =>
 										this.setState({
@@ -64,8 +73,10 @@ class SearchRestaurantScreen extends React.Component {
 								</TouchableNativeFeedback>
 							</Col>
 						</Row>
-						<Row style={{ alignContent: 'stretch' }}>
-							<Col style={{ paddingLeft: 10 }}>{this.state.filterExpanded ? <SearchFilters /> : []}</Col>
+						<Row style={commonStyles.stretch}>
+							<Col style={{ paddingLeft: 10, paddingRight: 10 }}>
+								{this.state.filterExpanded ? <SearchFilters /> : []}
+							</Col>
 						</Row>
 					</Grid>
 				</View>
@@ -76,33 +87,5 @@ class SearchRestaurantScreen extends React.Component {
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 5,
-		backgroundColor: '#fff'
-	},
-	input: {
-		margin: 15,
-		height: 25,
-		borderWidth: 0
-	},
-	searchBar: {
-		flex: 1,
-		paddingLeft: 0,
-		paddingRight: 10,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2
-		},
-		shadowOpacity: 0.18,
-		shadowRadius: 4.0,
-		marginBottom: 7,
-		elevation: 2,
-		backgroundColor: '#fff'
-	}
-});
 
 export default withNavigation(SearchRestaurantScreen);

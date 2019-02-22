@@ -1,7 +1,9 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View } from 'react-native';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { CheckBox, Slider } from 'react-native-elements';
+import { commonStyles } from '../styles';
+import Colors from '../constants/Colors';
 
 export default class SearchFilters extends React.Component {
 	constructor() {
@@ -21,7 +23,13 @@ export default class SearchFilters extends React.Component {
 
 	render() {
 		return (
-			<View style={[ styles.container, { justifyContent: 'center', alignContent: 'stretch' } ]}>
+			<View
+				style={[
+					commonStyles.container,
+					commonStyles.textCenter,
+					commonStyles.justifyCenter
+				]}
+			>
 				<Grid>
 					<Row>
 						<Col>
@@ -83,14 +91,27 @@ export default class SearchFilters extends React.Component {
 							/>
 						</Col>
 					</Row>
-					<Row style={{ paddingLeft: 10, paddingRight: 5, paddingTop: 0, marginTop: 0 }}>
-						<Col style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+					<Row
+						style={{
+							paddingLeft: 10,
+							paddingRight: 10,
+							paddingTop: 0,
+							margin: 0
+						}}
+					>
+						<Col
+							style={[
+								commonStyles.justifyCenter,
+								commonStyles.stretch,
+								commonStyles.container
+							]}
+						>
 							<Slider
 								value={this.state.value}
 								onValueChange={(value) => this.setState({ value })}
 								minimumValue={0.1}
 								maximumValue={50}
-								thumbTintColor="#2f95dc"
+								thumbTintColor={Colors.tintColor}
 							/>
 							<Text>Distance: {Number(this.state.value).toFixed(1)} km</Text>
 						</Col>
@@ -100,9 +121,3 @@ export default class SearchFilters extends React.Component {
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
-});

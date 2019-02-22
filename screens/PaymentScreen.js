@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { commonStyles } from '../styles';
 
 export default class PaymentScreen extends React.Component {
 	constructor() {
@@ -23,7 +24,11 @@ export default class PaymentScreen extends React.Component {
 	}
 
 	render() {
-		return <View style={styles.container}>{this.state.order.map(this.renderItem)}</View>;
+		return (
+			<View style={commonStyles.container}>
+				{this.state.order.map(this.renderItem)}
+			</View>
+		);
 	}
 
 	renderItem = (dish, i) => {
@@ -34,11 +39,3 @@ export default class PaymentScreen extends React.Component {
 		);
 	};
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 5,
-		backgroundColor: '#fff'
-	}
-});

@@ -5,8 +5,10 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import { Snackbar } from 'react-native-material-ui';
 import StorageManager from '../services/storage_manager';
+import { commonStyles } from '../styles';
 
 import { getApiRestaurantMenu } from '../network/getApiRestaurantMenu';
+import Colors from '../constants/Colors';
 
 export default class MenuScreen extends React.Component {
 	constructor() {
@@ -23,10 +25,14 @@ export default class MenuScreen extends React.Component {
 	async componentWillMount() {
 		try {
 			await this.setState({
-				restaurant: this.props.navigation.dangerouslyGetParent().getParam('restaurant')
+				restaurant: this.props.navigation
+					.dangerouslyGetParent()
+					.getParam('restaurant')
 			});
 			await this.storageManager._storeRestaurantData(this.state.restaurant);
-			const dishes = await getApiRestaurantMenu(this.state.restaurant.restaurantId);
+			const dishes = await getApiRestaurantMenu(
+				this.state.restaurant.restaurantId
+			);
 
 			this.setState({
 				data: dishes || [],
@@ -41,6 +47,14 @@ export default class MenuScreen extends React.Component {
 		}
 	}
 
+	addDishToOrders(dish) {
+		this.setState({ snackVisible: true });
+		this.storageManager._addToOrdersData(dish);
+		setTimeout(() => {
+			this.setState({ snackVisible: false });
+		}, 500);
+	}
+
 	render() {
 		const { snackVisible } = this.state;
 
@@ -52,10 +66,12 @@ export default class MenuScreen extends React.Component {
 					onRequestClose={() => this.setState({ snackVisible: false })}
 				/>
 				<ScrollView>
-					<View style={styles.container}>
+					<View style={[ commonStyles.container, { padding: 0 } ]}>
 						{this.state.data !== {} && this.state.status !== 'loading' ? (
 							<Grid>
-								<Col style={styles.column}>{this.state.data.map(this.renderItem)}</Col>
+								<Col style={commonStyles.column}>
+									{this.state.data.map(this.renderItem)}
+								</Col>
 							</Grid>
 						) : (
 							<LoadingCircle />
@@ -68,36 +84,34 @@ export default class MenuScreen extends React.Component {
 
 	renderItem = (dish, i) => {
 		return (
-			<View key={'dish_' + i} style={{ flex: 1 }}>
-				<Row style={styles.row}>
-					<View style={styles.tile}>
+			<View key={'dish_' + i} style={commonStyles.flexed}>
+				<Row style={[ commonStyles.row, { paddingBottom: 8 } ]}>
+					<View style={[ commonStyles.shadowMedium, { height: 460 } ]}>
 						<Tile
+							style={commonStyles.flexed}
 							imageSrc={{ uri: dish.imageUrl }}
 							title={dish.dishName}
 							onPress={() => {
-								this.setState({ snackVisible: true });
-								this.storageManager._addToOrdersData(dish);
-								setTimeout(() => {
-									this.setState({ snackVisible: false });
-								}, 500);
+								this.addDishToOrders(dish);
 							}}
-							contentContainerStyle={{ height: 150 }}
 						>
 							<Grid>
-								<Row>
+								<Row style={{ padding: 0, marginTop: 0 }}>
 									<Col>
-										<Text style={styles.small}>{dish.description}</Text>
+										<Text style={commonStyles.textSmall}>
+											{dish.description}
+										</Text>
 									</Col>
 									<Col>
-										<Text style={styles.smallRight}>{dish.price} NIS</Text>
+										<Text style={commonStyles.textRight}>{dish.price} NIS</Text>
 									</Col>
 								</Row>
-								<Row>
+								<Row style={{ paddingTop: 50 }}>
 									<Col>
-										<Icon name="add-shopping-cart" />
+										<Icon name="add-shopping-cart" size={25} />
 									</Col>
 									<Col>
-										<Icon name="comment" disabled color="#ccc" />
+										<Icon name="comment" disabled color={Colors.lightGrey} />
 									</Col>
 									<Col>
 										<Icon name="thumb-up" disabled color="#ccc" />

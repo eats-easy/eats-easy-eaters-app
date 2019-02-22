@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Text, StyleSheet, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
+import { commonStyles } from '../styles';
 
 import { getApiVersion } from '../network/getApiVersion';
 
@@ -42,7 +43,7 @@ export default class RestaurantInfoScreen extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<View style={commonStyles.container}>
 				<Text>Info screen</Text>
 				<Text>
 					API version: V
@@ -80,11 +81,3 @@ export default class RestaurantInfoScreen extends React.Component {
 		}
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 5,
-		backgroundColor: '#fff'
-	}
-});
