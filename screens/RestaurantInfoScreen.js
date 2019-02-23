@@ -9,49 +9,49 @@ import { commonStyles } from '../styles';
 import Colors from '../constants/Colors';
 
 export default class RestaurantInfoScreen extends React.Component {
-	constructor() {
-		super();
-		this.state = {
-			status: 'loading',
-			restaurant: null
-		};
-		this.storageManager = new StorageManager();
-	}
+  constructor() {
+    super();
+    this.state = {
+      status: 'loading',
+      restaurant: null
+    };
+    this.storageManager = new StorageManager();
+  }
 
-	async componentWillMount() {
-		let restaurant = await this.storageManager._retrieveRestaurantData();
-		await this.setState({
-			status: 'loaded',
-			restaurant: restaurant
-		});
-	}
+  async componentWillMount() {
+    let restaurant = await this.storageManager._retrieveRestaurantData();
+    await this.setState({
+      status: 'loaded',
+      restaurant: restaurant
+    });
+  }
 
-	render() {
-		return this.state.restaurant && this.state.restaurant.restaurantId ? (
-			<View style={commonStyles.container}>
-				<Grid>
-					<Row size={1} style={[ commonStyles.shadowMedium, { margin: 10 } ]}>
-						<Image
-							style={[ commonStyles.flexed ]}
-							source={{
-								uri:
-									this.state.restaurant.image_url ||
-									'http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg'
-							}}
-						/>
-					</Row>
-					<Row style={{ margin: 10, flex: 1, flexDirection: 'column' }}>
-						<Text style={[ commonStyles.textHuge, commonStyles.textBold ]}>
-							{this.state.restaurant.name}
-						</Text>
-						<Text style={[ commonStyles.textBig ]}>
-							{this.state.restaurant.address}
-						</Text>
-					</Row>
-				</Grid>
-			</View>
-		) : (
-			<LoadingCircle />
-		);
-	}
+  render() {
+    return this.state.restaurant && this.state.restaurant.restaurantId ? (
+      <View style={commonStyles.container}>
+        <Grid>
+          <Row size={1} style={[ commonStyles.shadowMedium, { margin: 10 } ]}>
+            <Image
+              style={[ commonStyles.flexed ]}
+              source={{
+                uri:
+                  this.state.restaurant.image_url ||
+                  'http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg'
+              }}
+            />
+          </Row>
+          <Row style={{ margin: 10, flex: 1, flexDirection: 'column' }}>
+            <Text style={[ commonStyles.textHuge, commonStyles.textBold ]}>
+              {this.state.restaurant.name}
+            </Text>
+            <Text style={[ commonStyles.textBig ]}>
+              {this.state.restaurant.address}
+            </Text>
+          </Row>
+        </Grid>
+      </View>
+    ) : (
+      <LoadingCircle />
+    );
+  }
 }

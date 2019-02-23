@@ -1,220 +1,220 @@
 import { AsyncStorage } from 'react-native';
 
 export default class StorageManager {
-	// -------------------------------------------------------------------------
-	// Restaurant
-	// -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Restaurant
+  // -------------------------------------------------------------------------
 
-	_retrieveRestaurantData = async () => {
-		try {
-			const restaurant = await JSON.parse(
-				await AsyncStorage.getItem('@RestaurantViewStore:restaurant')
-			);
-			// console.warn('_retrieveRestaurantData', restaurant);
-			return restaurant;
-		} catch (error) {
-			console.warn('_retrieveRestaurantData: Error retrieving data', error);
-		}
-	};
+  _retrieveRestaurantData = async () => {
+    try {
+      const restaurant = await JSON.parse(
+        await AsyncStorage.getItem('@RestaurantViewStore:restaurant')
+      );
+      // console.warn('_retrieveRestaurantData', restaurant);
+      return restaurant;
+    } catch (error) {
+      console.warn('_retrieveRestaurantData: Error retrieving data', error);
+    }
+  };
 
-	_storeRestaurantData = async (restaurant) => {
-		try {
-			// console.warn('_storeRestaurantData', restaurant);
-			await AsyncStorage.setItem(
-				'@RestaurantViewStore:restaurant',
-				JSON.stringify(restaurant)
-			);
-		} catch (error) {
-			console.warn('_storeRestaurantData: Error storing data', error);
-		}
-	};
+  _storeRestaurantData = async (restaurant) => {
+    try {
+      // console.warn('_storeRestaurantData', restaurant);
+      await AsyncStorage.setItem(
+        '@RestaurantViewStore:restaurant',
+        JSON.stringify(restaurant)
+      );
+    } catch (error) {
+      console.warn('_storeRestaurantData: Error storing data', error);
+    }
+  };
 
-	// -------------------------------------------------------------------------
-	// Orders
-	// -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Orders
+  // -------------------------------------------------------------------------
 
-	_retrieveAllOrdersData = async () => {
-		try {
-			const orders = await JSON.parse(
-				await AsyncStorage.getItem('@RestaurantViewStore:orders')
-			);
-			// console.warn('_retrieveAllOrdersData', orders);
-			return orders;
-		} catch (error) {
-			console.warn('_retrieveAllOrdersData: Error retrieving data', error);
-		}
-	};
+  _retrieveAllOrdersData = async () => {
+    try {
+      const orders = await JSON.parse(
+        await AsyncStorage.getItem('@RestaurantViewStore:orders')
+      );
+      // console.warn('_retrieveAllOrdersData', orders);
+      return orders;
+    } catch (error) {
+      console.warn('_retrieveAllOrdersData: Error retrieving data', error);
+    }
+  };
 
-	_retrieveAllOrdersOfRest = async (restaurantId) => {
-		try {
-			const orders = (await this._retrieveAllOrdersData()) || [];
-			let retOrders = [];
+  _retrieveAllOrdersOfRest = async (restaurantId) => {
+    try {
+      const orders = (await this._retrieveAllOrdersData()) || [];
+      let retOrders = [];
 
-			for (let item of orders) {
-				if (item.restId === restaurantId) {
-					retOrders.push(item);
-				}
-			}
-			return retOrders;
-		} catch (error) {
-			console.warn('_retrieveAllOrdersOfRest: Error retrieving data', error);
-		}
-	};
+      for (let item of orders) {
+        if (item.restId === restaurantId) {
+          retOrders.push(item);
+        }
+      }
+      return retOrders;
+    } catch (error) {
+      console.warn('_retrieveAllOrdersOfRest: Error retrieving data', error);
+    }
+  };
 
-	_storeOrdersData = async (orders) => {
-		try {
-			await AsyncStorage.setItem(
-				'@RestaurantViewStore:orders',
-				JSON.stringify(orders)
-			);
-		} catch (error) {
-			console.warn('_storeOrdersData: Error storing data', error);
-		}
-	};
+  _storeOrdersData = async (orders) => {
+    try {
+      await AsyncStorage.setItem(
+        '@RestaurantViewStore:orders',
+        JSON.stringify(orders)
+      );
+    } catch (error) {
+      console.warn('_storeOrdersData: Error storing data', error);
+    }
+  };
 
-	_addToOrdersData = async (newOrder) => {
-		try {
-			const orders = (await this._retrieveAllOrdersData()) || [];
-			orders.push(newOrder);
-			await this._storeOrdersData(orders);
-		} catch (error) {
-			console.warn('_addToOrderData: Error storing data', error);
-		}
-	};
+  _addToOrdersData = async (newOrder) => {
+    try {
+      const orders = (await this._retrieveAllOrdersData()) || [];
+      orders.push(newOrder);
+      await this._storeOrdersData(orders);
+    } catch (error) {
+      console.warn('_addToOrderData: Error storing data', error);
+    }
+  };
 
-	_removeDishFromOrders = async (dishId) => {
-		try {
-			const orders = (await this._retrieveAllOrdersData()) || [];
-			let newOrders = [];
-			var found = false;
+  _removeDishFromOrders = async (dishId) => {
+    try {
+      const orders = (await this._retrieveAllOrdersData()) || [];
+      let newOrders = [];
+      var found = false;
 
-			for (let item of orders) {
-				if (!found && item.dishId === dishId) {
-					found = true;
-				} else {
-					newOrders.push(item);
-				}
-			}
+      for (let item of orders) {
+        if (!found && item.dishId === dishId) {
+          found = true;
+        } else {
+          newOrders.push(item);
+        }
+      }
 
-			await this._storeOrdersData(newOrders);
+      await this._storeOrdersData(newOrders);
 
-			return newOrders;
-		} catch (error) {
-			console.warn('_removeDishFromOrders: Error storing data', error);
-		}
-	};
+      return newOrders;
+    } catch (error) {
+      console.warn('_removeDishFromOrders: Error storing data', error);
+    }
+  };
 
-	_removeAllOrdersOfRest = async (restaurantId) => {
-		try {
-			const orders = (await this._retrieveAllOrdersData()) || [];
-			let newOrders = [];
+  _removeAllOrdersOfRest = async (restaurantId) => {
+    try {
+      const orders = (await this._retrieveAllOrdersData()) || [];
+      let newOrders = [];
 
-			for (let item of orders) {
-				if (item.restId !== restaurantId) {
-					newOrders.push(item);
-				}
-			}
+      for (let item of orders) {
+        if (item.restId !== restaurantId) {
+          newOrders.push(item);
+        }
+      }
 
-			await this._storeOrdersData(newOrders);
-		} catch (error) {
-			console.warn('_removeAllOrdersOfRest: Error removing data', error);
-		}
-	};
+      await this._storeOrdersData(newOrders);
+    } catch (error) {
+      console.warn('_removeAllOrdersOfRest: Error removing data', error);
+    }
+  };
 
-	_removeAllOrders = async () => {
-		try {
-			await this._storeOrdersData([]);
-		} catch (error) {
-			console.warn('_removeAllOrders: Error removing data', error);
-		}
-	};
+  _removeAllOrders = async () => {
+    try {
+      await this._storeOrdersData([]);
+    } catch (error) {
+      console.warn('_removeAllOrders: Error removing data', error);
+    }
+  };
 
-	// -------------------------------------------------------------------------
-	// Orders statuses
-	// -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Orders statuses
+  // -------------------------------------------------------------------------
 
-	_retrieveAllOrderStatuses = async () => {
-		try {
-			const retOrderStatuses = await JSON.parse(
-				await AsyncStorage.getItem('@RestaurantViewStore:ordersStatuses')
-			);
-			return retOrderStatuses;
-		} catch (error) {
-			console.warn('_retrieveOrderStatuses: Error retrieving data', error);
-		}
-	};
+  _retrieveAllOrderStatuses = async () => {
+    try {
+      const retOrderStatuses = await JSON.parse(
+        await AsyncStorage.getItem('@RestaurantViewStore:ordersStatuses')
+      );
+      return retOrderStatuses;
+    } catch (error) {
+      console.warn('_retrieveOrderStatuses: Error retrieving data', error);
+    }
+  };
 
-	_retrieveOrderStatusOfRest = async (restaurantId) => {
-		try {
-			const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
-			let retOrderStatus = 0;
+  _retrieveOrderStatusOfRest = async (restaurantId) => {
+    try {
+      const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
+      let retOrderStatus = 0;
 
-			for (let item of ordersStatuses) {
-				if (item.restaurantId === restaurantId) {
-					retOrderStatus = item.orderStatus;
-					break;
-				}
-			}
-			return retOrderStatus;
-		} catch (error) {
-			console.warn('_retrieveOrderStatusOfRest: Error retrieving data', error);
-		}
-	};
+      for (let item of ordersStatuses) {
+        if (item.restaurantId === restaurantId) {
+          retOrderStatus = item.orderStatus;
+          break;
+        }
+      }
+      return retOrderStatus;
+    } catch (error) {
+      console.warn('_retrieveOrderStatusOfRest: Error retrieving data', error);
+    }
+  };
 
-	_storeOrdersStatusesData = async (orders) => {
-		try {
-			await AsyncStorage.setItem(
-				'@RestaurantViewStore:ordersStatuses',
-				JSON.stringify(orders)
-			);
-		} catch (error) {
-			console.warn('_storeOrdersStatusesData: Error storing data', error);
-		}
-	};
+  _storeOrdersStatusesData = async (orders) => {
+    try {
+      await AsyncStorage.setItem(
+        '@RestaurantViewStore:ordersStatuses',
+        JSON.stringify(orders)
+      );
+    } catch (error) {
+      console.warn('_storeOrdersStatusesData: Error storing data', error);
+    }
+  };
 
-	_addToOrdersStatusesData = async (newOrder) => {
-		try {
-			const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
-			let found = false;
+  _addToOrdersStatusesData = async (newOrder) => {
+    try {
+      const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
+      let found = false;
 
-			for (let i = 0; i < ordersStatuses.length; i++) {
-				if (ordersStatuses[i].restaurantId === newOrder.restaurantId) {
-					found = true;
-					ordersStatuses[i].orderStatus = newOrder.orderStatus;
-					break;
-				}
-			}
+      for (let i = 0; i < ordersStatuses.length; i++) {
+        if (ordersStatuses[i].restaurantId === newOrder.restaurantId) {
+          found = true;
+          ordersStatuses[i].orderStatus = newOrder.orderStatus;
+          break;
+        }
+      }
 
-			if (!found) ordersStatuses.push(newOrder);
+      if (!found) ordersStatuses.push(newOrder);
 
-			await this._storeOrdersStatusesData(ordersStatuses);
-		} catch (error) {
-			console.warn('_addToOrdersStatusesData: Error storing data', error);
-		}
-	};
+      await this._storeOrdersStatusesData(ordersStatuses);
+    } catch (error) {
+      console.warn('_addToOrdersStatusesData: Error storing data', error);
+    }
+  };
 
-	_removeOrderStatusOfRest = async (restaurantId) => {
-		try {
-			const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
-			let newOrdersStatuses = [];
+  _removeOrderStatusOfRest = async (restaurantId) => {
+    try {
+      const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
+      let newOrdersStatuses = [];
 
-			for (let item of ordersStatuses) {
-				if (item.restId !== restaurantId) {
-					newOrdersStatuses.push(item);
-				}
-			}
+      for (let item of ordersStatuses) {
+        if (item.restId !== restaurantId) {
+          newOrdersStatuses.push(item);
+        }
+      }
 
-			await this._storeOrdersStatusesData(newOrdersStatuses);
-		} catch (error) {
-			console.warn('_removeOrderStatusOfRest: Error removing data', error);
-		}
-	};
+      await this._storeOrdersStatusesData(newOrdersStatuses);
+    } catch (error) {
+      console.warn('_removeOrderStatusOfRest: Error removing data', error);
+    }
+  };
 
-	_removeAllOrdersStatuses = async () => {
-		try {
-			await this._storeOrdersStatusesData([]);
-		} catch (error) {
-			console.warn('_removeAllOrdersStatuses: Error removing data', error);
-		}
-	};
+  _removeAllOrdersStatuses = async () => {
+    try {
+      await this._storeOrdersStatusesData([]);
+    } catch (error) {
+      console.warn('_removeAllOrdersStatuses: Error removing data', error);
+    }
+  };
 }

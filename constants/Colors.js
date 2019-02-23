@@ -11,46 +11,46 @@ const green = '#54c645';
 const dirt = '#666804';
 
 export default {
-	// Base colors
-	tintColor,
-	textPrimary,
-	black,
-	grey,
-	lightGrey,
-	red,
-	orange,
-	white,
-	pearl,
-	green,
-	dirt,
-	// Base components
-	containerBackground: white,
-	errorBackground: red,
-	errorText: white,
-	warningBackground: orange,
-	warningText: dirt,
-	noticeBackground: tintColor,
-	noticeText: white,
-	// Common
-	shadowColor: black,
-	textColor: textPrimary,
-	// Buttons
-	buttonClearBackground: grey,
-	// Tabs
-	tabIconDefault: grey,
-	tabIconSelected: tintColor,
-	tabBar: pearl,
-	// Tracker
-	trackerDotActive: grey,
-	trackerDotInactive: lightGrey,
-	trackerDotDone: green,
-	trackerStepActive: lightGrey,
-	trackerStepInactive: grey,
-	trackerStepDone: green,
-	trackerStepTitleActive: black,
-	trackerStepTitleInactive: lightGrey,
-	trackerStepTitleDone: green,
-	trackerStepNumberActive: black,
-	trackerStepNumberInactive: white,
-	trackerStepNumberDone: white
+  // Base colors
+  tintColor,
+  textPrimary,
+  black,
+  grey,
+  lightGrey,
+  red,
+  orange,
+  white,
+  pearl,
+  green,
+  dirt,
+  // Base components
+  containerBackground: white,
+  errorBackground: red,
+  errorText: white,
+  warningBackground: orange,
+  warningText: dirt,
+  noticeBackground: tintColor,
+  noticeText: white,
+  // Common
+  shadowColor: black,
+  textColor: textPrimary,
+  // Buttons
+  buttonClearBackground: grey,
+  // Tabs
+  tabIconDefault: grey,
+  tabIconSelected: tintColor,
+  tabBar: pearl,
+  // Tracker
+  trackerDotActive: grey,
+  trackerDotInactive: lightGrey,
+  trackerDotDone: green,
+  trackerStepActive: lightGrey,
+  trackerStepInactive: grey,
+  trackerStepDone: green,
+  trackerStepTitleActive: black,
+  trackerStepTitleInactive: lightGrey,
+  trackerStepTitleDone: green,
+  trackerStepNumberActive: black,
+  trackerStepNumberInactive: white,
+  trackerStepNumberDone: white
 };
