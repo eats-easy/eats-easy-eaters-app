@@ -51,6 +51,7 @@ export const commonStyles = {
 	textSmall: { fontSize: 14 },
 	textMedium: { fontSize: 18 },
 	textBig: { fontSize: 22 },
+	textHuge: { fontSize: 26 },
 	textLight: { fontWeight: '300' },
 	textRegular: { fontWeight: '400' },
 	textBold: { fontWeight: '500' },

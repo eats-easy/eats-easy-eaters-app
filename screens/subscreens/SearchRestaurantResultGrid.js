@@ -13,8 +13,8 @@ class SearchRestaurantResultGrid extends Component {
 	constructor() {
 		super();
 		this.state = {
-			data: [],
-			status: 'loading'
+			status: 'loading',
+			data: []
 		};
 	}
 

@@ -14,9 +14,9 @@ export default class MenuScreen extends React.Component {
 	constructor() {
 		super();
 		this.state = {
+			status: 'loading',
 			restaurant: null,
 			data: [],
-			status: 'loading',
 			snackVisible: false
 		};
 		this.storageManager = new StorageManager();
@@ -103,7 +103,9 @@ export default class MenuScreen extends React.Component {
 										</Text>
 									</Col>
 									<Col>
-										<Text style={commonStyles.textRight}>{dish.price} NIS</Text>
+										<Text style={commonStyles.textRight}>
+											{parseFloat(dish.price).toFixed(2)} NIS
+										</Text>
 									</Col>
 								</Row>
 								<Row style={{ paddingTop: 50 }}>

@@ -11,6 +11,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
 import StorageManager from '../services/storage_manager';
+
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 
@@ -18,10 +19,9 @@ export default class OrderScreen extends React.Component {
 	constructor() {
 		super();
 		this.state = {
+			status: 'loading',
 			restaurant: null,
 			orders: [],
-			data: [],
-			status: 'loading',
 			orderStatus: 0
 		};
 		this.storageManager = new StorageManager();
@@ -170,7 +170,9 @@ export default class OrderScreen extends React.Component {
 							>
 								<Text style={commonStyles.textMedium}>{dish.dishName}</Text>
 								<Text style={commonStyles.textSmall}>{dish.description}</Text>
-								<Text style={commonStyles.textSmall}>{dish.price} NIS</Text>
+								<Text style={commonStyles.textSmall}>
+									{parseFloat(dish.price).toFixed(2)} NIS
+								</Text>
 							</Col>
 							<Col
 								size={1}
