@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-	ScrollView,
-	TouchableNativeFeedback,
-	Image,
-	Text,
-	View
-} from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
@@ -67,7 +61,7 @@ export default class PaymentScreen extends React.Component {
 				<View style={{ height: 60, padding: 10 }}>
 					<Grid>
 						<Row style={commonStyles.row}>
-							<Col>
+							<Col size={4}>
 								<Text
 									style={[
 										commonStyles.textCenter,
@@ -90,6 +84,27 @@ export default class PaymentScreen extends React.Component {
 								</Text>
 							</Col>
 							<Col
+								size={1}
+								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
+							>
+								<Icon
+									raised
+									name="refresh"
+									type="font-awesome"
+									size={20}
+									color={Colors.black}
+									onPress={async () => {
+										let orders = await this.storageManager._retrieveAllOrdersOfRest(
+											this.state.restaurant.restaurantId
+										);
+										this.setState({
+											orders: orders
+										});
+									}}
+								/>
+							</Col>
+							<Col
+								size={4}
 								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
 							>
 								<Button

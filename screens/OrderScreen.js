@@ -66,12 +66,16 @@ export default class OrderScreen extends React.Component {
 				</ScrollView>
 				<View style={{ height: 60, padding: 10 }}>
 					<Grid>
-						<Row style={commonStyles.row}>
+						<Row>
 							<Col
 								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
 							>
-								<TouchableNativeFeedback
-									style={commonStyles.buttonClear}
+								<Icon
+									raised
+									name="refresh"
+									type="font-awesome"
+									size={20}
+									color={Colors.black}
 									onPress={async () => {
 										let orders = await this.storageManager._retrieveAllOrdersOfRest(
 											this.state.restaurant.restaurantId
@@ -80,31 +84,26 @@ export default class OrderScreen extends React.Component {
 											orders: orders
 										});
 									}}
-								>
-									<Text style={commonStyles.textRegular}>
-										{'Reload'.toUpperCase()}
-									</Text>
-								</TouchableNativeFeedback>
+								/>
 							</Col>
 							<Col
 								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
 							>
-								<TouchableNativeFeedback
-									style={commonStyles.buttonClear}
+								<Icon
+									raised
+									name="trash"
+									type="font-awesome"
+									size={20}
+									color={Colors.red}
 									onPress={async () => {
 										await this.storageManager._removeAllOrdersOfRest(
 											this.state.restaurant.restaurantId
 										);
-										debugger;
 										this.setState({
 											orders: []
 										});
 									}}
-								>
-									<Text style={commonStyles.textRegular}>
-										{'Remove all'.toUpperCase()}
-									</Text>
-								</TouchableNativeFeedback>
+								/>
 							</Col>
 							<Col
 								style={[ commonStyles.justifyCenter, commonStyles.centered ]}
@@ -126,7 +125,7 @@ export default class OrderScreen extends React.Component {
 										name: 'send',
 										type: 'font-awesome',
 										size: 15,
-										color: 'white'
+										color: Colors.white
 									}}
 									rounded
 									disabled={this.state.orders.length == 0}

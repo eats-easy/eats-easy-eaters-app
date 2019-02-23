@@ -1,83 +1,57 @@
 import React from 'react';
-import { Button, Text, View } from 'react-native';
-import { commonStyles } from '../styles';
+import { Image, Text, View } from 'react-native';
+import { Button, Icon } from 'react-native-elements';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import LoadingCircle from '../components/LoadingCircle';
+import StorageManager from '../services/storage_manager';
 
-import { getApiVersion } from '../network/getApiVersion';
+import { commonStyles } from '../styles';
+import Colors from '../constants/Colors';
 
 export default class RestaurantInfoScreen extends React.Component {
-	constructor(props) {
-		super(props);
+	constructor() {
+		super();
 		this.state = {
-			apiVersion: {
-				majorApiVersion: 0,
-				minorApiVersion: 0,
-				buildApiVersion: 0
-			}
+			status: 'loading',
+			restaurant: null
 		};
-		this.handleChange = this.handleChange.bind(this);
-	}
-
-	async handleChange() {
-		try {
-			const apiVer = await getApiVersion();
-			this.setState({
-				apiVersion: {
-					majorApiVersion: apiVer.majorApiVersion,
-					minorApiVersion: apiVer.minorApiVersion,
-					buildApiVersion: apiVer.buildApiVersion
-				}
-			});
-		} catch (err) {
-			console.error(err);
-			this.setState({
-				apiVersion: {
-					majorApiVersion: 'X',
-					minorApiVersion: 'X',
-					buildApiVersion: 'X'
-				}
-			});
-		}
-	}
-
-	static navigationOptions = { title: '<Restaurant> information' };
-
-	render() {
-		return (
-			<View style={commonStyles.container}>
-				<Text>Info screen</Text>
-				<Text>
-					API version: V
-					{this.state.apiVersion.majorApiVersion +
-						'.' +
-						this.state.apiVersion.minorApiVersion +
-						'.' +
-						this.state.apiVersion.buildApiVersion}
-				</Text>
-				<Text> </Text>
-				<Button onPress={this.handleChange} title="Get API version" />
-			</View>
-		);
+		this.storageManager = new StorageManager();
 	}
 
 	async componentWillMount() {
-		try {
-			const apiVer = await getApiVersion();
-			this.setState({
-				apiVersion: {
-					majorApiVersion: apiVer.majorApiVersion,
-					minorApiVersion: apiVer.minorApiVersion,
-					buildApiVersion: apiVer.buildApiVersion
-				}
-			});
-		} catch (err) {
-			console.error(err);
-			this.setState({
-				apiVersion: {
-					majorApiVersion: 'X',
-					minorApiVersion: 'X',
-					buildApiVersion: 'X'
-				}
-			});
-		}
+		let restaurant = await this.storageManager._retrieveRestaurantData();
+		await this.setState({
+			status: 'loaded',
+			restaurant: restaurant
+		});
+	}
+
+	render() {
+		return this.state.restaurant && this.state.restaurant.restaurantId ? (
+			<View style={commonStyles.container}>
+				<Grid>
+					<Row size={1} style={[ commonStyles.shadowMedium, { margin: 10 } ]}>
+						<Image
+							style={[ commonStyles.flexed ]}
+							source={{
+								uri:
+									this.state.restaurant.image_url ||
+									'http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg'
+							}}
+						/>
+					</Row>
+					<Row style={{ margin: 10, flex: 1, flexDirection: 'column' }}>
+						<Text style={[ commonStyles.textHuge, commonStyles.textBold ]}>
+							{this.state.restaurant.name}
+						</Text>
+						<Text style={[ commonStyles.textBig ]}>
+							{this.state.restaurant.address}
+						</Text>
+					</Row>
+				</Grid>
+			</View>
+		) : (
+			<LoadingCircle />
+		);
 	}
 }
