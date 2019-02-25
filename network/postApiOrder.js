@@ -1,7 +1,7 @@
 import urls from '../constants/Urls';
 const url = urls.apiRootUrl + urls.apiOrders;
 
-export const CreateOrder = async (data) => {
+export const postApiOrder = async (data) => {
   try {
     const res = await fetch(url, {
         method: 'POST',

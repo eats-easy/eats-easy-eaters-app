@@ -14,6 +14,7 @@ import StorageManager from '../services/storage_manager';
 
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
+import postApiOrder from '../network/postApiOrder';
 
 export default class OrderScreen extends React.Component {
   constructor() {
@@ -112,6 +113,19 @@ export default class OrderScreen extends React.Component {
                   title={'Order'.toUpperCase()}
                   onPress={async () => {
                     // TODO: Send order
+
+                    var NewOrder = {
+                      "restId": this.state.restaurant.restaurantId,
+                      "orderStatus": this.state.restaurant.orderStatus,
+                      "tableId": 1,
+                      "userId": 1,
+                      "timeReceived": new Date(),
+                      "timeDelivered": new Date()
+                    }
+
+                    createdOrder = await postApiOrder (NewOrder);
+
+                    
                     await this.storageManager._addToOrdersStatusesData({
                       restaurantId: this.state.restaurant.restaurantId,
                       orderStatus: (this.state.orderStatus + 1) % 6
