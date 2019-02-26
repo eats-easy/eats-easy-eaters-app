@@ -3,6 +3,7 @@ export default {
   apiVersionUrl: 'whoami',
   apiAllRestaurants: 'restaurants',
   apiOrders: 'orders',
+  apiUsers: 'users',
   apiRestaurantMenu: (id) => {
     return 'restaurants/' + id + '/menu';
   }

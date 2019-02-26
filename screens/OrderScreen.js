@@ -4,6 +4,7 @@ import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
+import SignInDialog from '../components/SignInDialog';
 import StorageManager from '../services/storage_manager';
 
 import { commonStyles, dishStatusStepperStyles } from '../styles';
@@ -18,7 +19,8 @@ export default class OrderScreen extends React.Component {
       restaurant: null,
       user: null,
       orders: [],
-      orderStatus: 0
+      orderStatus: 0,
+      signInVisible: false
     };
     this.storageManager = new StorageManager();
   }
@@ -89,45 +91,63 @@ export default class OrderScreen extends React.Component {
                 />
               </Col>
               <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
-                <Button
-                  title={'Order'.toUpperCase()}
-                  onPress={async () => {
-                    // TODO: Send order
+                {this.state.user && this.state.user.userId ? (
+                  <Button
+                    title={'Order'.toUpperCase()}
+                    onPress={async () => {
+                      var NewOrder = {
+                        restId: this.state.restaurant.restaurantId,
+                        orderStatus: this.state.restaurant.orderStatus,
+                        tableId: 1,
+                        userId: 1,
+                        timeReceived: new Date(),
+                        timeDelivered: new Date()
+                      };
 
-                    var NewOrder = {
-                      restId: this.state.restaurant.restaurantId,
-                      orderStatus: this.state.restaurant.orderStatus,
-                      tableId: 1,
-                      userId: 1,
-                      timeReceived: new Date(),
-                      timeDelivered: new Date()
-                    };
+                      createdOrder = await postApiOrder(NewOrder);
 
-                    createdOrder = await postApiOrder(NewOrder);
-
-                    await this.storageManager._addToOrdersStatusesData({
-                      restaurantId: this.state.restaurant.restaurantId,
-                      orderStatus: (this.state.orderStatus + 1) % 6
-                    });
-                    let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
-                      this.state.restaurant.restaurantId
-                    );
-                    this.setState({ orderStatus: newOrderStatus });
-                  }}
-                  icon={{
-                    name: 'send',
-                    type: 'font-awesome',
-                    size: 15,
-                    color: Colors.white
-                  }}
-                  rounded
-                  disabled={this.state.orders.length == 0}
-                  backgroundColor={Colors.tintColor}
-                />
+                      await this.storageManager._addToOrdersStatusesData({
+                        restaurantId: this.state.restaurant.restaurantId,
+                        orderStatus: (this.state.orderStatus + 1) % 6
+                      });
+                      let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
+                        this.state.restaurant.restaurantId
+                      );
+                      this.setState({ orderStatus: newOrderStatus });
+                    }}
+                    icon={{
+                      name: 'send',
+                      type: 'font-awesome',
+                      size: 15,
+                      color: Colors.white
+                    }}
+                    rounded
+                    disabled={this.state.orders.length == 0}
+                    backgroundColor={Colors.tintColor}
+                  />
+                ) : (
+                  <Button
+                    title={'Sign in'.toUpperCase()}
+                    onPress={() => {
+                      console.log(this.state.signInVisible);
+                      this.setState({ signInVisible: true });
+                    }}
+                    icon={{
+                      name: 'sign-in',
+                      type: 'font-awesome',
+                      size: 20,
+                      color: Colors.white
+                    }}
+                    rounded
+                    disabled={this.state.orders.length == 0}
+                    backgroundColor={Colors.tintColor}
+                  />
+                )}
               </Col>
             </Row>
           </Grid>
         </View>
+        <SignInDialog visible={this.state.signInVisible} />
       </View>
     ) : (
       <LoadingCircle />

@@ -15,6 +15,7 @@ export default class PaymentScreen extends React.Component {
     this.state = {
       status: 'loading',
       restaurant: null,
+      user: null,
       orders: [],
       orderStatus: 0
     };
@@ -28,12 +29,9 @@ export default class PaymentScreen extends React.Component {
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
-      orders: await this.storageManager._retrieveAllOrdersOfRest(
-        restaurant.restaurantId
-      ),
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(
-        restaurant.restaurantId
-      )
+      user: await this.storageManager._retrieveUserData(),
+      orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
+      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
     });
   }
 
@@ -50,9 +48,7 @@ export default class PaymentScreen extends React.Component {
                 {this.state.orders.length > 0 ? (
                   this.state.orders.map(this.renderItem)
                 ) : (
-                  <Text style={[ commonStyles.textCenter, { paddingTop: 30 } ]}>
-                    No items in your cart...
-                  </Text>
+                  <Text style={[ commonStyles.textCenter, { paddingTop: 30 } ]}>No items in your cart...</Text>
                 )}
               </Col>
             </Row>
@@ -83,10 +79,7 @@ export default class PaymentScreen extends React.Component {
                   NIS
                 </Text>
               </Col>
-              <Col
-                size={1}
-                style={[ commonStyles.justifyCenter, commonStyles.centered ]}
-              >
+              <Col size={1} style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
                 <Icon
                   raised
                   name="refresh"
@@ -94,42 +87,53 @@ export default class PaymentScreen extends React.Component {
                   size={20}
                   color={Colors.black}
                   onPress={async () => {
-                    let orders = await this.storageManager._retrieveAllOrdersOfRest(
-                      this.state.restaurant.restaurantId
-                    );
+                    let orders = await this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId);
                     this.setState({
                       orders: orders
                     });
                   }}
                 />
               </Col>
-              <Col
-                size={4}
-                style={[ commonStyles.justifyCenter, commonStyles.centered ]}
-              >
-                <Button
-                  title={'Pay now!'.toUpperCase()}
-                  onPress={async () => {
-                    // TODO: Send order
-                    await this.storageManager._addToOrdersStatusesData({
-                      restaurantId: this.state.restaurant.restaurantId,
-                      orderStatus: (this.state.orderStatus + 1) % 6
-                    });
-                    let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
-                      this.state.restaurant.restaurantId
-                    );
-                    this.setState({ orderStatus: newOrderStatus });
-                  }}
-                  icon={{
-                    name: 'credit-card',
-                    type: 'font-awesome',
-                    size: 15,
-                    color: 'white'
-                  }}
-                  rounded
-                  disabled={this.state.orders.length == 0}
-                  backgroundColor={Colors.tintColor}
-                />
+              <Col size={4} style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
+                {this.state.user && this.state.user.userId ? (
+                  <Button
+                    title={'Pay now!'.toUpperCase()}
+                    onPress={async () => {
+                      // TODO: Send order
+                      await this.storageManager._addToOrdersStatusesData({
+                        restaurantId: this.state.restaurant.restaurantId,
+                        orderStatus: (this.state.orderStatus + 1) % 6
+                      });
+                      let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
+                        this.state.restaurant.restaurantId
+                      );
+                      this.setState({ orderStatus: newOrderStatus });
+                    }}
+                    icon={{
+                      name: 'credit-card',
+                      type: 'font-awesome',
+                      size: 15,
+                      color: 'white'
+                    }}
+                    rounded
+                    disabled={this.state.orders.length == 0}
+                    backgroundColor={Colors.tintColor}
+                  />
+                ) : (
+                  <Button
+                    title={'Sign in'.toUpperCase()}
+                    onPress={async () => {}}
+                    icon={{
+                      name: 'sign-in',
+                      type: 'font-awesome',
+                      size: 20,
+                      color: Colors.white
+                    }}
+                    rounded
+                    disabled={this.state.orders.length == 0}
+                    backgroundColor={Colors.tintColor}
+                  />
+                )}
               </Col>
             </Row>
           </Grid>
@@ -157,19 +161,11 @@ export default class PaymentScreen extends React.Component {
         <Row style={commonStyles.row}>
           <Grid>
             <Row style={commonStyles.rowList}>
-              <Col
-                size={6}
-                style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
-              >
+              <Col size={6} style={[ commonStyles.columnList, commonStyles.justifyCenter ]}>
                 <Text style={commonStyles.textSmall}>{dish.dishName}</Text>
               </Col>
-              <Col
-                size={1}
-                style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
-              >
-                <Text
-                  style={[ commonStyles.textSmall, commonStyles.textRight ]}
-                >
+              <Col size={1} style={[ commonStyles.columnList, commonStyles.justifyCenter ]}>
+                <Text style={[ commonStyles.textSmall, commonStyles.textRight ]}>
                   {parseFloat(dish.price).toFixed(2)}
                 </Text>
               </Col>
