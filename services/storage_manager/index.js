@@ -7,9 +7,7 @@ export default class StorageManager {
 
   _retrieveRestaurantData = async () => {
     try {
-      const restaurant = await JSON.parse(
-        await AsyncStorage.getItem('@RestaurantViewStore:restaurant')
-      );
+      const restaurant = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:restaurant'));
       // console.warn('_retrieveRestaurantData', restaurant);
       return restaurant;
     } catch (error) {
@@ -20,10 +18,7 @@ export default class StorageManager {
   _storeRestaurantData = async (restaurant) => {
     try {
       // console.warn('_storeRestaurantData', restaurant);
-      await AsyncStorage.setItem(
-        '@RestaurantViewStore:restaurant',
-        JSON.stringify(restaurant)
-      );
+      await AsyncStorage.setItem('@RestaurantViewStore:restaurant', JSON.stringify(restaurant));
     } catch (error) {
       console.warn('_storeRestaurantData: Error storing data', error);
     }
@@ -35,9 +30,7 @@ export default class StorageManager {
 
   _retrieveAllOrdersData = async () => {
     try {
-      const orders = await JSON.parse(
-        await AsyncStorage.getItem('@RestaurantViewStore:orders')
-      );
+      const orders = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:orders'));
       // console.warn('_retrieveAllOrdersData', orders);
       return orders;
     } catch (error) {
@@ -63,10 +56,7 @@ export default class StorageManager {
 
   _storeOrdersData = async (orders) => {
     try {
-      await AsyncStorage.setItem(
-        '@RestaurantViewStore:orders',
-        JSON.stringify(orders)
-      );
+      await AsyncStorage.setItem('@RestaurantViewStore:orders', JSON.stringify(orders));
     } catch (error) {
       console.warn('_storeOrdersData: Error storing data', error);
     }
@@ -135,9 +125,7 @@ export default class StorageManager {
 
   _retrieveAllOrderStatuses = async () => {
     try {
-      const retOrderStatuses = await JSON.parse(
-        await AsyncStorage.getItem('@RestaurantViewStore:ordersStatuses')
-      );
+      const retOrderStatuses = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:ordersStatuses'));
       return retOrderStatuses;
     } catch (error) {
       console.warn('_retrieveOrderStatuses: Error retrieving data', error);
@@ -163,10 +151,7 @@ export default class StorageManager {
 
   _storeOrdersStatusesData = async (orders) => {
     try {
-      await AsyncStorage.setItem(
-        '@RestaurantViewStore:ordersStatuses',
-        JSON.stringify(orders)
-      );
+      await AsyncStorage.setItem('@RestaurantViewStore:ordersStatuses', JSON.stringify(orders));
     } catch (error) {
       console.warn('_storeOrdersStatusesData: Error storing data', error);
     }
@@ -215,6 +200,35 @@ export default class StorageManager {
       await this._storeOrdersStatusesData([]);
     } catch (error) {
       console.warn('_removeAllOrdersStatuses: Error removing data', error);
+    }
+  };
+
+  // -------------------------------------------------------------------------
+  // Orders statuses
+  // -------------------------------------------------------------------------
+
+  _retrieveUserData = async () => {
+    try {
+      const retUser = await JSON.parse(await AsyncStorage.getItem('@MainStore:user'));
+      return retUser;
+    } catch (error) {
+      console.warn('_retrieveUserData: Error retrieving data', error);
+    }
+  };
+
+  _storeUserData = async (user) => {
+    try {
+      await AsyncStorage.setItem('@MainStore:user', JSON.stringify(user));
+    } catch (error) {
+      console.warn('_storeUserData: Error storing data', error);
+    }
+  };
+
+  _removeUserData = async () => {
+    try {
+      await this._storeUserData(null);
+    } catch (error) {
+      console.warn('_removeUserData: Error removing data', error);
     }
   };
 }

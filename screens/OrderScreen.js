@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  ScrollView,
-  TouchableNativeFeedback,
-  Image,
-  Text,
-  View
-} from 'react-native';
+import { ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
@@ -22,6 +16,7 @@ export default class OrderScreen extends React.Component {
     this.state = {
       status: 'loading',
       restaurant: null,
+      user: null,
       orders: [],
       orderStatus: 0
     };
@@ -35,12 +30,9 @@ export default class OrderScreen extends React.Component {
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
-      orders: await this.storageManager._retrieveAllOrdersOfRest(
-        restaurant.restaurantId
-      ),
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(
-        restaurant.restaurantId
-      )
+      user: await this.storageManager._retrieveUserData(),
+      orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
+      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
     });
   }
 
@@ -57,9 +49,7 @@ export default class OrderScreen extends React.Component {
                 {this.state.orders.length > 0 ? (
                   this.state.orders.map(this.renderItem)
                 ) : (
-                  <Text style={{ paddingTop: 30, textAlign: 'center' }}>
-                    No items in your cart...
-                  </Text>
+                  <Text style={{ paddingTop: 30, textAlign: 'center' }}>No items in your cart...</Text>
                 )}
               </Col>
             </Row>
@@ -68,9 +58,7 @@ export default class OrderScreen extends React.Component {
         <View style={{ height: 60, padding: 10 }}>
           <Grid>
             <Row>
-              <Col
-                style={[ commonStyles.justifyCenter, commonStyles.centered ]}
-              >
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
                 <Icon
                   raised
                   name="refresh"
@@ -78,18 +66,14 @@ export default class OrderScreen extends React.Component {
                   size={20}
                   color={Colors.black}
                   onPress={async () => {
-                    let orders = await this.storageManager._retrieveAllOrdersOfRest(
-                      this.state.restaurant.restaurantId
-                    );
+                    let orders = await this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId);
                     this.setState({
                       orders: orders
                     });
                   }}
                 />
               </Col>
-              <Col
-                style={[ commonStyles.justifyCenter, commonStyles.centered ]}
-              >
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
                 <Icon
                   raised
                   name="trash"
@@ -97,35 +81,30 @@ export default class OrderScreen extends React.Component {
                   size={20}
                   color={Colors.red}
                   onPress={async () => {
-                    await this.storageManager._removeAllOrdersOfRest(
-                      this.state.restaurant.restaurantId
-                    );
+                    await this.storageManager._removeAllOrdersOfRest(this.state.restaurant.restaurantId);
                     this.setState({
                       orders: []
                     });
                   }}
                 />
               </Col>
-              <Col
-                style={[ commonStyles.justifyCenter, commonStyles.centered ]}
-              >
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
                 <Button
                   title={'Order'.toUpperCase()}
                   onPress={async () => {
                     // TODO: Send order
 
                     var NewOrder = {
-                      "restId": this.state.restaurant.restaurantId,
-                      "orderStatus": this.state.restaurant.orderStatus,
-                      "tableId": 1,
-                      "userId": 1,
-                      "timeReceived": new Date(),
-                      "timeDelivered": new Date()
-                    }
+                      restId: this.state.restaurant.restaurantId,
+                      orderStatus: this.state.restaurant.orderStatus,
+                      tableId: 1,
+                      userId: 1,
+                      timeReceived: new Date(),
+                      timeDelivered: new Date()
+                    };
 
-                    createdOrder = await postApiOrder (NewOrder);
+                    createdOrder = await postApiOrder(NewOrder);
 
-                    
                     await this.storageManager._addToOrdersStatusesData({
                       restaurantId: this.state.restaurant.restaurantId,
                       orderStatus: (this.state.orderStatus + 1) % 6
@@ -159,46 +138,24 @@ export default class OrderScreen extends React.Component {
     return dish ? (
       <View
         key={'dish_' + i}
-        style={[
-          commonStyles.container,
-          commonStyles.shadowSmall,
-          { height: 100, marginBottom: 5 }
-        ]}
+        style={[ commonStyles.container, commonStyles.shadowSmall, { height: 100, marginBottom: 5 } ]}
       >
         <Row style={commonStyles.row}>
           <Grid>
             <Row style={commonStyles.rowList}>
-              <Col
-                size={3}
-                style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
-              >
-                <Image
-                  style={{ width: 100, height: 80 }}
-                  source={{ uri: dish.imageUrl }}
-                />
+              <Col size={3} style={[ commonStyles.columnList, commonStyles.justifyCenter ]}>
+                <Image style={{ width: 100, height: 80 }} source={{ uri: dish.imageUrl }} />
               </Col>
-              <Col
-                size={6}
-                style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
-              >
+              <Col size={6} style={[ commonStyles.columnList, commonStyles.justifyCenter ]}>
                 <Text style={commonStyles.textMedium}>{dish.dishName}</Text>
                 <Text style={commonStyles.textSmall}>{dish.description}</Text>
-                <Text style={commonStyles.textSmall}>
-                  {parseFloat(dish.price).toFixed(2)} NIS
-                </Text>
+                <Text style={commonStyles.textSmall}>{parseFloat(dish.price).toFixed(2)} NIS</Text>
               </Col>
-              <Col
-                size={1}
-                style={[ commonStyles.columnList, commonStyles.justifyCenter ]}
-              >
+              <Col size={1} style={[ commonStyles.columnList, commonStyles.justifyCenter ]}>
                 <TouchableNativeFeedback
                   onPress={async () => {
-                    await this.storageManager._removeDishFromOrders(
-                      dish.dishId
-                    );
-                    let orders = await this.storageManager._retrieveAllOrdersOfRest(
-                      this.state.restaurant.restaurantId
-                    );
+                    await this.storageManager._removeDishFromOrders(dish.dishId);
+                    let orders = await this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId);
                     this.setState({ orders: orders });
                   }}
                   style={[
