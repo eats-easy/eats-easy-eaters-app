@@ -1,6 +1,7 @@
 const tintColor = '#2f95dc';
 const textPrimary = '#000';
 const black = '#000';
+const blue = '#00f';
 const grey = '#ccc';
 const lightGrey = '#ededed';
 const red = '#f00';
@@ -15,6 +16,7 @@ export default {
   tintColor,
   textPrimary,
   black,
+  blue,
   grey,
   lightGrey,
   red,

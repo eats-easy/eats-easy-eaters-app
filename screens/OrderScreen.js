@@ -6,10 +6,12 @@ import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
 import SignInDialog from '../components/SignInDialog';
 import StorageManager from '../services/storage_manager';
-
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 import postApiOrder from '../network/postApiOrder';
+import postApiUser from '../network/postApiUser';
+
+import { Base64 } from 'js-base64';
 
 export default class OrderScreen extends React.Component {
   constructor() {
@@ -20,12 +22,45 @@ export default class OrderScreen extends React.Component {
       user: null,
       orders: [],
       orderStatus: 0,
-      signInVisible: false
+      signInVisible: false,
+      signInError: false
     };
     this.storageManager = new StorageManager();
+    this.signInHandler = this.signInHandler.bind(this);
   }
 
   async createOrder() {}
+
+  async signInHandler(action, user) {
+    try {
+      if (action === 'cancel') this.setState({ signInVisible: false });
+      if (action === 'sign-in') {
+        if (!user.password || !user.phone || user.phone.length < 10) {
+          this.setState({ signInError: true });
+          setTimeout(() => {
+            this.setState({ signInError: false });
+          }, 3000);
+          return;
+        }
+        let hashed_passwd = Base64.encode(user.password);
+
+        // TODO: REMOVE!!!
+        console.log(user.phone, user.password, hashed_passwd);
+        // TODO: REMOVE!!!
+
+        let res = await postApiUserSignIn({ phone: user.phone, hashed_passwd: hashed_passwd });
+
+        // TODO: REMOVE!!!
+        console.log(res);
+        // TODO: REMOVE!!!
+
+        this.setState({ user: { userId: res } });
+        await this.storageManager._storeUserData({ userId: res });
+      }
+    } catch (err) {
+      console.warn('Got an error in signInHandler', err);
+    }
+  }
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
@@ -108,12 +143,10 @@ export default class OrderScreen extends React.Component {
 
                       await this.storageManager._addToOrdersStatusesData({
                         restaurantId: this.state.restaurant.restaurantId,
-                        orderStatus: (this.state.orderStatus + 1) % 6
+                        orderStatus: 1
                       });
-                      let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
-                        this.state.restaurant.restaurantId
-                      );
-                      this.setState({ orderStatus: newOrderStatus });
+
+                      this.setState({ orderStatus: 1 });
                     }}
                     icon={{
                       name: 'send',
@@ -129,7 +162,6 @@ export default class OrderScreen extends React.Component {
                   <Button
                     title={'Sign in'.toUpperCase()}
                     onPress={() => {
-                      console.log(this.state.signInVisible);
                       this.setState({ signInVisible: true });
                     }}
                     icon={{
@@ -147,7 +179,11 @@ export default class OrderScreen extends React.Component {
             </Row>
           </Grid>
         </View>
-        <SignInDialog visible={this.state.signInVisible} />
+        <SignInDialog
+          visible={this.state.signInVisible}
+          signInHandler={this.signInHandler}
+          signInError={this.state.signInError}
+        />
       </View>
     ) : (
       <LoadingCircle />
