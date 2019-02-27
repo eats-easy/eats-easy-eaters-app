@@ -230,7 +230,24 @@ export default class OrderScreen extends React.Component {
                     rounded
                     disabled={this.state.orders.length == 0}
                     backgroundColor={Colors.tintColor}
-                  />    
+                  />  
+                )
+                (
+                  <Button
+                    title={'Sign in'.toUpperCase()}
+                    onPress={() => {
+                      this.setState({ signInVisible: true });
+                    }}
+                    icon={{
+                      name: 'sign-in',
+                      type: 'font-awesome',
+                      size: 20,
+                      color: Colors.white
+                    }}
+                    rounded
+                    disabled={this.state.orders.length == 0}
+                    backgroundColor={Colors.tintColor}
+                  />      
                 )
               }
               </Col>
