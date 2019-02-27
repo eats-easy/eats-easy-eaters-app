@@ -24,6 +24,8 @@ export default class SignUpDialog extends React.Component {
       lastName: null,
       email: null
     };
+
+    this.signUpHandler = this.signUpHandler.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -38,8 +40,41 @@ export default class SignUpDialog extends React.Component {
     if (prevProps.visible !== this.props.visible) {
       this.setState({ visible: this.props.visible });
     }
-    if (prevProps.signUpError !== this.props.signUpError) {
-      this.setState({ signUpError: this.props.signUpError });
+  }
+
+  async signUpHandler(user) {
+    try {
+      if (
+        (!user.password || !user.password !== user.passwordAgain,
+        !user.phone || !user.firstname || !user.lastname || !user.username || !user.email || user.phone.length < 10)
+      ) {
+        this.setState({ signUpError: true });
+        setTimeout(() => {
+          this.setState({ signUpError: false });
+        }, 3000);
+        return;
+      }
+      let hashed_passwd = Base64.encode(user.password);
+
+      var userSignUp = {
+        userName: user.userName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        hashedPasswd: hashed_passwd
+      };
+
+      let res = await postApiUserSignUp(userSignUp);
+
+      // TODO: REMOVE!!!
+      console.log(res);
+      // TODO: REMOVE!!!
+
+      this.setState({ user: { userId: res } });
+      await this.storageManager._storeUserData({ userId: res });
+    } catch (err) {
+      console.warn('Got an error in signUpHandler', err);
     }
   }
 
@@ -55,11 +90,11 @@ export default class SignUpDialog extends React.Component {
         dialogTitle={<DialogTitle title="Sign up" />}
         footer={
           <DialogFooter>
-            <DialogButton text="CANCEL" onPress={() => this.props.signUpHandler('cancel')} />
+            <DialogButton text="CANCEL" onPress={() => this.props.cancel()} />
             <DialogButton
               text="SIGN UP"
               onPress={() =>
-                this.props.signUpHandler('sign-up', {
+                this.signUpHandler({
                   phone: this.state.phoneValue,
                   password: this.state.passwordValue,
                   passwordAgain: this.passwordAgainValue,

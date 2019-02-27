@@ -19,6 +19,8 @@ export default class SignInDialog extends React.Component {
       phoneValue: null,
       passwordValue: null
     };
+
+    this.signInHandler = this.signInHandler.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -33,8 +35,34 @@ export default class SignInDialog extends React.Component {
     if (prevProps.visible !== this.props.visible) {
       this.setState({ visible: this.props.visible });
     }
-    if (prevProps.signInError !== this.props.signInError) {
-      this.setState({ signInError: this.props.signInError });
+  }
+
+  async signInHandler(user) {
+    try {
+      if (!user.password || !user.phone || user.phone.length < 10) {
+        this.setState({ signInError: true });
+        setTimeout(() => {
+          this.setState({ signInError: false });
+        }, 3000);
+        return;
+      }
+      let hashed_passwd = Base64.encode(user.password);
+
+      var userSignIn = {
+        userName: null,
+        firstName: null,
+        lastName: null,
+        email: null,
+        phone: user.phone,
+        hashedPasswd: hashed_passwd
+      };
+
+      let res = await postApiUserSignIn(userSignIn);
+
+      this.setState({ user: { userId: res } });
+      await this.storageManager._storeUserData({ userId: res });
+    } catch (err) {
+      console.warn('Got an error in signInHandler', err);
     }
   }
 
@@ -50,11 +78,11 @@ export default class SignInDialog extends React.Component {
         dialogTitle={<DialogTitle title="Sign in" />}
         footer={
           <DialogFooter>
-            <DialogButton text="CANCEL" onPress={() => this.props.signInHandler('cancel')} />
+            <DialogButton text="CANCEL" onPress={() => this.props.cancel()} />
             <DialogButton
               text="SIGN IN"
               onPress={() =>
-                this.props.signInHandler('sign-in', {
+                this.signInHandler({
                   phone: this.state.phoneValue,
                   password: this.state.passwordValue
                 })}

@@ -24,94 +24,13 @@ export default class OrderScreen extends React.Component {
       orders: [],
       orderStatus: 0,
       signInVisible: false,
-      signInError: false,
-      signUpVisible: false,
-      signUpError: false
+      signUpVisible: false
     };
     this.storageManager = new StorageManager();
-    this.signInHandler = this.signInHandler.bind(this);
-    this.signUpHandler = this.signUpHandler.bind(this);
   }
 
-  async createOrder() {}
-
-  async signInHandler(action, user) {
-    try {
-      if (action === 'cancel') this.setState({ signInVisible: false });
-      if (action === 'sign-in') {
-        if (!user.password || !user.phone || user.phone.length < 10) {
-          this.setState({ signInError: true });
-          setTimeout(() => {
-            this.setState({ signInError: false });
-          }, 3000);
-          return;
-        }
-        let hashed_passwd = Base64.encode(user.password);
-
-        // TODO: REMOVE!!!
-        console.log(user.phone, user.password, hashed_passwd);
-        // TODO: REMOVE!!!
-
-        var userSignIn = {
-          userName: null,
-          firstName: null,
-          lastName: null,
-          email: null,
-          phone: user.phone,
-          hashedPasswd: hashed_passwd
-        };
-
-        let res = await postApiUserSignIn(userSignIn);
-
-        // TODO: REMOVE!!!
-        console.log(res);
-        // TODO: REMOVE!!!
-
-        this.setState({ user: { userId: res } });
-        await this.storageManager._storeUserData({ userId: res });
-      }
-    } catch (err) {
-      console.warn('Got an error in signInHandler', err);
-    }
-  }
-
-  async signUpHandler(action, user) {
-    try {
-      if (action === 'cancel') this.setState({ signUpVisible: false });
-      if (action === 'sign-up') {
-        if (
-          (!user.password || !user.password !== user.passwordAgain,
-          !user.phone || !user.firstname || !user.lastname || !user.username || !user.email || user.phone.length < 10)
-        ) {
-          this.setState({ signUpError: true });
-          setTimeout(() => {
-            this.setState({ signUpError: false });
-          }, 3000);
-          return;
-        }
-        let hashed_passwd = Base64.encode(user.password);
-
-        var userSignUp = {
-          userName: user.userName,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phone: user.phone,
-          hashedPasswd: hashed_passwd
-        };
-
-        let res = await postApiUserSignUp(userSignUp);
-
-        // TODO: REMOVE!!!
-        console.log(res);
-        // TODO: REMOVE!!!
-
-        this.setState({ user: { userId: res } });
-        await this.storageManager._storeUserData({ userId: res });
-      }
-    } catch (err) {
-      console.warn('Got an error in signUpHandler', err);
-    }
+  async createOrder() {
+    /* TODO */
   }
 
   async componentWillMount() {
@@ -211,21 +130,6 @@ export default class OrderScreen extends React.Component {
                     backgroundColor={Colors.tintColor}
                   />
                 ) : (
-                  // <Button
-                  //   title={'Sign up'.toUpperCase()}
-                  //   onPress={() => {
-                  //     this.setState({ signUpVisible: true });
-                  //   }}
-                  //   icon={{
-                  //     name: 'sign-up',
-                  //     type: 'font-awesome',
-                  //     size: 20,
-                  //     color: Colors.white
-                  //   }}
-                  //   rounded
-                  //   disabled={this.state.orders.length == 0}
-                  //   backgroundColor={Colors.tintColor}
-                  // />
                   <Button
                     title={'Sign in'.toUpperCase()}
                     onPress={() => {
@@ -247,17 +151,12 @@ export default class OrderScreen extends React.Component {
         </View>
         <SignInDialog
           visible={this.state.signInVisible}
-          signInHandler={this.signInHandler}
-          signInError={this.state.signInError}
+          cancel={() => this.setState({ signInVisible: false })}
           signUpActionHandler={() => {
             this.setState({ signInVisible: false, signUpVisible: true });
           }}
         />
-        <SignUpDialog
-          visible={this.state.signUpVisible}
-          signUpHandler={this.signUpHandler}
-          signUpError={this.state.signUpError}
-        />
+        <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} />
       </View>
     ) : (
       <LoadingCircle />
