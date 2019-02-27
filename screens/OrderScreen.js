@@ -5,11 +5,12 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
 import SignInDialog from '../components/SignInDialog';
+import SignUpDialog from '../components/SignUpDialog';
 import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 import postApiOrder from '../network/postApiOrder';
-import postApiUser from '../network/postApiUser';
+import { postApiUserSignIn, postApiUserSignUp } from '../network/postApiUser';
 
 import { Base64 } from 'js-base64';
 
@@ -27,6 +28,7 @@ export default class OrderScreen extends React.Component {
     };
     this.storageManager = new StorageManager();
     this.signInHandler = this.signInHandler.bind(this);
+    this.signUpHandler = this.signUpHandler.bind(this);
   }
 
   async createOrder() {}
@@ -48,7 +50,16 @@ export default class OrderScreen extends React.Component {
         console.log(user.phone, user.password, hashed_passwd);
         // TODO: REMOVE!!!
 
-        let res = await postApiUserSignIn({ phone: user.phone, hashed_passwd: hashed_passwd });
+        var userSignIn = {
+          userName: null,
+          userFirstName: null,
+          userLastName: null,
+          userEmail: null,
+          userPhone: user.phone,
+          userHashedPass: hashed_passwd
+        };
+
+        let res = await postApiUserSignIn(userSignIn);
 
         // TODO: REMOVE!!!
         console.log(res);
@@ -59,6 +70,50 @@ export default class OrderScreen extends React.Component {
       }
     } catch (err) {
       console.warn('Got an error in signInHandler', err);
+    }
+  }
+
+  async signUpHandler(action, user) {
+    try {
+      if (action === 'cancel') this.setState({ signInVisible: false });
+      if (action === 'sign-up') {
+        if (
+          !user.password ||
+          !user.phone ||
+          !user.firstname ||
+          !user.lastname ||
+          !user.username ||
+          !user.email ||
+          user.phone.length < 10
+        ) {
+          this.setState({ signUpError: true });
+          setTimeout(() => {
+            this.setState({ signUpError: false });
+          }, 3000);
+          return;
+        }
+        let hashed_passwd = Base64.encode(user.password);
+
+        var userSignUp = {
+          userName: user.username,
+          userFirstName: user.firstname,
+          userLastName: user.lastname,
+          userEmail: user.email,
+          userPhone: user.phone,
+          userHashedPass: hashed_passwd
+        };
+
+        let res = await postApiUserSignUp(userSignUp);
+
+        // TODO: REMOVE!!!
+        console.log(res);
+        // TODO: REMOVE!!!
+
+        this.setState({ user: { userId: res } });
+        await this.storageManager._storeUserData({ userId: res });
+      }
+    } catch (err) {
+      console.warn('Got an error in signUpHandler', err);
     }
   }
 
@@ -160,12 +215,12 @@ export default class OrderScreen extends React.Component {
                   />
                 ) : (
                   <Button
-                    title={'Sign in'.toUpperCase()}
+                    title={'Sign up'.toUpperCase()}
                     onPress={() => {
-                      this.setState({ signInVisible: true });
+                      this.setState({ signUpVisible: true });
                     }}
                     icon={{
-                      name: 'sign-in',
+                      name: 'sign-up',
                       type: 'font-awesome',
                       size: 20,
                       color: Colors.white
@@ -173,7 +228,23 @@ export default class OrderScreen extends React.Component {
                     rounded
                     disabled={this.state.orders.length == 0}
                     backgroundColor={Colors.tintColor}
-                  />
+                  />(
+                    <Button
+                      title={'Sign in'.toUpperCase()}
+                      onPress={() => {
+                        this.setState({ signInVisible: true });
+                      }}
+                      icon={{
+                        name: 'sign-in',
+                        type: 'font-awesome',
+                        size: 20,
+                        color: Colors.white
+                      }}
+                      rounded
+                      disabled={this.state.orders.length == 0}
+                      backgroundColor={Colors.tintColor}
+                    />
+                  )
                 )}
               </Col>
             </Row>
@@ -183,6 +254,11 @@ export default class OrderScreen extends React.Component {
           visible={this.state.signInVisible}
           signInHandler={this.signInHandler}
           signInError={this.state.signInError}
+        />
+        <SignUpDialog
+          visible={this.state.signUpVisible}
+          signUpHandler={this.signUpHandler}
+          signUpError={this.state.signUpError}
         />
       </View>
     ) : (

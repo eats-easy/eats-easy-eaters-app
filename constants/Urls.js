@@ -4,7 +4,8 @@ export default {
   apiAllRestaurants: 'restaurants',
   apiOrders: 'orders',
   apiUsers: 'users',
-  apiSignIn: 'signin',
+  apiSignIn: 'users/signin',
+  apiSignUp: 'users/signup',
   apiRestaurantMenu: (id) => {
     return 'restaurants/' + id + '/menu';
   }

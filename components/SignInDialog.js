@@ -47,12 +47,12 @@ export default class SignInDialog extends React.Component {
             slideFrom: 'bottom'
           })
         }
-        dialogTitle={<DialogTitle title="Sign in or sign up" />}
+        dialogTitle={<DialogTitle title="Sign in" />}
         footer={
           <DialogFooter>
             <DialogButton text="CANCEL" onPress={() => this.props.signInHandler('cancel')} />
             <DialogButton
-              text="SIGN IN/UP"
+              text="SIGN IN"
               onPress={() =>
                 this.props.signInHandler('sign-in', {
                   phone: this.state.phoneValue,
