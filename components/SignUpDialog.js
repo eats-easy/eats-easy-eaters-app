@@ -9,6 +9,10 @@ import Dialog, {
   DialogButton,
   SlideAnimation
 } from 'react-native-popup-dialog';
+import StorageManager from '../services/storage_manager';
+import { Base64 } from 'js-base64';
+
+import { postApiUserSignUp } from '../network/postApiUser';
 
 export default class SignUpDialog extends React.Component {
   constructor() {
@@ -24,7 +28,7 @@ export default class SignUpDialog extends React.Component {
       lastName: null,
       email: null
     };
-
+    this.storageManager = new StorageManager();
     this.signUpHandler = this.signUpHandler.bind(this);
   }
 
@@ -44,9 +48,17 @@ export default class SignUpDialog extends React.Component {
 
   async signUpHandler(user) {
     try {
+      // TODO: REMOVE!!!
+      console.log(user);
+      // TODO: REMOVE!!!
+
       if (
-        (!user.password || !user.password !== user.passwordAgain,
-        !user.phone || !user.firstname || !user.lastname || !user.username || !user.email || user.phone.length < 10)
+        !user.email ||
+        !user.phone ||
+        !user.password ||
+        !user.firstName ||
+        !user.lastName ||
+        user.password !== user.passwordAgain
       ) {
         this.setState({ signUpError: true });
         setTimeout(() => {
@@ -54,7 +66,13 @@ export default class SignUpDialog extends React.Component {
         }, 3000);
         return;
       }
+
       let hashed_passwd = Base64.encode(user.password);
+
+      // TODO: REMOVE!!!
+      console.log('2');
+      console.log(hashed_passwd);
+      // TODO: REMOVE!!!
 
       var userSignUp = {
         userName: user.userName,
@@ -95,13 +113,13 @@ export default class SignUpDialog extends React.Component {
               text="SIGN UP"
               onPress={() =>
                 this.signUpHandler({
-                  phone: this.state.phoneValue,
                   password: this.state.passwordValue,
-                  passwordAgain: this.passwordAgainValue,
-                  username: this.state.userName,
-                  lastname: this.state.lastName,
-                  firstname: this.state.firstName,
-                  email: this.state.email
+                  passwordAgain: this.state.passwordAgainValue,
+                  userName: this.state.userName,
+                  firstName: this.state.firstName,
+                  lastName: this.state.lastName,
+                  email: this.state.email,
+                  phone: this.state.phoneValue
                 })}
             />
           </DialogFooter>
@@ -146,7 +164,6 @@ export default class SignUpDialog extends React.Component {
             placeholder="Username"
             placeholderTextColor={Colors.grey}
             autoCapitalize="none"
-            secureTextEntry={true}
             value={this.state.userName}
             onChange={(evt) => this.setState({ userName: evt.nativeEvent.text })}
           />
@@ -156,7 +173,6 @@ export default class SignUpDialog extends React.Component {
             placeholder="First name"
             placeholderTextColor={Colors.grey}
             autoCapitalize="none"
-            secureTextEntry={true}
             value={this.state.firstName}
             onChange={(evt) => this.setState({ firstName: evt.nativeEvent.text })}
           />
@@ -166,7 +182,6 @@ export default class SignUpDialog extends React.Component {
             placeholder="Last name"
             placeholderTextColor={Colors.grey}
             autoCapitalize="none"
-            secureTextEntry={true}
             value={this.state.lastName}
             onChange={(evt) => this.setState({ lastName: evt.nativeEvent.text })}
           />
@@ -176,11 +191,9 @@ export default class SignUpDialog extends React.Component {
             placeholder="Email"
             placeholderTextColor={Colors.grey}
             autoCapitalize="none"
-            secureTextEntry={true}
             value={this.state.email}
-            onChange={(evt) => this.setState({ evt: evt.nativeEvent.text })}
+            onChange={(evt) => this.setState({ email: evt.nativeEvent.text })}
           />
-
           <Text
             style={
               this.state.signUpError ? (

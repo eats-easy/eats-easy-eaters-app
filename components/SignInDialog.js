@@ -9,6 +9,10 @@ import Dialog, {
   DialogButton,
   SlideAnimation
 } from 'react-native-popup-dialog';
+import StorageManager from '../services/storage_manager';
+import { Base64 } from 'js-base64';
+
+import { postApiUserSignIn } from '../network/postApiUser';
 
 export default class SignInDialog extends React.Component {
   constructor() {
@@ -19,7 +23,7 @@ export default class SignInDialog extends React.Component {
       phoneValue: null,
       passwordValue: null
     };
-
+    this.storageManager = new StorageManager();
     this.signInHandler = this.signInHandler.bind(this);
   }
 
@@ -39,7 +43,7 @@ export default class SignInDialog extends React.Component {
 
   async signInHandler(user) {
     try {
-      if (!user.password || !user.phone || user.phone.length < 10) {
+      if (!user.password || !user.phone || user.phone.length < 9) {
         this.setState({ signInError: true });
         setTimeout(() => {
           this.setState({ signInError: false });

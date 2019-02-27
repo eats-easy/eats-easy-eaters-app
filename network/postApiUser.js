@@ -1,7 +1,7 @@
 import urls from '../constants/Urls';
 const url = urls.apiRootUrl + urls.apiUsers;
-const urlSignIn = urls.apiSignIn;
-const urlSignUp = urls.apiSignUp;
+const urlSignIn = urls.apiRootUrl + urls.apiSignIn;
+const urlSignUp = urls.apiRootUrl + urls.apiSignUp;
 
 export const postApiUser = async (data) => {
   try {
@@ -31,7 +31,8 @@ export const postApiUserSignIn = async (data) => {
         Accept: 'application/json'
       }
     });
-    const { userId } = await res.json();
+    const userId = await res.json();
+    console.log(res);
     return userId;
   } catch (err) {
     console.error(err);
@@ -49,7 +50,8 @@ export const postApiUserSignUp = async (data) => {
         Accept: 'application/json'
       }
     });
-    const { userId } = await res.json();
+    const userId = await res.json();
+    console.log(res);
     return userId;
   } catch (err) {
     console.error(err);

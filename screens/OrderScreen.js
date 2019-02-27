@@ -9,10 +9,7 @@ import SignUpDialog from '../components/SignUpDialog';
 import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
-import postApiOrder from '../network/postApiOrder';
-import { postApiUserSignIn, postApiUserSignUp } from '../network/postApiUser';
-
-import { Base64 } from 'js-base64';
+import { postApiOrder } from '../network/postApiOrder';
 
 export default class OrderScreen extends React.Component {
   constructor() {
@@ -34,6 +31,7 @@ export default class OrderScreen extends React.Component {
   }
 
   async componentWillMount() {
+    console.log(await this.storageManager._retrieveUserData());
     let restaurant = await this.storageManager._retrieveRestaurantData();
     await this.setState({
       status: 'loaded',
