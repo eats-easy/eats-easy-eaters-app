@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { TouchableNativeFeedback, Text, TextInput } from 'react-native';
 import { commonStyles } from '../styles';
 import Colors from '../constants/Colors';
 import Dialog, {
@@ -96,10 +96,17 @@ export default class SignInDialog extends React.Component {
           >
             Phone or password are incorrect
           </Text>
-          <Text style={[ commonStyles.textSmall, { paddingTop: 24 } ]}>
-            <Text>Don't have a user? Click</Text>{' '}
-            <Text style={{ color: Colors.blue, textDecorationLine: 'underline' }}>here</Text> <Text>to create one</Text>{' '}
-          </Text>
+          <TouchableNativeFeedback
+            onPress={() => {
+              this.props.signUpActionHandler();
+            }}
+          >
+            <Text style={[ commonStyles.textSmall, { paddingTop: 24 } ]}>
+              <Text>Don't have a user? Click</Text>{' '}
+              <Text style={{ color: Colors.blue, textDecorationLine: 'underline' }}>here</Text>{' '}
+              <Text>to create one</Text>{' '}
+            </Text>
+          </TouchableNativeFeedback>
         </DialogContent>
       </Dialog>
     );

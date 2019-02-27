@@ -18,6 +18,7 @@ export default class SignUpDialog extends React.Component {
       signUpError: false,
       phoneValue: null,
       passwordValue: null,
+      passwordAgainValue: null,
       userName: null,
       firstName: null,
       lastName: null,
@@ -61,6 +62,7 @@ export default class SignUpDialog extends React.Component {
                 this.props.signUpHandler('sign-up', {
                   phone: this.state.phoneValue,
                   password: this.state.passwordValue,
+                  passwordAgain: this.passwordAgainValue,
                   username: this.state.userName,
                   lastname: this.state.lastName,
                   firstname: this.state.firstName,
@@ -92,6 +94,16 @@ export default class SignUpDialog extends React.Component {
             secureTextEntry={true}
             value={this.state.passwordValue}
             onChange={(evt) => this.setState({ passwordValue: evt.nativeEvent.text })}
+          />
+          <TextInput
+            style={[ commonStyles.input, commonStyles.textBig, { paddingTop: 24, paddingBottom: 0, margin: 0 } ]}
+            underlineColorAndroid="transparent"
+            placeholder="Password again"
+            placeholderTextColor={Colors.grey}
+            autoCapitalize="none"
+            secureTextEntry={true}
+            value={this.state.passwordAgainValue}
+            onChange={(evt) => this.setState({ passwordAgainValue: evt.nativeEvent.text })}
           />
           <TextInput
             style={[ commonStyles.input, commonStyles.textBig, { paddingTop: 24, paddingBottom: 0, margin: 0 } ]}

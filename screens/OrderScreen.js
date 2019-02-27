@@ -24,7 +24,9 @@ export default class OrderScreen extends React.Component {
       orders: [],
       orderStatus: 0,
       signInVisible: false,
-      signInError: false
+      signInError: false,
+      signUpVisible: false,
+      signUpError: false
     };
     this.storageManager = new StorageManager();
     this.signInHandler = this.signInHandler.bind(this);
@@ -52,11 +54,11 @@ export default class OrderScreen extends React.Component {
 
         var userSignIn = {
           userName: null,
-          userFirstName: null,
-          userLastName: null,
-          userEmail: null,
-          userPhone: user.phone,
-          userHashedPass: hashed_passwd
+          firstName: null,
+          lastName: null,
+          email: null,
+          phone: user.phone,
+          hashedPasswd: hashed_passwd
         };
 
         let res = await postApiUserSignIn(userSignIn);
@@ -75,16 +77,11 @@ export default class OrderScreen extends React.Component {
 
   async signUpHandler(action, user) {
     try {
-      if (action === 'cancel') this.setState({ signInVisible: false });
+      if (action === 'cancel') this.setState({ signUpVisible: false });
       if (action === 'sign-up') {
         if (
-          !user.password ||
-          !user.phone ||
-          !user.firstname ||
-          !user.lastname ||
-          !user.username ||
-          !user.email ||
-          user.phone.length < 10
+          (!user.password || !user.password !== user.passwordAgain,
+          !user.phone || !user.firstname || !user.lastname || !user.username || !user.email || user.phone.length < 10)
         ) {
           this.setState({ signUpError: true });
           setTimeout(() => {
@@ -95,12 +92,12 @@ export default class OrderScreen extends React.Component {
         let hashed_passwd = Base64.encode(user.password);
 
         var userSignUp = {
-          userName: user.username,
-          userFirstName: user.firstname,
-          userLastName: user.lastname,
-          userEmail: user.email,
-          userPhone: user.phone,
-          userHashedPass: hashed_passwd
+          userName: user.userName,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          hashedPasswd: hashed_passwd
         };
 
         let res = await postApiUserSignUp(userSignUp);
@@ -214,37 +211,35 @@ export default class OrderScreen extends React.Component {
                     backgroundColor={Colors.tintColor}
                   />
                 ) : (
+                  // <Button
+                  //   title={'Sign up'.toUpperCase()}
+                  //   onPress={() => {
+                  //     this.setState({ signUpVisible: true });
+                  //   }}
+                  //   icon={{
+                  //     name: 'sign-up',
+                  //     type: 'font-awesome',
+                  //     size: 20,
+                  //     color: Colors.white
+                  //   }}
+                  //   rounded
+                  //   disabled={this.state.orders.length == 0}
+                  //   backgroundColor={Colors.tintColor}
+                  // />
                   <Button
-                    title={'Sign up'.toUpperCase()}
+                    title={'Sign in'.toUpperCase()}
                     onPress={() => {
-                      this.setState({ signUpVisible: true });
+                      this.setState({ signInVisible: true });
                     }}
                     icon={{
-                      name: 'sign-up',
+                      name: 'sign-in',
                       type: 'font-awesome',
                       size: 20,
                       color: Colors.white
                     }}
                     rounded
-                    disabled={this.state.orders.length == 0}
                     backgroundColor={Colors.tintColor}
-                  />(
-                    <Button
-                      title={'Sign in'.toUpperCase()}
-                      onPress={() => {
-                        this.setState({ signInVisible: true });
-                      }}
-                      icon={{
-                        name: 'sign-in',
-                        type: 'font-awesome',
-                        size: 20,
-                        color: Colors.white
-                      }}
-                      rounded
-                      disabled={this.state.orders.length == 0}
-                      backgroundColor={Colors.tintColor}
-                    />
-                  )
+                  />
                 )}
               </Col>
             </Row>
@@ -254,6 +249,9 @@ export default class OrderScreen extends React.Component {
           visible={this.state.signInVisible}
           signInHandler={this.signInHandler}
           signInError={this.state.signInError}
+          signUpActionHandler={() => {
+            this.setState({ signInVisible: false, signUpVisible: true });
+          }}
         />
         <SignUpDialog
           visible={this.state.signUpVisible}
