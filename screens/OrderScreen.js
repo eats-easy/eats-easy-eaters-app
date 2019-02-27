@@ -5,11 +5,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
 import SignInDialog from '../components/SignInDialog';
+import SignUpDialog from '../components/SignUpDialog';
 import StorageManager from '../services/storage_manager';
-
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 import postApiOrder from '../network/postApiOrder';
+import {postApiUserSignIn,postApiUserSignUp} from '../network/postApiUser';
+
+import { Base64 } from 'js-base64';
 
 export default class OrderScreen extends React.Component {
   constructor() {
@@ -20,12 +23,99 @@ export default class OrderScreen extends React.Component {
       user: null,
       orders: [],
       orderStatus: 0,
-      signInVisible: false
+      signInVisible: false,
+      signInError: false
     };
     this.storageManager = new StorageManager();
+    this.signInHandler = this.signInHandler.bind(this);
+    this.signUpHandler = this.signUpHandler.bind(this);
   }
 
   async createOrder() {}
+
+  async signInHandler(action, user) {
+    try {
+      if (action === 'cancel') this.setState({ signInVisible: false });
+      if (action === 'sign-in') {
+        if (!user.password || !user.phone || user.phone.length < 10) {
+          this.setState({ signInError: true });
+          setTimeout(() => {
+            this.setState({ signInError: false });
+          }, 3000);
+          return;
+        }
+        let hashed_passwd = Base64.encode(user.password);
+
+        // TODO: REMOVE!!!
+        console.log(user.phone, user.password, hashed_passwd);
+        // TODO: REMOVE!!!
+
+        //let res = await postApiUserSignIn({ phone: user.phone, hashed_passwd: hashed_passwd });
+
+        var userSignIn = {
+          userName: null,
+          userFirstName: null,
+          userLastName: null,
+          userEmail: null,
+          userPhone: user.phone,
+          userHashedPass: hashed_passwd
+        };
+
+        let res = await postApiUserSignIn(userSignIn);
+        //if res == -100 that means user not found
+
+        // TODO: REMOVE!!!
+        console.log(res);
+        // TODO: REMOVE!!!
+
+
+        this.setState({ user: { userId: res } });
+        await this.storageManager._storeUserData({ userId: res });
+      }
+    } catch (err) {
+      console.warn('Got an error in signInHandler', err);
+    }
+  }
+
+  async signUpHandler(action, user) {
+    try {
+      if (action === 'cancel') this.setState({ signInVisible: false });
+      if (action === 'sign-up') {
+        if (!user.password || !user.phone || !user.firstname || !user.lastname || !user.username || !user.email || user.phone.length < 10) {
+          this.setState({ signUpError: true });
+          setTimeout(() => {
+            this.setState({ signUpError: false });
+          }, 3000);
+          return;
+        }
+        let hashed_passwd = Base64.encode(user.password);
+
+        var userSignUp = {
+          userName: user.username,
+          userFirstName: user.firstname,
+          userLastName: user.lastname,
+          userEmail: user.email,
+          userPhone: user.phone,
+          userHashedPass: hashed_passwd
+        };
+
+        let res = await postApiUserSignUp(userSignUp);
+        //if res == -100 that means user not found
+
+        // TODO: REMOVE!!!
+        console.log(res);
+        // TODO: REMOVE!!!
+
+
+        this.setState({ user: { userId: res } });
+        await this.storageManager._storeUserData({ userId: res });
+      }
+    } catch (err) {
+      console.warn('Got an error in signUpHandler', err);
+    }
+  }
+
+
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
@@ -38,6 +128,7 @@ export default class OrderScreen extends React.Component {
     });
   }
 
+  
   render() {
     return this.state.restaurant && this.state.restaurant.restaurantId ? (
       <View style={commonStyles.container}>
@@ -108,12 +199,10 @@ export default class OrderScreen extends React.Component {
 
                       await this.storageManager._addToOrdersStatusesData({
                         restaurantId: this.state.restaurant.restaurantId,
-                        orderStatus: (this.state.orderStatus + 1) % 6
+                        orderStatus: 1
                       });
-                      let newOrderStatus = await this.storageManager._retrieveOrderStatusOfRest(
-                        this.state.restaurant.restaurantId
-                      );
-                      this.setState({ orderStatus: newOrderStatus });
+
+                      this.setState({ orderStatus: 1 });
                     }}
                     icon={{
                       name: 'send',
@@ -125,15 +214,15 @@ export default class OrderScreen extends React.Component {
                     disabled={this.state.orders.length == 0}
                     backgroundColor={Colors.tintColor}
                   />
-                ) : (
+                ) 
+                : (
                   <Button
-                    title={'Sign in'.toUpperCase()}
+                    title={'Sign up'.toUpperCase()}
                     onPress={() => {
-                      console.log(this.state.signInVisible);
-                      this.setState({ signInVisible: true });
+                      this.setState({ signUpVisible: true });
                     }}
                     icon={{
-                      name: 'sign-in',
+                      name: 'sign-up',
                       type: 'font-awesome',
                       size: 20,
                       color: Colors.white
@@ -141,13 +230,23 @@ export default class OrderScreen extends React.Component {
                     rounded
                     disabled={this.state.orders.length == 0}
                     backgroundColor={Colors.tintColor}
-                  />
-                )}
+                  />    
+                )
+              }
               </Col>
             </Row>
           </Grid>
         </View>
-        <SignInDialog visible={this.state.signInVisible} />
+        <SignInDialog
+          visible={this.state.signInVisible}
+          signInHandler={this.signInHandler}
+          signInError={this.state.signInError}
+        />
+        <SignUpDialog
+          visible={this.state.signUpVisible}
+          signUpHandler={this.signUpHandler}
+          signUpError={this.state.signUpError}
+        />
       </View>
     ) : (
       <LoadingCircle />
