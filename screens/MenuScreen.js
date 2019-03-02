@@ -25,14 +25,10 @@ export default class MenuScreen extends React.Component {
   async componentWillMount() {
     try {
       await this.setState({
-        restaurant: this.props.navigation
-          .dangerouslyGetParent()
-          .getParam('restaurant')
+        restaurant: this.props.navigation.dangerouslyGetParent().getParam('restaurant')
       });
       await this.storageManager._storeRestaurantData(this.state.restaurant);
-      const dishes = await getApiRestaurantMenu(
-        this.state.restaurant.restaurantId
-      );
+      const dishes = await getApiRestaurantMenu(this.state.restaurant.restaurantId);
 
       this.setState({
         data: dishes || [],
@@ -69,9 +65,7 @@ export default class MenuScreen extends React.Component {
           <View style={[ commonStyles.container, { padding: 0 } ]}>
             {this.state.data !== {} && this.state.status !== 'loading' ? (
               <Grid>
-                <Col style={commonStyles.column}>
-                  {this.state.data.map(this.renderItem)}
-                </Col>
+                <Col style={commonStyles.column}>{this.state.data.map(this.renderItem)}</Col>
               </Grid>
             ) : (
               <LoadingCircle />
@@ -98,14 +92,10 @@ export default class MenuScreen extends React.Component {
               <Grid>
                 <Row style={{ padding: 0, marginTop: 0 }}>
                   <Col>
-                    <Text style={commonStyles.textSmall}>
-                      {dish.description}
-                    </Text>
+                    <Text style={commonStyles.textSmall}>{dish.description}</Text>
                   </Col>
                   <Col>
-                    <Text style={commonStyles.textRight}>
-                      {parseFloat(dish.price).toFixed(2)} NIS
-                    </Text>
+                    <Text style={commonStyles.textRight}>{parseFloat(dish.price).toFixed(2)} NIS</Text>
                   </Col>
                 </Row>
                 <Row style={{ paddingTop: 50 }}>

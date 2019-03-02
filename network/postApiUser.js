@@ -32,7 +32,6 @@ export const postApiUserSignIn = async (data) => {
       }
     });
     const userId = await res.json();
-    console.log(res);
     return userId;
   } catch (err) {
     console.error(err);
@@ -51,7 +50,6 @@ export const postApiUserSignUp = async (data) => {
       }
     });
     const userId = await res.json();
-    console.log(res);
     return userId;
   } catch (err) {
     console.error(err);

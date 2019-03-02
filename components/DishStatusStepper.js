@@ -10,13 +10,7 @@ export default class DishStatusStepper extends React.Component {
     super(props);
     this.state = {
       status: props.status,
-      statuses: [
-        'Order placed',
-        'Preparing',
-        'Cooking',
-        'Serving',
-        'Completed'
-      ]
+      statuses: [ 'Order placed', 'Preparing', 'Cooking', 'Serving', 'Completed' ]
     };
   }
 
@@ -31,10 +25,7 @@ export default class DishStatusStepper extends React.Component {
           <Row>
             {this.state.statuses.map((title, index) => {
               return (
-                <Col
-                  style={[ commonStyles.centered, commonStyles.justifyCenter ]}
-                  key={'status_' + index}
-                >
+                <Col style={[ commonStyles.centered, commonStyles.justifyCenter ]} key={'status_' + index}>
                   <View
                     style={[
                       dishStatusStepperStyles.circle,

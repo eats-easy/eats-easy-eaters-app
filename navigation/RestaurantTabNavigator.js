@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  createStackNavigator,
-  createBottomTabNavigator
-} from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import MenuScreen from '../screens/MenuScreen';
@@ -75,28 +72,22 @@ const RestaurantInfoStack = createStackNavigator(
 // Navigations
 MenuStack.navigationOptions = {
   tabBarLabel: 'Menu',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'restaurant'} />
-  )
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'leaf'} />
 };
 
 OrderStack.navigationOptions = {
   tabBarLabel: 'Order',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'shopping-cart'} />
-  )
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'shopping-cart'} />
 };
 
 CallServiceStack.navigationOptions = {
   tabBarLabel: 'Service',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'room-service'} />
-  )
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'question'} />
 };
 
 PaymentStack.navigationOptions = {
   tabBarLabel: 'Payment',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'payment'} />
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'credit-card'} />
 };
 
 RestaurantInfoStack.navigationOptions = {
