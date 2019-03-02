@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  TouchableNativeFeedback,
-  TextInput,
-  Text,
-  View,
-  ScrollView
-} from 'react-native';
+import { TouchableNativeFeedback, TextInput, Text, View, ScrollView } from 'react-native';
 import { Icon, Button, CheckBox, Slider } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { withNavigation } from 'react-navigation';
@@ -36,24 +30,20 @@ class SearchRestaurantScreen extends React.Component {
       headerTitle: 'Find a restaurant near you',
       headerLeft: (
         <Icon
-        onPress={() =>
-          this.props.navigation.navigate({
-            routeName: 'AppOptions',
-            action: this.props.navigation.navigate({
-              routeName: 'UserProfileStack',
-/*               params: {
-                //restaurant: restaurant
-              } */
-            })
-          })}
-          name="menu"
-          size={30}
+          onPress={() =>
+            this.props.navigation.navigate({
+              routeName: 'AppOptions',
+              action: this.props.navigation.navigate({
+                routeName: 'UserProfileStack',
+                params: {
+                  restaurant: restaurant
+                }
+              })
+            })}
         />
       )
     };
   };
-
-  
 
   handleSearch() {
     // TODO: Create an API search call with filter
@@ -63,12 +53,7 @@ class SearchRestaurantScreen extends React.Component {
     return (
       <View>
         <View style={{ height: this.state.filterExpanded ? 400 : 55 }}>
-          <Grid
-            style={[
-              searchRestaurantStyles.searchBar,
-              commonStyles.shadowMedium
-            ]}
-          >
+          <Grid style={[ searchRestaurantStyles.searchBar, commonStyles.shadowMedium ]}>
             <Row style={{ height: 50 }}>
               <Col style={[ commonStyles.justifyCenter, commonStyles.stretch ]}>
                 <TextInput
@@ -101,22 +86,14 @@ class SearchRestaurantScreen extends React.Component {
             <Row>
               <Col>
                 {this.state.filterExpanded && (
-                  <View
-                    style={[ commonStyles.container, commonStyles.textCenter ]}
-                  >
+                  <View style={[ commonStyles.container, commonStyles.textCenter ]}>
                     <Grid>
                       <Row size={6}>
                         <Col style={commonStyles.justifyCenter}>
-                          {types.map(
-                            (type, i) =>
-                              i % 2 === 0 && this.renderCheckBox(type, i)
-                          )}
+                          {types.map((type, i) => i % 2 === 0 && this.renderCheckBox(type, i))}
                         </Col>
                         <Col style={commonStyles.justifyCenter}>
-                          {types.map(
-                            (type, i) =>
-                              i % 2 !== 0 && this.renderCheckBox(type, i)
-                          )}
+                          {types.map((type, i) => i % 2 !== 0 && this.renderCheckBox(type, i))}
                         </Col>
                       </Row>
                       <Row
@@ -140,18 +117,10 @@ class SearchRestaurantScreen extends React.Component {
                             maximumValue={50}
                             thumbTintColor={Colors.tintColor}
                           />
-                          <Text>
-                            Distance: {Number(this.state.value).toFixed(1)} km
-                          </Text>
+                          <Text>Distance: {Number(this.state.value).toFixed(1)} km</Text>
                         </Col>
                       </Row>
-                      <Row
-                        style={[
-                          commonStyles.justifyCenter,
-                          commonStyles.centered
-                        ]}
-                        size={2}
-                      >
+                      <Row style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={2}>
                         <Button
                           title={'Search'.toUpperCase()}
                           onPress={async () => {
