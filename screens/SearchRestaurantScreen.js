@@ -36,13 +36,33 @@ class SearchRestaurantScreen extends React.Component {
       headerTitle: 'Find a restaurant near you',
       headerLeft: (
         <Icon
-          onPress={() => navigation.navigate('DrawerOpen')}
-          name="menu"
-          size={30}
+        onPress={() =>
+          this.props.navigation.navigate({
+            routeName: 'AppOptions',
+            action: this.props.navigation.navigate({
+              routeName: 'UserProfileStack',
+              params: {
+                restaurant: restaurant
+              }
+            })
+          })}
         />
       )
     };
   };
+
+/*   onPress={() =>
+    this.props.navigation.navigate({
+      routeName: 'Restaurant',
+      action: this.props.navigation.navigate({
+        routeName: 'MenuStack',
+        params: {
+          restaurant: restaurant
+        }
+      })
+    })}
+ */
+
 
   handleSearch() {
     // TODO: Create an API search call with filter
