@@ -31,13 +31,11 @@ class SearchRestaurantScreen extends React.Component {
       headerLeft: (
         <Icon
           onPress={() =>
-            this.props.navigation.navigate({
+            navigation.navigate({
               routeName: 'AppOptions',
-              action: this.props.navigation.navigate({
-                routeName: 'UserProfileStack'
-                /*               params: {
-                //restaurant: restaurant
-              } */
+              action: navigation.navigate({
+                routeName: 'UserProfileStack',
+                params: {}
               })
             })}
           name="menu"

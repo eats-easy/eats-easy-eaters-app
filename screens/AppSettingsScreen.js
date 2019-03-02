@@ -5,16 +5,14 @@ import { withNavigation } from 'react-navigation';
 import { commonStyles } from '../styles';
 import Colors from '../constants/Colors';
 
-class AppSettingsScreen extends React.Component {
+export default class AppSettingsScreen extends React.Component {
   render() {
     return (
       <View style={commonStyles.container}>
         <Text style={[ commonStyles.textBig, commonStyles.textCenter, commonStyles.textStrong ]}>
-          I'm an app settings screen
+          I'm an AppSettingsScreen screen
         </Text>
       </View>
     );
   }
 }
-
-export default withNavigation(AppSettingsScreen);
