@@ -35,11 +35,9 @@ class SearchRestaurantScreen extends React.Component {
               routeName: 'AppOptions',
               action: this.props.navigation.navigate({
                 routeName: 'UserProfileStack'
-                /*
-              params: {
-                restaurant: restaurant
-              }
-              */
+                /*               params: {
+                //restaurant: restaurant
+              } */
               })
             })}
           name="menu"
