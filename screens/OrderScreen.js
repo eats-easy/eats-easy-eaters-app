@@ -31,7 +31,6 @@ export default class OrderScreen extends React.Component {
   }
 
   async componentWillMount() {
-    console.log(await this.storageManager._retrieveUserData());
     let restaurant = await this.storageManager._retrieveRestaurantData();
     await this.setState({
       status: 'loaded',

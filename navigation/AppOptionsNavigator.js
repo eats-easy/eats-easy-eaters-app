@@ -58,19 +58,19 @@ const ExitAppStack = createStackNavigator(
 
 // Navigations
 UserProfileStack.navigationOptions = {
-  tabBarLabel: 'UserProfile',
+  tabBarLabel: 'Profile',
   tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'user'} />
 };
 UserLoggingStack.navigationOptions = {
-  tabBarLabel: 'UserLogging',
+  tabBarLabel: 'Sign in / out',
   tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'sign-in'} />
 };
 AppSettingsStack.navigationOptions = {
-  tabBarLabel: 'AppSettings',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'settings'} />
+  tabBarLabel: 'Settings',
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'cog'} />
 };
 ExitAppStack.navigationOptions = {
-  tabBarLabel: 'ExitApp',
+  tabBarLabel: 'Exit',
   tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'power-off'} />
 };
 

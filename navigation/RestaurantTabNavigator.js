@@ -72,7 +72,7 @@ const RestaurantInfoStack = createStackNavigator(
 // Navigations
 MenuStack.navigationOptions = {
   tabBarLabel: 'Menu',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'restaurant'} />
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'leaf'} />
 };
 
 OrderStack.navigationOptions = {
@@ -82,12 +82,12 @@ OrderStack.navigationOptions = {
 
 CallServiceStack.navigationOptions = {
   tabBarLabel: 'Service',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'room-service'} />
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'question'} />
 };
 
 PaymentStack.navigationOptions = {
   tabBarLabel: 'Payment',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'payment'} />
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'credit-card'} />
 };
 
 RestaurantInfoStack.navigationOptions = {
