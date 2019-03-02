@@ -36,8 +36,7 @@ export const getApiAllRestaurants = async () => {
     const resWithImages = resJson.map((x) => {
       return {
         ...x,
-        image_url:
-          mockImagesArr[Math.floor(Math.random() * mockImagesArr.length)]
+        image_url: mockImagesArr[Math.floor(Math.random() * mockImagesArr.length)]
       };
     });
     return resWithImages;

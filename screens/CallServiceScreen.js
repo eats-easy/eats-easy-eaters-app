@@ -25,9 +25,7 @@ export default class CallServiceScreen extends React.Component {
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(
-        restaurant.restaurantId
-      )
+      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
     });
   }
 

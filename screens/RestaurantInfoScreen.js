@@ -41,12 +41,8 @@ export default class RestaurantInfoScreen extends React.Component {
             />
           </Row>
           <Row style={{ margin: 10, flex: 1, flexDirection: 'column' }}>
-            <Text style={[ commonStyles.textHuge, commonStyles.textBold ]}>
-              {this.state.restaurant.name}
-            </Text>
-            <Text style={[ commonStyles.textBig ]}>
-              {this.state.restaurant.address}
-            </Text>
+            <Text style={[ commonStyles.textHuge, commonStyles.textBold ]}>{this.state.restaurant.name}</Text>
+            <Text style={[ commonStyles.textBig ]}>{this.state.restaurant.address}</Text>
           </Row>
         </Grid>
       </View>

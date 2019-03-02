@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  createStackNavigator,
-  createBottomTabNavigator
-} from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import AppSettingsScreen from '../screens/AppSettingsScreen';
 import ExitAppScreen from '../screens/ExitAppScreen';
 import UserLoggingScreen from '../screens/UserLoggingScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
-
 
 // Stacks
 const AppSettingsStack = createStackNavigator(
@@ -60,28 +56,20 @@ const UserProfileStack = createStackNavigator(
   }
 );
 
-
-
 // Navigations
 AppSettingsStack.navigationOptions = {
   tabBarLabel: 'AppSettings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'settings'} />
-  )
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'settings'} />
 };
 
 ExitAppStack.navigationOptions = {
   tabBarLabel: 'ExitApp',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'power'} />
-  )
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'power'} />
 };
 
 UserLoggingStack.navigationOptions = {
   tabBarLabel: 'UserLogging',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'login'} />
-  )
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'login'} />
 };
 
 UserProfileStack.navigationOptions = {
@@ -89,10 +77,9 @@ UserProfileStack.navigationOptions = {
   tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'face-profile'} />
 };
 
-
 export default createBottomTabNavigator({
-  AppSettingsStack,
-  ExitAppStack,
+  UserProfileStack,
   UserLoggingStack,
-  UserProfileStack
+  AppSettingsStack,
+  ExitAppStack
 });

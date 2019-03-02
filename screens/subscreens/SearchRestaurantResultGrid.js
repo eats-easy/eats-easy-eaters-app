@@ -23,9 +23,7 @@ class SearchRestaurantResultGrid extends Component {
       <View style={[ commonStyles.container, commonStyles.paddingNone ]}>
         {this.state.data !== {} && this.state.status !== 'loading' ? (
           <Grid>
-            <Col style={commonStyles.column}>
-              {this.state.data.map(this.renderItem)}
-            </Col>
+            <Col style={commonStyles.column}>{this.state.data.map(this.renderItem)}</Col>
           </Grid>
         ) : (
           <LoadingCircle />
@@ -55,13 +53,7 @@ class SearchRestaurantResultGrid extends Component {
     return (
       <View key={'restaurant_' + i} style={commonStyles.flexed}>
         <Row style={commonStyles.row}>
-          <View
-            style={[
-              commonStyles.shadowMedium,
-              { marginBottom: 10 },
-              isLast ? commonStyles.tileLast : {}
-            ]}
-          >
+          <View style={[ commonStyles.shadowMedium, { marginBottom: 10 }, isLast ? commonStyles.tileLast : {} ]}>
             <Tile
               imageSrc={{ uri: restaurant.image_url }}
               title={restaurant.name}
