@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
@@ -30,46 +29,25 @@ export default class UserProfileScreen extends React.Component {
     });
   }
 
-
-
   render() {
     return (
-        <View style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
-          {this.state.user && this.state.user.userId ? 
+      <View style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
+        {this.state.user && this.state.user.userId ? (
           //logged in
           <Grid>
-            <Row>
+            <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
               <Text style={[ commonStyles.textBig, commonStyles.textCenter, commonStyles.textStrong ]}>
-              ('Logged in, user ID: ' + this.state.user.userId) 
+                {'Logged in, user ID: ' + this.state.user.userId}
               </Text>
             </Row>
-            <Row>
+            <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
               <Button
                 title={'Sign out'.toUpperCase()}
                 onPress={() => {
                   this.setState({ user: null });
-                 }}
+                }}
                 icon={{
                   name: 'sign-out',
-                 type: 'font-awesome',
-                 size: 20,
-                  color: Colors.white
-                }}
-                rounded
-                 backgroundColor={Colors.tintColor}
-             /> 
-            </Row>
-          </Grid>
-          :
-          //logged out
-            (
-              <Button
-                title={'Sign in'.toUpperCase()}
-                onPress={() => {
-                  this.setState({ signInVisible: true });
-                }}
-                icon={{
-                  name: 'sign-in',
                   type: 'font-awesome',
                   size: 20,
                   color: Colors.white
@@ -77,18 +55,34 @@ export default class UserProfileScreen extends React.Component {
                 rounded
                 backgroundColor={Colors.tintColor}
               />
-            )
-            }
-            <SignInDialog
-            visible={this.state.signInVisible}
-            cancel={() => this.setState({ signInVisible: false })}
-            signUpActionHandler={() => {
-              this.setState({ signInVisible: false, signUpVisible: true });
-           }}
-            />
-            <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} /> 
-         </View>
-        
+            </Row>
+          </Grid>
+        ) : (
+          //logged out
+          <Button
+            title={'Sign in'.toUpperCase()}
+            onPress={() => {
+              this.setState({ signInVisible: true });
+            }}
+            icon={{
+              name: 'sign-in',
+              type: 'font-awesome',
+              size: 20,
+              color: Colors.white
+            }}
+            rounded
+            backgroundColor={Colors.tintColor}
+          />
+        )}
+        <SignInDialog
+          visible={this.state.signInVisible}
+          cancel={() => this.setState({ signInVisible: false })}
+          signUpActionHandler={() => {
+            this.setState({ signInVisible: false, signUpVisible: true });
+          }}
+        />
+        <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} />
+      </View>
     );
   }
 }

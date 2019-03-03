@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { ScrollView, TouchableNativeFeedback, Image, Text, View, BackHandler } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
@@ -10,7 +8,6 @@ import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 import { withNavigation } from 'react-navigation';
 import { Snackbar } from 'react-native-material-ui';
-
 
 export default class AppSettingsScreen extends React.Component {
   constructor() {
@@ -27,7 +24,7 @@ export default class AppSettingsScreen extends React.Component {
 
   exit_function = () => {
     BackHandler.exitApp();
-  }
+  };
 
   async componentWillMount() {
     let user = await this.storageManager._retrieveUserData();
@@ -39,41 +36,45 @@ export default class AppSettingsScreen extends React.Component {
   render() {
     return (
       <View style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
-        <Button
-          title={'delete user data'.toUpperCase()}
-          onPress={() => {
-            {this.state.user && this.state.user.userId ?
-            //user logged in 
-            (this.storageManager._removeUserData({ userId: this.state.user.userId }),     
-            this.setState({ snackRemoveUser: true }))
-            :
-            //user logged out
-            this.setState({ snackUserLoggedOut: true })
-            }
-            }}
-            icon={{
-            name: 'trash',
-            type: 'font-awesome',
-            size: 20,
-            color: Colors.white
-            }}
-            rounded
-           backgroundColor={Colors.tintColor}
-        />
-        <Button
-          title="Exit Button"
-          onPress={this.exit_function}
-        />
-         <Snackbar
-          visible={snackRemoveUser}
+        <Grid>
+          <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
+            <Button
+              title={'delete user data'.toUpperCase()}
+              onPress={() => {
+                {
+                  this.state.user && this.state.user.userId
+                    ? //user logged in
+                      (this.storageManager._removeUserData({ userId: this.state.user.userId }),
+                      this.setState({ snackRemoveUser: true }))
+                    : //user logged out
+                      this.setState({ snackUserLoggedOut: true });
+                }
+              }}
+              icon={{
+                name: 'trash',
+                type: 'font-awesome',
+                size: 20,
+                color: Colors.white
+              }}
+              rounded
+              backgroundColor={Colors.tintColor}
+            />
+          </Row>
+          <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
+            <Button title="Exit Button" onPress={this.exit_function} />
+          </Row>
+        </Grid>
+
+        {/* <Snackbar
+          visible={this.state.snackRemoveUser}
           message="your data has been removed"
           onRequestClose={() => this.setState({ snackVisible: false })}
         />
         <Snackbar
-          visible={snackUserLoggedOut}
+          visible={this.state.snackUserLoggedOut}
           message="you need to log in first"
           onRequestClose={() => this.setState({ snackVisible: false })}
-        />
+        /> */}
       </View>
     );
   }
