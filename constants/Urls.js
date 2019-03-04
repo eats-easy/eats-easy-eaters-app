@@ -6,6 +6,9 @@ export default {
   apiUsers: 'users',
   apiSignIn: 'users/signin',
   apiSignUp: 'users/signup',
+  apiDeleteUser: (id) => {
+  'users/' + id;
+  },
   apiRestaurantMenu: (id) => {
     return 'restaurants/' + id + '/menu';
   }

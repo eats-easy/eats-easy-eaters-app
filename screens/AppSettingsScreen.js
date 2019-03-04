@@ -8,6 +8,7 @@ import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 import { withNavigation } from 'react-navigation';
 import { Snackbar } from 'react-native-material-ui';
+import { deleteApiUser } from '../network/deleteApiUser';
 
 export default class AppSettingsScreen extends React.Component {
   constructor() {
@@ -44,7 +45,8 @@ export default class AppSettingsScreen extends React.Component {
                 {
                   this.state.user && this.state.user.userId
                     ? //user logged in
-                      (this.storageManager._removeUserData({ userId: this.state.user.userId }),
+                      (deleteApiUser(this.state.user.userId),
+                      this.storageManager._removeUserData({ userId: this.state.user.userId }),
                       this.setState({ snackRemoveUser: true }))
                     : //user logged out
                       this.setState({ snackUserLoggedOut: true });
@@ -65,7 +67,7 @@ export default class AppSettingsScreen extends React.Component {
           </Row>
         </Grid>
 
-        {/* <Snackbar
+      {/*    <Snackbar
           visible={this.state.snackRemoveUser}
           message="your data has been removed"
           onRequestClose={() => this.setState({ snackVisible: false })}
@@ -74,7 +76,7 @@ export default class AppSettingsScreen extends React.Component {
           visible={this.state.snackUserLoggedOut}
           message="you need to log in first"
           onRequestClose={() => this.setState({ snackVisible: false })}
-        /> */}
+        />  */}
       </View>
     );
   }
