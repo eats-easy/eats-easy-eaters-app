@@ -231,4 +231,26 @@ export default class StorageManager {
       console.warn('_removeUserData: Error removing data', error);
     }
   };
+
+  // -------------------------------------------------------------------------
+  // table
+  // -------------------------------------------------------------------------
+
+  _retrieveTableData = async () => {
+    try {
+      const table = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:table'));
+      return table;
+    } catch (error) {
+      console.warn('__retrieveTableData: Error retrieving data', error);
+    }
+  };
+
+  _storeTableData = async (table) => {
+    try {
+      await AsyncStorage.setItem('@RestaurantViewStore:table', JSON.stringify(table));
+    } catch (error) {
+      console.warn('_storeTableData: Error storing data', error);
+    }
+  };
+
 }
