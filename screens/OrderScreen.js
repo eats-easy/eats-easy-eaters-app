@@ -128,7 +128,7 @@ export default class OrderScreen extends React.Component {
                         restId: this.state.restaurant.restaurantId,
                         orderStatus: this.state.restaurant.orderStatus,
                         tableId: this.state.table.tableId,
-                        userId: 1,
+                        userId: this.state.user.userId,
                         timeReceived: new Date(),
                         timeDelivered: new Date()
                       };
