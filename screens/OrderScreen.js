@@ -61,7 +61,7 @@ export default class OrderScreen extends React.Component {
   }
 
   render() {
-    pickerValues = await getApiFreeTables(this.state.restaurant.restaurantId); 
+    pickerValues = getApiFreeTables(this.state.restaurant.restaurantId); 
 
     return this.state.restaurant && this.state.restaurant.restaurantId ? (
       <View style={commonStyles.container}>
@@ -121,7 +121,7 @@ export default class OrderScreen extends React.Component {
                     title={'Order'.toUpperCase()}
 
                   // onPress needs to first check that this.state.table is not null, if it is, we get a snackbar
-                  // telling us to chose a table be fore we order, if it isn't we can create the order
+                  // telling us to chose a table before we order, if it isn't we can create the order
 
                     onPress={async () => {
                       var NewOrder = {
