@@ -36,6 +36,16 @@ export default class AppSettingsScreen extends React.Component {
   render() {
     return (
       <View style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
+        <Snackbar
+          visible={this.state.snackRemoveUser}
+          message="your data has been removed"
+          onRequestClose={() => this.setState({ snackVisible: false })}
+        />
+        <Snackbar
+          visible={this.state.snackUserLoggedOut}
+          message="you need to log in first"
+          onRequestClose={() => this.setState({ snackVisible: false })}
+        />
         <Grid>
           <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
             <Button
@@ -64,17 +74,6 @@ export default class AppSettingsScreen extends React.Component {
             <Button title="Exit Button" onPress={this.exit_function} />
           </Row>
         </Grid>
-
-        {/* <Snackbar
-          visible={this.state.snackRemoveUser}
-          message="your data has been removed"
-          onRequestClose={() => this.setState({ snackVisible: false })}
-        />
-        <Snackbar
-          visible={this.state.snackUserLoggedOut}
-          message="you need to log in first"
-          onRequestClose={() => this.setState({ snackVisible: false })}
-        /> */}
       </View>
     );
   }
