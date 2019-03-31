@@ -5,9 +5,6 @@ import TabBarIcon from '../components/TabBarIcon';
 import AppSettingsScreen from '../screens/AppSettingsScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 
-
-
-
 // Stacks
 const UserProfileStack = createStackNavigator(
   {
@@ -21,7 +18,6 @@ const UserProfileStack = createStackNavigator(
   }
 );
 
-
 const AppSettingsStack = createStackNavigator(
   {
     AppSettings: AppSettingsScreen
@@ -34,8 +30,6 @@ const AppSettingsStack = createStackNavigator(
   }
 );
 
-
-
 // Navigations
 UserProfileStack.navigationOptions = {
   tabBarLabel: 'Profile',
@@ -47,8 +41,7 @@ AppSettingsStack.navigationOptions = {
   tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name={'cog'} />
 };
 
-
 export default createBottomTabNavigator({
   UserProfileStack,
-  AppSettingsStack,
+  AppSettingsStack
 });

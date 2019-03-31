@@ -8,7 +8,7 @@ export default {
   apiSignUp: 'users/signup',
   apiOrderItem: 'orderitems',
   apiDeleteUser: (id) => {
-  'users/' + id;
+    'users/' + id;
   },
   apiRestaurantMenu: (id) => {
     return 'restaurants/' + id + '/menu';

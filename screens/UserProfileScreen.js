@@ -44,8 +44,8 @@ export default class UserProfileScreen extends React.Component {
               <Button
                 title={'Sign out'.toUpperCase()}
                 onPress={() => {
-                  (this.storageManager._removeUserData({ userId: this.state.user.userId }),
-                  this.setState({ user: null }))
+                  this.storageManager._removeUserData({ userId: this.state.user.userId }),
+                    this.setState({ user: null });
                 }}
                 icon={{
                   name: 'sign-out',
