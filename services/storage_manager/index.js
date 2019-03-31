@@ -239,6 +239,7 @@ export default class StorageManager {
   _retrieveTableData = async () => {
     try {
       const table = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:table'));
+      console.log(table);
       return table;
     } catch (error) {
       console.warn('__retrieveTableData: Error retrieving data', error);
@@ -252,5 +253,4 @@ export default class StorageManager {
       console.warn('_storeTableData: Error storing data', error);
     }
   };
-
 }
