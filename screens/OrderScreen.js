@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
+import { Picker, Modal, TouchableHighlight, ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
@@ -10,6 +10,8 @@ import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 import { postApiOrder } from '../network/postApiOrder';
+import { getApiFreeTables } from '../network/getApiFreeTables';
+import { postApiOrderItem } from '../network/postApiOrderItem';
 
 export default class OrderScreen extends React.Component {
   constructor() {
@@ -18,17 +20,33 @@ export default class OrderScreen extends React.Component {
       status: 'loading',
       restaurant: null,
       user: null,
+      table: null,
       orders: [],
       orderStatus: 0,
       signInVisible: false,
-      signUpVisible: false
+      signUpVisible: false,
+      pickerDisplayed: false
     };
     this.storageManager = new StorageManager();
   }
 
-  async createOrder() {
-    /* TODO */
+  setPickerValue(newValue) {
+    this.setState({
+      table: newValue
+    })
+
+    this.togglePicker();
   }
+
+  togglePicker() {
+    this.setState({
+      pickerDisplayed: !this.state.pickerDisplayed
+    })
+  }
+
+/*   async createOrder() {
+   
+  } */
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
@@ -37,11 +55,14 @@ export default class OrderScreen extends React.Component {
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
+      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId),
+      table: await this.storageManager._retrieveTableData()
     });
   }
 
   render() {
+    pickerValues = getApiFreeTables(this.state.restaurant.restaurantId); 
+
     return this.state.restaurant && this.state.restaurant.restaurantId ? (
       <View style={commonStyles.container}>
         <View style={[ dishStatusStepperStyles.dishStatusContainer ]}>
@@ -94,20 +115,40 @@ export default class OrderScreen extends React.Component {
                 />
               </Col>
               <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
+              
                 {this.state.user && this.state.user.userId ? (
                   <Button
                     title={'Order'.toUpperCase()}
+
+                  // onPress needs to first check that this.state.table is not null, if it is, we get a snackbar
+                  // telling us to chose a table before we order, if it isn't we can create the order
+
                     onPress={async () => {
                       var NewOrder = {
                         restId: this.state.restaurant.restaurantId,
                         orderStatus: this.state.restaurant.orderStatus,
-                        tableId: 1,
-                        userId: 1,
+                        tableId: this.state.table.tableId,
+                        userId: this.state.user.userId,
                         timeReceived: new Date(),
                         timeDelivered: new Date()
                       };
 
                       createdOrder = await postApiOrder(NewOrder);
+
+                    /*   add all individual items in the order to the server DB
+                      OrderItem consists of: orderId, dishId, restId, quantity, subtotal,
+                     maybe we don't need quantity and subtotal?*/
+                      
+                     //this is a blueprint
+                      this.state.orders.map(await postApiOrderItem(
+                        orderItem = {restId: this.state.restaurant.restaurantId,
+                                     dishId: this.state.orders.dish.dishId,
+                                     orderId: createdOrder.orderId,
+                                     quantity: 1,
+                                     subtotal: this.state.orders.dish.price
+                        }
+                      ))
+
 
                       await this.storageManager._addToOrdersStatusesData({
                         restaurantId: this.state.restaurant.restaurantId,
@@ -146,6 +187,35 @@ export default class OrderScreen extends React.Component {
             </Row>
           </Grid>
         </View>
+
+        <View style={{ height: 60, padding: 10 }}>
+          <Text>The default value is { this.state.table }</Text>
+          <Button onPress={() => this.togglePicker()} title={ "Select a value!" } />
+          <Modal visible={this.state.pickerDisplayed} animationType={"slide"} transparent={true}>
+            <View style={{ margin: 20, padding: 20,
+              backgroundColor: '#efefef',
+              bottom: 20,
+              left: 20,
+              right: 20,
+             alignItems: 'center',
+              position: 'absolute' }}>
+             <Text>Please pick a value</Text>
+             { pickerValues.map((value, index) => {
+                return <TouchableHighlight key={index} onPress={() => this.setPickerValue(value.value)} style={{ paddingTop: 4, paddingBottom: 4 }}>
+                    <Text>{ value.title }</Text>
+                  </TouchableHighlight>
+                  <TouchableHighlight onPress={() => this.togglePicker()} style={{ paddingTop: 4, paddingBottom: 4 }}>
+                  <Text style={{ color: '#999' }}>Cancel</Text>
+                 </TouchableHighlight>
+ 
+            </View>
+          </Modal> 
+        </View>
+              })}
+    
+
+
+
         <SignInDialog
           visible={this.state.signInVisible}
           cancel={() => this.setState({ signInVisible: false })}
