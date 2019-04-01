@@ -48,10 +48,6 @@ export default class SignUpDialog extends React.Component {
 
   async signUpHandler(user) {
     try {
-      // TODO: REMOVE!!!
-      console.log(user);
-      // TODO: REMOVE!!!
-
       if (
         !user.email ||
         !user.phone ||
@@ -69,11 +65,6 @@ export default class SignUpDialog extends React.Component {
 
       let hashed_passwd = Base64.encode(user.password);
 
-      // TODO: REMOVE!!!
-      console.log('2');
-      console.log(hashed_passwd);
-      // TODO: REMOVE!!!
-
       var userSignUp = {
         userName: user.userName,
         firstName: user.firstName,
@@ -84,10 +75,6 @@ export default class SignUpDialog extends React.Component {
       };
 
       let res = await postApiUserSignUp(userSignUp);
-
-      // TODO: REMOVE!!!
-      console.log(res);
-      // TODO: REMOVE!!!
 
       this.setState({ user: { userId: res } });
       await this.storageManager._storeUserData({ userId: res });

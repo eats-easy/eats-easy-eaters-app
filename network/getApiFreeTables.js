@@ -5,7 +5,7 @@ export const getApiFreeTables = async (id) => {
   try {
     const res = await fetch(url + urls.apiFreeTables(id));
     const resJson = await res.json();
-    console.log(res);
+    console.log(resJson);
     return resJson;
   } catch (err) {
     console.error(err);

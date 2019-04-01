@@ -64,7 +64,7 @@ export default class OrderScreen extends React.Component {
       user: await this.storageManager._retrieveUserData(),
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
       orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId),
-      table: await this.storageManager._retrieveTableData(),
+      table: await this.storageManager._retrieveTableDataOfRest(restaurant.restaurantId),
       pickerValues: await getApiFreeTables(restaurant.restaurantId)
     });
   }
@@ -127,7 +127,6 @@ export default class OrderScreen extends React.Component {
                     title={'Order'.toUpperCase()}
                     // onPress needs to first check that this.state.table is not null, if it is, we get a snackbar
                     // telling us to chose a table before we order, if it isn't we can create the order
-
                     onPress={async () => {
                       var NewOrder = {
                         restId: this.state.restaurant.restaurantId,
@@ -140,11 +139,11 @@ export default class OrderScreen extends React.Component {
 
                       createdOrder = await postApiOrder(NewOrder);
 
-                      /*   add all individual items in the order to the server DB
-                      OrderItem consists of: orderId, dishId, restId, quantity, subtotal,
-                     maybe we don't need quantity and subtotal?*/
+                      // add all individual items in the order to the server DB
+                      // OrderItem consists of: orderId, dishId, restId, quantity, subtotal,
+                      // maybe we don't need quantity and subtotal?
 
-                      //this is a blueprint
+                      // this is a blueprint
                       this.state.orders.map(
                         await postApiOrderItem(
                           (orderItem = {
@@ -195,7 +194,7 @@ export default class OrderScreen extends React.Component {
           </Grid>
         </View>
 
-        <View style={{ height: 60, padding: 10 }}>
+        {/* <View style={{ height: 60, padding: 10 }}>
           <Text>The default value is {this.state.table}</Text>
           <Button onPress={() => this.togglePicker()} title={'Select a value!'} />
           <Modal
@@ -237,7 +236,7 @@ export default class OrderScreen extends React.Component {
               </TouchableHighlight>
             </View>
           </Modal>
-        </View>
+        </View> */}
 
         <SignInDialog
           visible={this.state.signInVisible}
