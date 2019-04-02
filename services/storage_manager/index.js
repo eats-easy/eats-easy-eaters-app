@@ -8,7 +8,6 @@ export default class StorageManager {
   _retrieveRestaurantData = async () => {
     try {
       const restaurant = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:restaurant'));
-      // console.warn('_retrieveRestaurantData', restaurant);
       return restaurant;
     } catch (error) {
       console.warn('_retrieveRestaurantData: Error retrieving data', error);
@@ -17,10 +16,17 @@ export default class StorageManager {
 
   _storeRestaurantData = async (restaurant) => {
     try {
-      // console.warn('_storeRestaurantData', restaurant);
       await AsyncStorage.setItem('@RestaurantViewStore:restaurant', JSON.stringify(restaurant));
     } catch (error) {
       console.warn('_storeRestaurantData: Error storing data', error);
+    }
+  };
+
+  _removeAllRestaurantData = async () => {
+    try {
+      this._storeRestaurantData(null);
+    } catch (error) {
+      console.warn('_removeRestaurantData: Error removing data', error);
     }
   };
 
@@ -31,7 +37,6 @@ export default class StorageManager {
   _retrieveAllOrdersData = async () => {
     try {
       const orders = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:orders'));
-      // console.warn('_retrieveAllOrdersData', orders);
       return orders;
     } catch (error) {
       console.warn('_retrieveAllOrdersData: Error retrieving data', error);
@@ -248,7 +253,7 @@ export default class StorageManager {
   _retrieveTableDataOfRest = async (restaurantId) => {
     try {
       let retTables = [];
-      const tables = (await this._retrieveAllOrderStatuses()) || [];
+      const tables = (await this._retrieveAllTableData()) || [];
 
       for (let item of tables) {
         if (item.restaurantId === restaurantId) {
@@ -281,9 +286,25 @@ export default class StorageManager {
 
   _removeTablesData = async () => {
     try {
-      await this._storeTableData(null);
+      await this._storeTableData([]);
     } catch (error) {
       console.warn('_removeTablesData: Error removing data', error);
+    }
+  };
+
+  // -------------------------------------------------------------------------
+  // Remove all
+  // -------------------------------------------------------------------------
+
+  _removeAllData = async () => {
+    try {
+      await this._removeAllRestaurantData();
+      await this._removeAllOrders();
+      await this._removeAllOrdersStatuses();
+      await this._removeTablesData();
+      await this._removeUserData();
+    } catch (error) {
+      console.warn('_removeAllData: Error removing data', error);
     }
   };
 }

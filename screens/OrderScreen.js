@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Picker,
-  Modal,
-  TouchableHighlight,
-  ScrollView,
-  TouchableNativeFeedback,
-  Image,
-  Text,
-  View
-} from 'react-native';
+import { Modal, TouchableHighlight, ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
@@ -58,14 +49,17 @@ export default class OrderScreen extends React.Component {
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
+    let tables = await getApiFreeTables(restaurant.restaurantId);
+    await this.storageManager._storeTableData(tables);
+
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
       orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId),
-      table: await this.storageManager._retrieveTableDataOfRest(restaurant.restaurantId),
-      pickerValues: await getApiFreeTables(restaurant.restaurantId)
+      table: tables.length > 0 ? tables[0] : null,
+      pickerValues: tables
     });
   }
 
@@ -91,7 +85,7 @@ export default class OrderScreen extends React.Component {
         <View style={{ height: 60, padding: 10 }}>
           <Grid>
             <Row>
-              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={1}>
                 <Icon
                   raised
                   name="refresh"
@@ -106,7 +100,7 @@ export default class OrderScreen extends React.Component {
                   }}
                 />
               </Col>
-              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={1}>
                 <Icon
                   raised
                   name="trash"
@@ -121,7 +115,17 @@ export default class OrderScreen extends React.Component {
                   }}
                 />
               </Col>
-              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={1}>
+                <Icon
+                  raised
+                  name="hand-o-right"
+                  type="font-awesome"
+                  size={20}
+                  color={Colors.black}
+                  onPress={() => this.togglePicker()}
+                />
+              </Col>
+              <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={2}>
                 {this.state.user && this.state.user.userId ? (
                   <Button
                     title={'Order'.toUpperCase()}
@@ -144,7 +148,8 @@ export default class OrderScreen extends React.Component {
                       // maybe we don't need quantity and subtotal?
 
                       // this is a blueprint
-                      this.state.orders.map(
+                      this.state.orders.map(async (value, index) => {
+                        // console.log(JSON.stringify(this.state));
                         await postApiOrderItem(
                           (orderItem = {
                             restId: this.state.restaurant.restaurantId,
@@ -153,8 +158,8 @@ export default class OrderScreen extends React.Component {
                             quantity: 1,
                             subtotal: this.state.orders.dish.price
                           })
-                        )
-                      );
+                        );
+                      });
 
                       await this.storageManager._addToOrdersStatusesData({
                         restaurantId: this.state.restaurant.restaurantId,
@@ -194,49 +199,45 @@ export default class OrderScreen extends React.Component {
           </Grid>
         </View>
 
-        {/* <View style={{ height: 60, padding: 10 }}>
-          <Text>The default value is {this.state.table}</Text>
-          <Button onPress={() => this.togglePicker()} title={'Select a value!'} />
-          <Modal
-            visible={this.state.pickerDisplayed}
-            animationType={'slide'}
-            transparent={true}
-            onRequestClose={() => {
-              this.setState({ pickerDisplayed: !this.state.pickerDisplayed });
+        <Modal
+          visible={this.state.pickerDisplayed}
+          animationType={'slide'}
+          transparent={true}
+          onRequestClose={() => {
+            this.setState({ pickerDisplayed: !this.state.pickerDisplayed });
+          }}
+        >
+          <View
+            style={{
+              margin: 20,
+              padding: 30,
+              backgroundColor: '#efefef',
+              bottom: 100,
+              left: 20,
+              right: 20,
+              alignItems: 'center',
+              position: 'absolute'
             }}
           >
-            <View
-              style={{
-                margin: 20,
-                padding: 20,
-                backgroundColor: '#efefef',
-                bottom: 20,
-                left: 20,
-                right: 20,
-                alignItems: 'center',
-                position: 'absolute'
-              }}
-            >
-              <Text>Please pick a value</Text>
-              {this.state.pickerValues.map((value, index) => {
-                return (
-                  <View key={'picker_' + index}>
-                    <TouchableHighlight
-                      key={index}
-                      onPress={() => this.setPickerValue(value.value)}
-                      style={{ paddingTop: 4, paddingBottom: 4 }}
-                    >
-                      <Text>{value.title}</Text>
-                    </TouchableHighlight>
-                  </View>
-                );
-              })}
-              <TouchableHighlight onPress={() => this.togglePicker()} style={{ paddingTop: 4, paddingBottom: 4 }}>
-                <Text style={{ color: '#999' }}>Cancel</Text>
-              </TouchableHighlight>
-            </View>
-          </Modal>
-        </View> */}
+            <Text>Please pick a value</Text>
+            {this.state.pickerValues.map((value, index) => {
+              return (
+                <View key={'picker_' + index}>
+                  <TouchableHighlight
+                    key={index}
+                    onPress={() => this.setPickerValue(value.tableId)}
+                    style={{ paddingTop: 4, paddingBottom: 4 }}
+                  >
+                    <Text>{value.tableCodeName}</Text>
+                  </TouchableHighlight>
+                </View>
+              );
+            })}
+            <TouchableHighlight onPress={() => this.togglePicker()} style={{ paddingTop: 4, paddingBottom: 4 }}>
+              <Text style={{ color: '#999' }}>Cancel</Text>
+            </TouchableHighlight>
+          </View>
+        </Modal>
 
         <SignInDialog
           visible={this.state.signInVisible}
