@@ -118,7 +118,7 @@ export default class OrderScreen extends React.Component {
               <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={1}>
                 <Icon
                   raised
-                  name="hand-o-right"
+                  name="hand-o-down"
                   type="font-awesome"
                   size={20}
                   color={Colors.black}
@@ -149,7 +149,6 @@ export default class OrderScreen extends React.Component {
 
                       // this is a blueprint
                       this.state.orders.map(async (value, index) => {
-                        // console.log(JSON.stringify(this.state));
                         await postApiOrderItem(
                           (orderItem = {
                             restId: this.state.restaurant.restaurantId,
