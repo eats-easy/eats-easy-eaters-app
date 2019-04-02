@@ -1,11 +1,12 @@
 import React from 'react';
-import { Modal, TouchableHighlight, ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
+import { ScrollView, TouchableNativeFeedback, Image, Text, View } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import DishStatusStepper from '../components/DishStatusStepper';
 import SignInDialog from '../components/SignInDialog';
 import SignUpDialog from '../components/SignUpDialog';
+import TablePickerDialog from '../components/TablePickerDialog';
 import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
@@ -20,46 +21,30 @@ export default class OrderScreen extends React.Component {
       status: 'loading',
       restaurant: null,
       user: null,
-      table: null,
       orders: [],
       orderStatus: 0,
       signInVisible: false,
       signUpVisible: false,
-      pickerValues: [],
-      pickerDisplayed: false
+      tablePickerVisible: false
     };
     this.storageManager = new StorageManager();
-  }
-
-  setPickerValue(newValue) {
-    this.setState({
-      table: newValue
-    });
-
-    this.togglePicker();
-  }
-
-  togglePicker() {
-    this.setState({
-      pickerDisplayed: !this.state.pickerDisplayed
-    });
   }
 
   async createOrder() {}
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
+
     let tables = await getApiFreeTables(restaurant.restaurantId);
-    await this.storageManager._storeTableData(tables);
+    await this.storageManager._storeTablesData(tables);
+    tables.length > 0 && (await this.storageManager._storeTableData(tables[0]));
 
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId),
-      table: tables.length > 0 ? tables[0] : null,
-      pickerValues: tables
+      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
     });
   }
 
@@ -122,7 +107,7 @@ export default class OrderScreen extends React.Component {
                   type="font-awesome"
                   size={20}
                   color={Colors.black}
-                  onPress={() => this.togglePicker()}
+                  onPress={() => this.setState({ tablePickerVisible: true })}
                 />
               </Col>
               <Col style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={2}>
@@ -135,7 +120,7 @@ export default class OrderScreen extends React.Component {
                       var NewOrder = {
                         restId: this.state.restaurant.restaurantId,
                         orderStatus: this.state.restaurant.orderStatus,
-                        tableId: this.state.table.tableId,
+                        tableId: await this.storageManager._retrieveTableData().tableId,
                         userId: this.state.user.userId,
                         timeReceived: new Date(),
                         timeDelivered: new Date()
@@ -198,45 +183,10 @@ export default class OrderScreen extends React.Component {
           </Grid>
         </View>
 
-        <Modal
-          visible={this.state.pickerDisplayed}
-          animationType={'slide'}
-          transparent={true}
-          onRequestClose={() => {
-            this.setState({ pickerDisplayed: !this.state.pickerDisplayed });
-          }}
-        >
-          <View
-            style={{
-              margin: 20,
-              padding: 30,
-              backgroundColor: '#efefef',
-              bottom: 100,
-              left: 20,
-              right: 20,
-              alignItems: 'center',
-              position: 'absolute'
-            }}
-          >
-            <Text>Please pick a value</Text>
-            {this.state.pickerValues.map((value, index) => {
-              return (
-                <View key={'picker_' + index}>
-                  <TouchableHighlight
-                    key={index}
-                    onPress={() => this.setPickerValue(value.tableId)}
-                    style={{ paddingTop: 4, paddingBottom: 4 }}
-                  >
-                    <Text>{value.tableCodeName}</Text>
-                  </TouchableHighlight>
-                </View>
-              );
-            })}
-            <TouchableHighlight onPress={() => this.togglePicker()} style={{ paddingTop: 4, paddingBottom: 4 }}>
-              <Text style={{ color: '#999' }}>Cancel</Text>
-            </TouchableHighlight>
-          </View>
-        </Modal>
+        <TablePickerDialog
+          visible={this.state.tablePickerVisible}
+          cancel={() => this.setState({ tablePickerVisible: false })}
+        />
 
         <SignInDialog
           visible={this.state.signInVisible}

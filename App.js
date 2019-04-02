@@ -22,7 +22,7 @@ export default class App extends React.Component {
       console.log(await this.storageManager._retrieveRestaurantData());
       console.log(await this.storageManager._retrieveAllOrdersData());
       console.log(await this.storageManager._retrieveAllOrderStatuses());
-      console.log(await this.storageManager._retrieveAllTableData());
+      console.log(await this.storageManager._retrieveAllTablesData());
     }
   }
 

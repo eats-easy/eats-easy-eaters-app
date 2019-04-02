@@ -241,34 +241,51 @@ export default class StorageManager {
   // Table
   // -------------------------------------------------------------------------
 
-  _retrieveAllTableData = async () => {
+  _retrieveAllTablesData = async () => {
     try {
-      const table = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:tables'));
+      const tables = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:tables'));
+      return tables;
+    } catch (error) {
+      console.warn('_retrieveTablesData: Error retrieving data', error);
+    }
+  };
+
+  _retrieveTablesDataOfRest = async (restId) => {
+    try {
+      let retTables = [];
+      const tables = (await this._retrieveAllTablesData()) || [];
+
+      for (let item of tables) {
+        if (item.restId === restId) {
+          retTables.push(item);
+        }
+      }
+      return retTables;
+    } catch (error) {
+      console.warn('_retrieveTablesData: Error retrieving data', error);
+    }
+  };
+
+  _retrieveTableData = async () => {
+    try {
+      const table = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:table'));
       return table;
     } catch (error) {
       console.warn('_retrieveTableData: Error retrieving data', error);
     }
   };
 
-  _retrieveTableDataOfRest = async (restaurantId) => {
+  _storeTablesData = async (tables) => {
     try {
-      let retTables = [];
-      const tables = (await this._retrieveAllTableData()) || [];
-
-      for (let item of tables) {
-        if (item.restaurantId === restaurantId) {
-          retTables.push(item);
-        }
-      }
-      return retTables;
+      await AsyncStorage.setItem('@RestaurantViewStore:tables', JSON.stringify(tables));
     } catch (error) {
-      console.warn('_retrieveTableData: Error retrieving data', error);
+      console.warn('_storeTablesData: Error storing data', error);
     }
   };
 
-  _storeTableData = async (tables) => {
+  _storeTableData = async (table) => {
     try {
-      await AsyncStorage.setItem('@RestaurantViewStore:tables', JSON.stringify(tables));
+      await AsyncStorage.setItem('@RestaurantViewStore:table', JSON.stringify(table));
     } catch (error) {
       console.warn('_storeTableData: Error storing data', error);
     }
@@ -276,7 +293,7 @@ export default class StorageManager {
 
   _addToTablesData = async (newTables) => {
     try {
-      const tables = (await this._retrieveAllTableData()) || [];
+      const tables = (await this._retrieveAllTablesData()) || [];
       tables.push(newTables);
       await this._storeOrdersData(tables);
     } catch (error) {
@@ -286,7 +303,7 @@ export default class StorageManager {
 
   _removeTablesData = async () => {
     try {
-      await this._storeTableData([]);
+      await this._storeTablesData([]);
     } catch (error) {
       console.warn('_removeTablesData: Error removing data', error);
     }
