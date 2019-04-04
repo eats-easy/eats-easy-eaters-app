@@ -63,6 +63,8 @@ export default class SignInDialog extends React.Component {
 
       let res = await postApiUserSignIn(userSignIn);
 
+      if (res === -99999) return;
+
       this.setState({ user: { userId: res } });
       await this.storageManager._storeUserData({ userId: res });
     } catch (err) {
