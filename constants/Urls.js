@@ -3,10 +3,11 @@ export default {
   apiVersionUrl: 'whoami',
   apiAllRestaurants: 'restaurants',
   apiOrders: 'orders',
+  apiOrderItem: 'orderitems',
   apiUsers: 'users',
   apiSignIn: 'users/signin',
   apiSignUp: 'users/signup',
-  apiOrderItem: 'orderitems',
+  apiServiceCall: 'callwaiter',
   apiDeleteUser: (id) => {
     'users/' + id;
   },
