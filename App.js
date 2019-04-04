@@ -15,14 +15,15 @@ export default class App extends React.Component {
   }
 
   async componentWillMount() {
-    let DEBUG = false;
+    let DEBUG = true;
     if (DEBUG) {
-      await this.storageManager._removeAllData();
-      console.log(await this.storageManager._retrieveUserData());
-      console.log(await this.storageManager._retrieveRestaurantData());
-      console.log(await this.storageManager._retrieveAllOrdersData());
-      console.log(await this.storageManager._retrieveAllOrderStatuses());
-      console.log(await this.storageManager._retrieveAllTablesData());
+      // await this.storageManager._removeAllData();
+      console.log('_retrieveUserData', await this.storageManager._retrieveUserData());
+      console.log('_retrieveRestaurantData', await this.storageManager._retrieveRestaurantData());
+      console.log('_retrieveAllOrdersData', await this.storageManager._retrieveAllOrdersData());
+      console.log('_retrieveAllOrderStatuses', await this.storageManager._retrieveAllOrderStatuses());
+      console.log('_retrieveAllTablesData', await this.storageManager._retrieveAllTablesData());
+      console.log('_retrieveTableData', await this.storageManager._retrieveTableData());
     }
   }
 

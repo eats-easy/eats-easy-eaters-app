@@ -309,6 +309,14 @@ export default class StorageManager {
     }
   };
 
+  _removeTableData = async () => {
+    try {
+      await this._storeTableData(null);
+    } catch (error) {
+      console.warn('_removeTableData: Error removing data', error);
+    }
+  };
+
   // -------------------------------------------------------------------------
   // Remove all
   // -------------------------------------------------------------------------
@@ -319,6 +327,7 @@ export default class StorageManager {
       await this._removeAllOrders();
       await this._removeAllOrdersStatuses();
       await this._removeTablesData();
+      await this._removeTableData();
       await this._removeUserData();
     } catch (error) {
       console.warn('_removeAllData: Error removing data', error);
