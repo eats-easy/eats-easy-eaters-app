@@ -37,7 +37,12 @@ export default class OrderScreen extends React.Component {
 
     let tables = await getApiFreeTables(restaurant.restaurantId);
     await this.storageManager._storeTablesData(tables);
-    tables.length > 0 && (await this.storageManager._storeTableData(tables[0]));
+    let table = await this.storageManager._retrieveTableData();
+
+    tables.length > 0 &&
+      table &&
+      table.restId !== restaurant.restaurantId &&
+      (await this.storageManager._storeTableData(tables[0]));
 
     await this.setState({
       status: 'loaded',
@@ -114,35 +119,39 @@ export default class OrderScreen extends React.Component {
                 {this.state.user && this.state.user.userId ? (
                   <Button
                     title={'Order'.toUpperCase()}
-                    // onPress needs to first check that this.state.table is not null, if it is, we get a snackbar
-                    // telling us to chose a table before we order, if it isn't we can create the order
                     onPress={async () => {
-                      var NewOrder = {
-                        restId: this.state.restaurant.restaurantId,
-                        orderStatus: this.state.restaurant.orderStatus,
-                        tableId: await this.storageManager._retrieveTableData().tableId,
-                        userId: this.state.user.userId,
+                      let table = await this.storageManager._retrieveTableData();
+
+                      // TODO: Show error
+                      if (!table || table.table === -99999) return;
+
+                      let NewOrder = {
+                        orderStatus: 1,
                         timeReceived: new Date(),
-                        timeDelivered: new Date()
+                        timeDelivered: new Date(),
+                        restId: this.state.restaurant.restaurantId,
+                        tableId: table.tableId,
+                        userId: this.state.user.userId
                       };
+
+                      console.log('NewOrder', NewOrder);
 
                       createdOrder = await postApiOrder(NewOrder);
 
-                      // add all individual items in the order to the server DB
-                      // OrderItem consists of: orderId, dishId, restId, quantity, subtotal,
-                      // maybe we don't need quantity and subtotal?
+                      console.log('postApiOrder', createdOrder);
 
-                      // this is a blueprint
                       this.state.orders.map(async (value, index) => {
-                        await postApiOrderItem(
+                        let postedOrderItem = await postApiOrderItem(
                           (orderItem = {
                             restId: this.state.restaurant.restaurantId,
-                            dishId: this.state.orders.dish.dishId,
+                            dishId: value.dishId,
                             orderId: createdOrder.orderId,
                             quantity: 1,
-                            subtotal: this.state.orders.dish.price
+                            subtotal: value.price
                           })
                         );
+
+                        console.log('postApiOrderItem', postedOrderItem);
                       });
 
                       await this.storageManager._addToOrdersStatusesData({
@@ -185,7 +194,7 @@ export default class OrderScreen extends React.Component {
 
         <TablePickerDialog
           visible={this.state.tablePickerVisible}
-          cancel={() => this.setState({ tablePickerVisible: false })}
+          close={() => this.setState({ tablePickerVisible: false })}
         />
 
         <SignInDialog
