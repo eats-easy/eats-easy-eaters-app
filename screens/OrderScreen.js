@@ -30,8 +30,6 @@ export default class OrderScreen extends React.Component {
     this.storageManager = new StorageManager();
   }
 
-  async createOrder() {}
-
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
 
@@ -44,12 +42,14 @@ export default class OrderScreen extends React.Component {
       table.restId !== restaurant.restaurantId &&
       (await this.storageManager._storeTableData(tables[0]));
 
+    let order = await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId);
+
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
+      orderStatus: order ? (order.orderStatus ? order.orderStatus : 1) : 1
     });
   }
 
@@ -136,6 +136,8 @@ export default class OrderScreen extends React.Component {
 
                       createdOrder = await postApiOrder(NewOrder);
 
+                      console.log('createdOrder', createdOrder);
+
                       this.state.orders.map(async (value, index) => {
                         // TODO: Do something with postedOrderItem
                         let postedOrderItem = await postApiOrderItem(
@@ -149,10 +151,7 @@ export default class OrderScreen extends React.Component {
                         );
                       });
 
-                      await this.storageManager._addToOrdersStatusesData({
-                        restaurantId: this.state.restaurant.restaurantId,
-                        orderStatus: 1
-                      });
+                      await this.storageManager._addToOrdersStatusesData(createdOrder);
 
                       this.setState({ orderStatus: 1 });
                     }}

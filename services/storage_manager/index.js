@@ -137,14 +137,14 @@ export default class StorageManager {
     }
   };
 
-  _retrieveOrderStatusOfRest = async (restaurantId) => {
+  _retrieveOrderStatusOfRest = async (restId) => {
     try {
       const ordersStatuses = (await this._retrieveAllOrderStatuses()) || [];
       let retOrderStatus = 0;
 
       for (let item of ordersStatuses) {
-        if (item.restaurantId === restaurantId) {
-          retOrderStatus = item.orderStatus;
+        if (item.restId === restId) {
+          retOrderStatus = item;
           break;
         }
       }

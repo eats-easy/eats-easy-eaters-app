@@ -12,6 +12,7 @@ export const postApiPayment = async (data) => {
       }
     });
     const resJson = await res.json();
+    console.log(resJson);
     return resJson;
   } catch (err) {
     console.error(err);
