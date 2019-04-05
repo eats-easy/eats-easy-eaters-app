@@ -8,7 +8,7 @@ export default {
   apiSignIn: 'users/signin',
   apiSignUp: 'users/signup',
   apiServiceCall: 'callwaiter',
-  apiPayment: 'payments',
+  apiPayments: 'payments',
   apiDeleteUser: (id) => {
     'users/' + id;
   },

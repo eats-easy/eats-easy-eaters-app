@@ -1,5 +1,5 @@
 import urls from '../constants/Urls';
-const url = urls.apiRootUrl + urls.apiOrders;
+const url = urls.apiRootUrl + urls.apiPayments;
 
 export const postApiPayment = async (data) => {
   try {
