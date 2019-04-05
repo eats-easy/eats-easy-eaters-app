@@ -29,8 +29,6 @@ export default class TablePickerDialog extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.visible !== prevState.visible) {
       return { visible: nextProps.visible };
-    } else if (nextProps.signInError !== prevState.signInError) {
-      return { signInError: nextProps.signInError };
     } else return null;
   }
 
@@ -48,8 +46,6 @@ export default class TablePickerDialog extends React.Component {
     if (!table) {
       table = { tableId: -99999 };
     }
-
-    // console.log(tables, table);
 
     this.setState({ restaurant, tables, table });
   }
@@ -92,7 +88,6 @@ export default class TablePickerDialog extends React.Component {
                       onPress={async () => {
                         this.pickTableHandler(value);
                         this.setState({ table: value });
-                        console.log(await this.storageManager._retrieveTableData());
                         setTimeout(() => this.props.close(), 500);
                       }}
                       rounded

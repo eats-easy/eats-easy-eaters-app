@@ -318,6 +318,35 @@ export default class StorageManager {
   };
 
   // -------------------------------------------------------------------------
+  // Payment
+  // -------------------------------------------------------------------------
+
+  _retrievePaymentMethodData = async () => {
+    try {
+      const paymentMethod = await JSON.parse(await AsyncStorage.getItem('@RestaurantViewStore:paymentMethod'));
+      return paymentMethod;
+    } catch (error) {
+      console.warn('_retrievePaymentMethodData: Error retrieving data', error);
+    }
+  };
+
+  _storePaymentMethodData = async (paymentMethod) => {
+    try {
+      await AsyncStorage.setItem('@RestaurantViewStore:paymentMethod', JSON.stringify(paymentMethod));
+    } catch (error) {
+      console.warn('_storePaymentMethodData: Error storing data', error);
+    }
+  };
+
+  _removePaymentMethodData = async () => {
+    try {
+      await this._storePaymentMethodData(null);
+    } catch (error) {
+      console.warn('_removePaymentMethodData: Error removing data', error);
+    }
+  };
+
+  // -------------------------------------------------------------------------
   // Remove all
   // -------------------------------------------------------------------------
 
@@ -329,6 +358,7 @@ export default class StorageManager {
       await this._removeTablesData();
       await this._removeTableData();
       await this._removeUserData();
+      await this._removePaymentMethodData();
     } catch (error) {
       console.warn('_removeAllData: Error removing data', error);
     }

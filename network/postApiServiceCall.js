@@ -11,8 +11,8 @@ export const postApiServiceCall = async (data) => {
         Accept: 'application/json'
       }
     });
-    const { serviceCallId } = await res.json();
-    return serviceCallId;
+    const { callId } = await res.json();
+    return callId;
   } catch (err) {
     console.error(err);
     throw new Error(err);

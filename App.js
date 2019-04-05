@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import { commonStyles } from './styles';
@@ -24,6 +24,7 @@ export default class App extends React.Component {
       console.log('_retrieveAllOrderStatuses', await this.storageManager._retrieveAllOrderStatuses());
       console.log('_retrieveAllTablesData', await this.storageManager._retrieveAllTablesData());
       console.log('_retrieveTableData', await this.storageManager._retrieveTableData());
+      console.log('_retrievePaymentMethodData', await this.storageManager._retrievePaymentMethodData());
     }
   }
 

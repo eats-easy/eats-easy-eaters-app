@@ -134,13 +134,10 @@ export default class OrderScreen extends React.Component {
                         userId: this.state.user.userId
                       };
 
-                      console.log('NewOrder', NewOrder);
-
                       createdOrder = await postApiOrder(NewOrder);
 
-                      console.log('postApiOrder', createdOrder);
-
                       this.state.orders.map(async (value, index) => {
+                        // TODO: Do something with postedOrderItem
                         let postedOrderItem = await postApiOrderItem(
                           (orderItem = {
                             restId: this.state.restaurant.restaurantId,
@@ -150,8 +147,6 @@ export default class OrderScreen extends React.Component {
                             subtotal: value.price
                           })
                         );
-
-                        console.log('postApiOrderItem', postedOrderItem);
                       });
 
                       await this.storageManager._addToOrdersStatusesData({
