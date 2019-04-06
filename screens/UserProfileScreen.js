@@ -10,6 +10,8 @@ import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 
+import { getApiUser } from '../network/getApiUser';
+
 export default class UserProfileScreen extends React.Component {
   constructor() {
     super();
@@ -22,22 +24,27 @@ export default class UserProfileScreen extends React.Component {
 
     this.storageManager = new StorageManager();
   }
-  async componentWillMount() {
+  async componentDidMount() {
     let user = await this.storageManager._retrieveUserData();
-    await this.setState({
-      user: user
-    });
+
+    if (user && user.userId !== null) {
+      let retUser = await getApiUser(user.userId);
+      console.log(retUser);
+      await this.setState({
+        user: retUser
+      });
+    }
   }
 
   render() {
     return (
       <View style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
-        {this.state.user && this.state.user.userId ? (
+        {this.state.user && this.state.user.userId !== null ? (
           //logged in
           <Grid>
             <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
               <Text style={[ commonStyles.textBig, commonStyles.textCenter, commonStyles.textStrong ]}>
-                {'Logged in, user ID: ' + this.state.user.userId}
+                {'Hello, ' + this.state.user.firstName + ' ' + this.state.user.lastName}
               </Text>
             </Row>
             <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>

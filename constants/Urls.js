@@ -9,9 +9,6 @@ export default {
   apiSignUp: 'users/signup',
   apiServiceCall: 'callwaiter',
   apiPayments: 'payments',
-  apiDeleteUser: (id) => {
-    'users/' + id;
-  },
   apiRestaurantMenu: (id) => {
     return 'restaurants/' + id + '/menu';
   },

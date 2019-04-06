@@ -14,6 +14,29 @@ export default class App extends React.Component {
     this.storageManager = new StorageManager();
   }
 
+  /*
+  TODO:
+  Create a global.js containing:
+
+  module.exports = {
+    screen1State: null,
+  };
+  And get the value of the state on the screen
+
+  render() {
+
+  GLOBAL.screen1State = this;
+  //enter code here
+
+  }
+  Now you can use it anywhere like so:
+
+  GLOBAL.screen1State.setState({
+      var: value
+  });
+  
+  */
+
   async componentWillMount() {
     let DEBUG = true;
     if (DEBUG) {
