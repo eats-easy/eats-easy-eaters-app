@@ -50,9 +50,9 @@ export default class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([ require('./assets/images/robot-dev.png'), require('./assets/images/robot-prod.png') ]),
       Font.loadAsync({
-        // This is the font that we are using for our tab bar
         ...Icon.Ionicons.font,
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf')
+        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        'new-mono': require('./assets/fonts/monospace.medium.ttf')
       })
     ]);
   };

@@ -5,6 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import LoadingCircle from '../components/LoadingCircle';
 import SignInDialog from '../components/SignInDialog';
 import SignUpDialog from '../components/SignUpDialog';
+import SuccessDialog from '../components/SuccessDialog';
 import DishStatusStepper from '../components/DishStatusStepper';
 import StorageManager from '../services/storage_manager';
 
@@ -26,9 +27,11 @@ export default class PaymentScreen extends React.Component {
       cardExpiryMonth: null,
       cardExpiryYear: null,
       cardCVV: null,
+      cardType: 'credit-card',
       cardHolderName: null,
       signInVisible: false,
-      signUpVisible: false
+      signUpVisible: false,
+      successVisible: false
     };
     this.storageManager = new StorageManager();
   }
@@ -72,9 +75,49 @@ export default class PaymentScreen extends React.Component {
       // TODO: Do something with this payment response data
       let { paymentId } = await postApiPayment(newPayment);
       console.log(paymentId);
+
+      this.setState({ successVisible: true });
     } catch (err) {
       console.warn('Got an error in sendPayment', err);
     }
+  }
+
+  getCardType(number) {
+    /*
+    Icons
+    'cc-visa',
+    'cc-mastercard',
+    'cc-discover',
+    'cc-amex',
+    'cc-paypal',
+    'cc-stripe',
+
+    Card types by numbers
+    VISA             4-
+    American Express 34-, and 37-
+    MasterCard       51-, 52-, 53-, 54-, 55-
+    Discover         6011-, 65-
+    */
+
+    if (!number) return 'credit-card';
+
+    // AMEX
+    re = new RegExp('^3');
+    if (number.match(re) != null) return 'cc-amex';
+
+    // Visa
+    var re = new RegExp('^4');
+    if (number.match(re) != null) return 'cc-visa';
+
+    // Mastercard
+    re = new RegExp('^5');
+    if (number.match(re) != null) return 'cc-mastercard';
+
+    // Discover
+    re = new RegExp('^6');
+    if (number.match(re) != null) return 'cc-discover';
+
+    return 'credit-card';
   }
 
   async componentWillMount() {
@@ -99,7 +142,8 @@ export default class PaymentScreen extends React.Component {
       cardExpiryMonth: paymentMethod.cardExpiryMonth,
       cardExpiryYear: paymentMethod.cardExpiryYear,
       cardCVV: paymentMethod.cardCVV,
-      cardHolderName: paymentMethod.cardHolderName
+      cardHolderName: paymentMethod.cardHolderName,
+      cardType: this.getCardType(paymentMethod.cardNumber)
     });
   }
 
@@ -122,29 +166,61 @@ export default class PaymentScreen extends React.Component {
             </Row>
           </Grid>
         </ScrollView>
-        <View style={[ commonStyles.shadowMedium, { height: 150, padding: 10, margin: 20, borderRadius: 5 } ]}>
+        <View
+          style={[
+            commonStyles.shadowMedium,
+            {
+              height: 220,
+              padding: 20,
+              marginLeft: 50,
+              marginRight: 50,
+              marginBottom: 10,
+              marginTop: 10,
+              borderRadius: 10,
+              backgroundColor: '#e8d337'
+            }
+          ]}
+        >
           <Grid>
             <Row style={commonStyles.row}>
-              <Col style={[ commonStyles.column, commonStyles.justifyCenter ]}>
+              <Col style={[ commonStyles.column, commonStyles.justifyCenter, { padding: 2 } ]}>
+                <Text style={[ commonStyles.textHuge ]}>Credit card</Text>
+              </Col>
+            </Row>
+            <Row style={commonStyles.row}>
+              <Col style={[ commonStyles.column, commonStyles.justifyCenter, { padding: 2 } ]}>
                 <TextInput
-                  style={[ commonStyles.input, commonStyles.textMedium, { margin: 0 } ]}
+                  style={[
+                    commonStyles.input,
+                    commonStyles.textBig,
+                    { margin: 0, backgroundColor: '#ffe738', fontFamily: 'space-mono' }
+                  ]}
                   underlineColorAndroid="transparent"
                   placeholder="Credit card number"
+                  textAlign={'center'}
                   placeholderTextColor={Colors.grey}
                   autoCapitalize="none"
                   maxLength={16}
                   keyboardType="numeric"
                   value={this.state.cardNumber}
-                  onChange={(evt) => this.setState({ cardNumber: evt.nativeEvent.text })}
+                  onChange={(evt) => {
+                    this.setState({ cardNumber: evt.nativeEvent.text });
+                    this.setState({ cardType: this.getCardType(this.state.cardNumber) });
+                  }}
                 />
               </Col>
             </Row>
             <Row style={[ commonStyles.row ]}>
-              <Col size={4} style={[ commonStyles.column, commonStyles.justifyCenter ]}>
+              <Col size={3} style={[ commonStyles.justifyCenter, { padding: 2 } ]}>
                 <TextInput
-                  style={[ commonStyles.input, commonStyles.textMedium, { margin: 0 } ]}
+                  style={[
+                    commonStyles.input,
+                    commonStyles.textMedium,
+                    { margin: 0, backgroundColor: '#ffe738', fontFamily: 'space-mono' }
+                  ]}
                   underlineColorAndroid="transparent"
                   placeholder="MM"
+                  textAlign={'center'}
                   placeholderTextColor={Colors.grey}
                   maxLength={2}
                   keyboardType="numeric"
@@ -152,14 +228,19 @@ export default class PaymentScreen extends React.Component {
                   onChange={(evt) => this.setState({ cardExpiryMonth: evt.nativeEvent.text })}
                 />
               </Col>
-              <Col size={1} style={[ commonStyles.column, commonStyles.justifyCenter ]}>
+              <Col size={1} style={[ commonStyles.justifyCenter, commonStyles.centered, { padding: 2 } ]}>
                 <Text style={[ commonStyles.textMedium ]}>/</Text>
               </Col>
-              <Col size={4} style={[ commonStyles.column, commonStyles.justifyCenter ]}>
+              <Col size={3} style={[ commonStyles.justifyCenter, { padding: 2 } ]}>
                 <TextInput
-                  style={[ commonStyles.input, commonStyles.textMedium, { margin: 0 } ]}
+                  style={[
+                    commonStyles.input,
+                    commonStyles.textMedium,
+                    { margin: 0, backgroundColor: '#ffe738', fontFamily: 'space-mono' }
+                  ]}
                   underlineColorAndroid="transparent"
                   placeholder="YY"
+                  textAlign={'center'}
                   placeholderTextColor={Colors.grey}
                   maxLength={2}
                   keyboardType="numeric"
@@ -167,11 +248,16 @@ export default class PaymentScreen extends React.Component {
                   onChange={(evt) => this.setState({ cardExpiryYear: evt.nativeEvent.text })}
                 />
               </Col>
-              <Col size={6} style={[ commonStyles.column, commonStyles.justifyCenter ]}>
+              <Col size={6} style={[ commonStyles.justifyCenter, { padding: 2 } ]}>
                 <TextInput
-                  style={[ commonStyles.input, commonStyles.textMedium, { margin: 0 } ]}
+                  style={[
+                    commonStyles.input,
+                    commonStyles.textMedium,
+                    { margin: 0, backgroundColor: '#ffe738', fontFamily: 'space-mono' }
+                  ]}
                   underlineColorAndroid="transparent"
                   placeholder="CVV"
+                  textAlign={'center'}
                   placeholderTextColor={Colors.grey}
                   maxLength={3}
                   keyboardType="numeric"
@@ -181,9 +267,13 @@ export default class PaymentScreen extends React.Component {
               </Col>
             </Row>
             <Row style={commonStyles.row}>
-              <Col style={[ commonStyles.column, commonStyles.justifyCenter ]}>
+              <Col size={5} style={[ commonStyles.justifyCenter, { padding: 2 } ]}>
                 <TextInput
-                  style={[ commonStyles.input, commonStyles.textMedium, { margin: 0 } ]}
+                  style={[
+                    commonStyles.input,
+                    commonStyles.textMedium,
+                    { margin: 0, backgroundColor: '#ffe738', fontFamily: 'space-mono' }
+                  ]}
                   underlineColorAndroid="transparent"
                   placeholder="Card holder name"
                   placeholderTextColor={Colors.grey}
@@ -191,6 +281,9 @@ export default class PaymentScreen extends React.Component {
                   value={this.state.cardHolderName}
                   onChange={(evt) => this.setState({ cardHolderName: evt.nativeEvent.text })}
                 />
+              </Col>
+              <Col size={1} style={[ commonStyles.justifyCenter, commonStyles.centered, { padding: 2 } ]}>
+                <Icon name={this.state.cardType} type="font-awesome" />
               </Col>
             </Row>
           </Grid>
@@ -281,6 +374,7 @@ export default class PaymentScreen extends React.Component {
           }}
         />
         <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} />
+        <SuccessDialog visible={this.state.successVisible} cancel={() => this.setState({ successVisible: false })} />
       </View>
     ) : (
       <LoadingCircle />

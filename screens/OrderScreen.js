@@ -7,6 +7,7 @@ import DishStatusStepper from '../components/DishStatusStepper';
 import SignInDialog from '../components/SignInDialog';
 import SignUpDialog from '../components/SignUpDialog';
 import TablePickerDialog from '../components/TablePickerDialog';
+import SuccessDialog from '../components/SuccessDialog';
 import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
@@ -25,7 +26,8 @@ export default class OrderScreen extends React.Component {
       orderStatus: 0,
       signInVisible: false,
       signUpVisible: false,
-      tablePickerVisible: false
+      tablePickerVisible: false,
+      successVisible: false
     };
     this.storageManager = new StorageManager();
   }
@@ -153,7 +155,7 @@ export default class OrderScreen extends React.Component {
 
                       await this.storageManager._addToOrdersStatusesData(createdOrder);
 
-                      this.setState({ orderStatus: 1 });
+                      this.setState({ orderStatus: 1, successVisible: true });
                     }}
                     icon={{
                       name: 'send',
@@ -190,7 +192,6 @@ export default class OrderScreen extends React.Component {
           visible={this.state.tablePickerVisible}
           close={() => this.setState({ tablePickerVisible: false })}
         />
-
         <SignInDialog
           visible={this.state.signInVisible}
           cancel={() => this.setState({ signInVisible: false })}
@@ -199,6 +200,7 @@ export default class OrderScreen extends React.Component {
           }}
         />
         <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} />
+        <SuccessDialog visible={this.state.successVisible} cancel={() => this.setState({ successVisible: false })} />
       </View>
     ) : (
       <LoadingCircle />
