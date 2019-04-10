@@ -3,7 +3,8 @@ const url = urls.apiRootUrl + urls.apiUsers;
 
 export const putApiUser = async (data) => {
   try {
-    const res = await fetch(url, {
+    console.log(data);
+    const res = await fetch(url + '/' + data.userId, {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: {

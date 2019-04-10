@@ -1,12 +1,10 @@
 import React from 'react';
-import { ScrollView, TouchableNativeFeedback, Image, Text, View, BackHandler } from 'react-native';
+import { View, BackHandler } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import LoadingCircle from '../components/LoadingCircle';
 import StorageManager from '../services/storage_manager';
-import { commonStyles, dishStatusStepperStyles } from '../styles';
+import { commonStyles } from '../styles';
 import Colors from '../constants/Colors';
-import { withNavigation } from 'react-navigation';
 import { Snackbar } from 'react-native-material-ui';
 import { deleteApiUser } from '../network/deleteApiUser';
 
@@ -16,8 +14,7 @@ export default class AppSettingsScreen extends React.Component {
 
     this.state = {
       user: null,
-      snackRemoveUser: false,
-      snackUserLoggedOut: false
+      snackVisible: false
     };
 
     this.storageManager = new StorageManager();
@@ -35,31 +32,21 @@ export default class AppSettingsScreen extends React.Component {
   }
 
   render() {
+    const { snackVisible } = this.state;
+
     return (
-      <View style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
-        <Snackbar
-          visible={this.state.snackRemoveUser}
-          message="your data has been removed"
-          onRequestClose={() => this.setState({ snackVisible: false })}
-        />
-        <Snackbar
-          visible={this.state.snackUserLoggedOut}
-          message="you need to log in first"
-          onRequestClose={() => this.setState({ snackVisible: false })}
-        />
+      <View style={[ commonStyles.flexed ]}>
         <Grid>
           <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
             <Button
-              title={'delete user data'.toUpperCase()}
+              title={'Delete user data'.toUpperCase()}
               onPress={() => {
                 {
-                  this.state.user && this.state.user.userId
-                    ? //user logged in
-                      (deleteApiUser(this.state.user.userId),
-                      this.storageManager._removeUserData({ userId: this.state.user.userId }),
-                      this.setState({ snackRemoveUser: true }))
-                    : //user logged out
-                      this.setState({ snackUserLoggedOut: true });
+                  this.state.user &&
+                    this.state.user.userId &&
+                    (deleteApiUser(this.state.user.userId),
+                    this.storageManager._removeUserData({ userId: this.state.user.userId }),
+                    this.setState({ snackVisible: true }));
                 }
               }}
               icon={{
@@ -73,19 +60,26 @@ export default class AppSettingsScreen extends React.Component {
             />
           </Row>
           <Row style={[ commonStyles.container, commonStyles.centered, commonStyles.justifyCenter ]}>
-            <Button title="Exit Button" onPress={this.exit_function} />
+            <Button
+              title="Close the app"
+              onPress={this.exit_function}
+              icon={{
+                name: 'close',
+                type: 'font-awesome',
+                size: 20,
+                color: Colors.tintColor
+              }}
+              rounded
+              color={Colors.tintColor}
+              backgroundColor={Colors.white}
+            />
           </Row>
         </Grid>
-        {/*    <Snackbar
-          visible={this.state.snackRemoveUser}
-          message="your data has been removed"
+        <Snackbar
+          visible={snackVisible}
+          message="Your data has been removed"
           onRequestClose={() => this.setState({ snackVisible: false })}
         />
-        <Snackbar
-          visible={this.state.snackUserLoggedOut}
-          message="you need to log in first"
-          onRequestClose={() => this.setState({ snackVisible: false })}
-        />  */}
       </View>
     );
   }

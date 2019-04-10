@@ -44,6 +44,7 @@ export default class AppSettingsScreen extends React.Component {
       console.log(JSON.stringify(retUser));
       await this.setState({
         user: user,
+        userId: retUser.userId,
         phoneValue: retUser.phone,
         passwordValue: null,
         passwordAgainValue: null,
@@ -75,6 +76,7 @@ export default class AppSettingsScreen extends React.Component {
       let hashed_passwd = Base64.encode(user.password);
 
       var userUpdate = {
+        userId: this.state.user.userId,
         userName: user.userName,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -88,8 +90,8 @@ export default class AppSettingsScreen extends React.Component {
       // TODO: Handle rejection
       // if (res === -99999) return;
 
-      this.setState({ user: { userId: res } });
-      await this.storageManager._storeUserData({ userId: res });
+      // this.setState({ user: { userId: res } });
+      // await this.storageManager._storeUserData({ userId: res });
     } catch (err) {
       console.warn('Got an error in updateUser', err);
     }
@@ -258,7 +260,7 @@ export default class AppSettingsScreen extends React.Component {
             <Row>
               <Col style={commonStyles.justifyCenter}>
                 <Button
-                  title={'Sign out'.toUpperCase()}
+                  title={'Sign out'}
                   onPress={() => {
                     this.storageManager._removeUserData(), this.setState({ user: null });
                   }}
