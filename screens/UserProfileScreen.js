@@ -7,7 +7,6 @@ import SignUpDialog from '../components/SignUpDialog';
 import StorageManager from '../services/storage_manager';
 import { commonStyles } from '../styles';
 import Colors from '../constants/Colors';
-import { Snackbar } from 'react-native-material-ui';
 import { getApiUser } from '../network/getApiUser';
 import { putApiUser } from '../network/putApiUser';
 
