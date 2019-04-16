@@ -12,11 +12,11 @@
   },
   "dependencies": {
     "@expo/samples": "2.1.1",
-    "expo": "32.0.2",
+    "expo": "^32.0.6",
     "js-base64": "^2.5.1",
     "lottie-react-native": "^2.6.1",
     "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.3.tar.gz",
     "react-native-easy-grid": "^0.2.0",
     "react-native-elements": "^0.19.1",
     "react-native-js-stepper": "^0.2.1",
