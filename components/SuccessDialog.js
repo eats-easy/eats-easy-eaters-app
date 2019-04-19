@@ -49,7 +49,7 @@ export default class SuccessDialog extends React.Component {
       >
         <DialogContent>
           <View style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
-            <Image source={require('../static/animations/success_400x300_hand.gif')} />
+            <Image source={require('../static/animations/success_hand.gif')} style={{ width: 300, height: 309 }} />
           </View>
         </DialogContent>
       </Dialog>

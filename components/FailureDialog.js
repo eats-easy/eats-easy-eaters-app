@@ -49,7 +49,7 @@ export default class FailureDialog extends React.Component {
       >
         <DialogContent>
           <View style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
-            <Image source={require('../static/animations/failure_400x300_hand.gif')} />
+            <Image source={require('../static/animations/failure_hand.gif')} style={{ width: 300, height: 354 }} />
           </View>
         </DialogContent>
       </Dialog>
