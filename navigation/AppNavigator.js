@@ -1,8 +1,6 @@
-import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import RootNavigator from './RootNavigator';
-import RestaurantTabNavigator from './RestaurantTabNavigator';
 
 export default createAppContainer(
   createSwitchNavigator(

@@ -22,34 +22,36 @@ export default class OrderScreen extends React.Component {
       status: 'loading',
       restaurant: null,
       user: null,
+      tableId: null,
       orders: [],
       orderStatus: 0,
       signInVisible: false,
       signUpVisible: false,
       tablePickerVisible: false,
-      successVisible: false
+      successVisible: false,
+      failureVisible: false
     };
     this.storageManager = new StorageManager();
   }
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
-
+    let order = await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId);
     let tables = await getApiFreeTables(restaurant.restaurantId);
     await this.storageManager._storeTablesData(tables);
     let table = await this.storageManager._retrieveTableData();
+    let tableId = null;
 
-    tables.length > 0 &&
-      table &&
-      table.restId !== restaurant.restaurantId &&
-      (await this.storageManager._storeTableData(tables[0]));
+    if (table && table.tableId && table.tableId !== -99999 && table.restId === restaurant.restaurantId)
+      tableId = table.tableId;
 
-    let order = await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId);
+    console.log('tableId', tableId);
 
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
+      tableId: tableId,
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
       orderStatus: order ? (order.orderStatus ? order.orderStatus : 1) : 1
     });
@@ -85,9 +87,24 @@ export default class OrderScreen extends React.Component {
                   size={20}
                   color={Colors.black}
                   onPress={async () => {
+                    let user = await this.storageManager._retrieveUserData();
                     let orders = await this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId);
+                    let table = await this.storageManager._retrieveTableData();
+                    let tableId = null;
+
+                    // TODO: Show error
+                    if (
+                      table &&
+                      table.tableId &&
+                      table.tableId !== -99999 &&
+                      table.restId === this.state.restaurant.restaurantId
+                    )
+                      tableId = table.tableId;
+
                     this.setState({
-                      orders: orders
+                      user: user,
+                      orders: orders,
+                      tableId: tableId
                     });
                   }}
                 />
@@ -123,34 +140,47 @@ export default class OrderScreen extends React.Component {
                     title={'Order'.toUpperCase()}
                     onPress={async () => {
                       let table = await this.storageManager._retrieveTableData();
+                      let tableId = null;
 
-                      // TODO: Show error
-                      if (!table || table.table === -99999) return;
+                      if (
+                        table &&
+                        table.tableId &&
+                        table.tableId !== -99999 &&
+                        table.restId === this.state.restaurant.restaurantId
+                      )
+                        tableId = table.tableId;
+                      else return;
 
-                      let NewOrder = {
+                      let newOrder = {
                         orderStatus: 1,
                         timeReceived: new Date(),
                         timeDelivered: new Date(),
                         restId: this.state.restaurant.restaurantId,
-                        tableId: table.tableId,
+                        tableId: tableId,
                         userId: this.state.user.userId
                       };
 
-                      createdOrder = await postApiOrder(NewOrder);
-
+                      console.log('newOrder', newOrder);
+                      createdOrder = await postApiOrder(newOrder);
                       console.log('createdOrder', createdOrder);
+
+                      if (!createdOrder || !createdOrder.orderId) {
+                        this.setState({ failureVisible: true });
+                      }
 
                       this.state.orders.map(async (value, index) => {
                         // TODO: Do something with postedOrderItem
-                        let postedOrderItem = await postApiOrderItem(
-                          (orderItem = {
-                            restId: this.state.restaurant.restaurantId,
-                            dishId: value.dishId,
-                            orderId: createdOrder.orderId,
-                            quantity: 1,
-                            subtotal: value.price
-                          })
-                        );
+                        let newOrderItem = {
+                          restId: this.state.restaurant.restaurantId,
+                          dishId: value.dishId,
+                          orderId: createdOrder.orderId,
+                          quantity: 1,
+                          subtotal: value.price
+                        };
+
+                        console.log('newOrderItem', newOrderItem);
+                        let createdOrderItem = await postApiOrderItem(newOrderItem);
+                        console.log('createdOrderItem', createdOrderItem);
                       });
 
                       await this.storageManager._addToOrdersStatusesData(createdOrder);
@@ -164,7 +194,7 @@ export default class OrderScreen extends React.Component {
                       color: Colors.white
                     }}
                     rounded
-                    disabled={this.state.orders.length == 0}
+                    disabled={this.state.orders.length == 0 || !this.state.tableId}
                     backgroundColor={Colors.tintColor}
                   />
                 ) : (
@@ -190,11 +220,29 @@ export default class OrderScreen extends React.Component {
 
         <TablePickerDialog
           visible={this.state.tablePickerVisible}
-          close={() => this.setState({ tablePickerVisible: false })}
+          close={async () => {
+            let table = await this.storageManager._retrieveTableData();
+            let tableId = null;
+
+            // TODO: Show error
+            if (
+              table &&
+              table.tableId &&
+              table.tableId !== -99999 &&
+              table.restId === this.state.restaurant.restaurantId
+            )
+              tableId = table.tableId;
+
+            this.setState({ tablePickerVisible: false, tableId: tableId });
+          }}
         />
         <SignInDialog
           visible={this.state.signInVisible}
-          cancel={() => this.setState({ signInVisible: false })}
+          cancel={async () => {
+            let user = await this.storageManager._retrieveUserData();
+            console.log(user);
+            this.setState({ signInVisible: false, user });
+          }}
           signUpActionHandler={() => {
             this.setState({ signInVisible: false, signUpVisible: true });
           }}

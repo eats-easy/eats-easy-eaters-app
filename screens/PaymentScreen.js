@@ -342,7 +342,14 @@ export default class PaymentScreen extends React.Component {
                       color: 'white'
                     }}
                     rounded
-                    disabled={this.state.orders.length == 0}
+                    disabled={
+                      this.state.orders.length == 0 ||
+                      !this.state.cardNumber ||
+                      !this.state.cardExpiryMonth ||
+                      !this.state.cardExpiryYear ||
+                      !this.state.cardCVV ||
+                      !this.state.cardHolderName
+                    }
                     backgroundColor={Colors.tintColor}
                   />
                 ) : (
@@ -368,7 +375,10 @@ export default class PaymentScreen extends React.Component {
 
         <SignInDialog
           visible={this.state.signInVisible}
-          cancel={() => this.setState({ signInVisible: false })}
+          cancel={async () => {
+            let user = await this.storageManager._retrieveUserData();
+            this.setState({ signInVisible: false, user });
+          }}
           signUpActionHandler={() => {
             this.setState({ signInVisible: false, signUpVisible: true });
           }}

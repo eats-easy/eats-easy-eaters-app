@@ -35,8 +35,6 @@ export default class SignUpDialog extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.visible !== prevState.visible) {
       return { visible: nextProps.visible };
-    } else if (nextProps.signUpError !== prevState.signUpError) {
-      return { signUpError: nextProps.signUpError };
     } else return null;
   }
 
@@ -51,6 +49,7 @@ export default class SignUpDialog extends React.Component {
       if (
         !user.email ||
         !user.phone ||
+        user.phone.length < 9 ||
         !user.password ||
         !user.firstName ||
         !user.lastName ||
@@ -76,10 +75,17 @@ export default class SignUpDialog extends React.Component {
 
       let res = await postApiUserSignUp(userSignUp);
 
-      if (res === -99999) return;
+      if (res === -99999) {
+        this.setState({ signUpError: true });
+        setTimeout(() => {
+          this.setState({ signUpError: false });
+        }, 3000);
+        return;
+      }
 
       this.setState({ user: { userId: res } });
       await this.storageManager._storeUserData({ userId: res });
+      this.props.cancel();
     } catch (err) {
       console.warn('Got an error in signUpHandler', err);
     }

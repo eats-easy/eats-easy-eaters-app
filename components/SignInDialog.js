@@ -30,8 +30,6 @@ export default class SignInDialog extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.visible !== prevState.visible) {
       return { visible: nextProps.visible };
-    } else if (nextProps.signInError !== prevState.signInError) {
-      return { signInError: nextProps.signInError };
     } else return null;
   }
 
@@ -43,6 +41,7 @@ export default class SignInDialog extends React.Component {
 
   async signInHandler(user) {
     try {
+      console.log(user);
       if (!user.password || !user.phone || user.phone.length < 9) {
         this.setState({ signInError: true });
         setTimeout(() => {
@@ -63,12 +62,17 @@ export default class SignInDialog extends React.Component {
 
       let res = await postApiUserSignIn(userSignIn);
 
-      console.log(res);
-
-      if (res === -99999) return;
+      if (res === -99999) {
+        this.setState({ signInError: true });
+        setTimeout(() => {
+          this.setState({ signInError: false });
+        }, 3000);
+        return;
+      }
 
       this.setState({ user: { userId: res } });
       await this.storageManager._storeUserData({ userId: res });
+      this.props.cancel();
     } catch (err) {
       console.warn('Got an error in signInHandler', err);
     }
