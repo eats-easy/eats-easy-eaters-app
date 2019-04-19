@@ -29,7 +29,7 @@ export default class OrderScreen extends React.Component {
       signInVisible: false,
       signUpVisible: false,
       tablePickerVisible: false,
-      successVisible: true,
+      successVisible: false,
       failureVisible: false
     };
     this.storageManager = new StorageManager();
