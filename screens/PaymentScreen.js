@@ -6,6 +6,7 @@ import LoadingCircle from '../components/LoadingCircle';
 import SignInDialog from '../components/SignInDialog';
 import SignUpDialog from '../components/SignUpDialog';
 import SuccessDialog from '../components/SuccessDialog';
+import FailureDialog from '../components/FailureDialog';
 import DishStatusStepper from '../components/DishStatusStepper';
 import StorageManager from '../services/storage_manager';
 
@@ -31,7 +32,8 @@ export default class PaymentScreen extends React.Component {
       cardHolderName: null,
       signInVisible: false,
       signUpVisible: false,
-      successVisible: false
+      successVisible: false,
+      failureVisible: false
     };
     this.storageManager = new StorageManager();
   }
@@ -74,6 +76,12 @@ export default class PaymentScreen extends React.Component {
 
       // TODO: Do something with this payment response data
       let { paymentId } = await postApiPayment(newPayment);
+
+      if (!paymentId) {
+        this.setState({ failureVisible: true });
+        return;
+      }
+
       console.log(paymentId);
 
       this.setState({ successVisible: true });
@@ -385,6 +393,7 @@ export default class PaymentScreen extends React.Component {
         />
         <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} />
         <SuccessDialog visible={this.state.successVisible} cancel={() => this.setState({ successVisible: false })} />
+        <FailureDialog visible={this.state.failureVisible} cancel={() => this.setState({ failureVisible: false })} />
       </View>
     ) : (
       <LoadingCircle />

@@ -9,7 +9,7 @@ import Dialog, {
   SlideAnimation
 } from 'react-native-popup-dialog';
 
-export default class SuccessDialog extends React.Component {
+export default class FailureDialog extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -38,7 +38,7 @@ export default class SuccessDialog extends React.Component {
             slideFrom: 'bottom'
           })
         }
-        dialogTitle={<DialogTitle title="Success" />}
+        dialogTitle={<DialogTitle title="Failure" />}
         footer={
           <DialogFooter>
             <DialogButton text="CANCEL" onPress={() => this.props.cancel()} />
@@ -49,7 +49,7 @@ export default class SuccessDialog extends React.Component {
       >
         <DialogContent>
           <View style={[ commonStyles.justifyCenter, commonStyles.centered ]}>
-            <Image source={require('../static/animations/success_400x300_hand.gif')} />
+            <Image source={require('../static/animations/failure_400x300_hand.gif')} />
           </View>
         </DialogContent>
       </Dialog>

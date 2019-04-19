@@ -8,6 +8,7 @@ import SignInDialog from '../components/SignInDialog';
 import SignUpDialog from '../components/SignUpDialog';
 import TablePickerDialog from '../components/TablePickerDialog';
 import SuccessDialog from '../components/SuccessDialog';
+import FailureDialog from '../components/FailureDialog';
 import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
@@ -166,6 +167,7 @@ export default class OrderScreen extends React.Component {
 
                       if (!createdOrder || !createdOrder.orderId) {
                         this.setState({ failureVisible: true });
+                        return;
                       }
 
                       this.state.orders.map(async (value, index) => {
@@ -249,6 +251,7 @@ export default class OrderScreen extends React.Component {
         />
         <SignUpDialog visible={this.state.signUpVisible} cancel={() => this.setState({ signUpVisible: false })} />
         <SuccessDialog visible={this.state.successVisible} cancel={() => this.setState({ successVisible: false })} />
+        <FailureDialog visible={this.state.failureVisible} cancel={() => this.setState({ failureVisible: false })} />
       </View>
     ) : (
       <LoadingCircle />
