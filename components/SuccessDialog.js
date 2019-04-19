@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image } from 'react-native';
 import { Animated, Easing } from 'react-native';
 import { commonStyles } from '../styles';
-import Colors from '../constants/Colors';
 import Dialog, {
   DialogTitle,
   DialogContent,
