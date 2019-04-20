@@ -25,7 +25,6 @@ export default class OrderScreen extends React.Component {
       user: null,
       tableId: null,
       orders: [],
-      orderStatus: 0,
       signInVisible: false,
       signUpVisible: false,
       tablePickerVisible: false,
@@ -37,7 +36,6 @@ export default class OrderScreen extends React.Component {
 
   async componentWillMount() {
     let restaurant = await this.storageManager._retrieveRestaurantData();
-    let order = await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId);
     let tables = await getApiFreeTables(restaurant.restaurantId);
     await this.storageManager._storeTablesData(tables);
     let table = await this.storageManager._retrieveTableData();
@@ -53,8 +51,7 @@ export default class OrderScreen extends React.Component {
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
       tableId: tableId,
-      orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
-      orderStatus: order ? (order.orderStatus ? order.orderStatus : 1) : 1
+      orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId)
     });
   }
 
@@ -62,7 +59,7 @@ export default class OrderScreen extends React.Component {
     return this.state.restaurant && this.state.restaurant.restaurantId ? (
       <View style={commonStyles.container}>
         <View style={[ dishStatusStepperStyles.dishStatusContainer ]}>
-          <DishStatusStepper status={this.state.orderStatus} />
+          <DishStatusStepper />
         </View>
         <ScrollView style={commonStyles.flexed}>
           <Grid>
@@ -187,7 +184,7 @@ export default class OrderScreen extends React.Component {
 
                       await this.storageManager._addToOrdersStatusesData(createdOrder);
 
-                      this.setState({ orderStatus: 1, successVisible: true });
+                      this.setState({ successVisible: true });
                     }}
                     icon={{
                       name: 'send',

@@ -23,7 +23,6 @@ export default class CallServiceScreen extends React.Component {
       signInVisible: false,
       signUpVisible: false,
       tablePickerVisible: false,
-      orderStatus: 0,
       selectedBill: false,
       selectedHelp: false,
       selectedQuestion: false,
@@ -45,8 +44,7 @@ export default class CallServiceScreen extends React.Component {
       status: 'loaded',
       restaurant: restaurant,
       user: user,
-      tableId: tableId,
-      orderStatus: await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId)
+      tableId: tableId
     });
   }
 
@@ -84,7 +82,7 @@ export default class CallServiceScreen extends React.Component {
     return this.state.restaurant && this.state.restaurant.restaurantId ? (
       <View style={[ commonStyles.container ]}>
         <View style={dishStatusStepperStyles.dishStatusContainer}>
-          <DishStatusStepper status={this.state.orderStatus} />
+          <DishStatusStepper />
         </View>
         <Grid style={{ padding: 10 }}>
           <Row style={[ commonStyles.centered, commonStyles.justifyCenter, { marginBottom: 8 } ]}>

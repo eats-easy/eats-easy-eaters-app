@@ -16,6 +16,9 @@ export default {
   apiFreeTables: (id) => {
     return 'restaurants/' + id + '/freeTables';
   },
+  apiOrdersByUserIdAndRestId: (userId, restId) => {
+    return 'orders/' + userId + '/' + restId;
+  },
   wsRootUrl: 'https://eats-easy-spring.herokuapp.com/stomp'
   // wsRootUrl: 'http://192.168.2.140:8080/stomp',
 

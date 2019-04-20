@@ -23,7 +23,6 @@ export default class PaymentScreen extends React.Component {
       restaurant: null,
       user: null,
       orders: [],
-      orderStatus: 0,
       cardNumber: null,
       cardExpiryMonth: null,
       cardExpiryYear: null,
@@ -138,14 +137,11 @@ export default class PaymentScreen extends React.Component {
       cardHolderName: null
     };
 
-    let order = await this.storageManager._retrieveOrderStatusOfRest(restaurant.restaurantId);
-
     await this.setState({
       status: 'loaded',
       restaurant: restaurant,
       user: await this.storageManager._retrieveUserData(),
       orders: await this.storageManager._retrieveAllOrdersOfRest(restaurant.restaurantId),
-      orderStatus: order ? (order.orderStatus ? order.orderStatus : 1) : 1,
       cardNumber: paymentMethod.cardNumber,
       cardExpiryMonth: paymentMethod.cardExpiryMonth,
       cardExpiryYear: paymentMethod.cardExpiryYear,
@@ -159,7 +155,7 @@ export default class PaymentScreen extends React.Component {
     return this.state.restaurant && this.state.restaurant.restaurantId ? (
       <View style={commonStyles.container}>
         <View style={dishStatusStepperStyles.dishStatusContainer}>
-          <DishStatusStepper status={this.state.orderStatus} />
+          <DishStatusStepper />
         </View>
         <ScrollView style={commonStyles.flexed}>
           <Grid>

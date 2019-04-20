@@ -11,6 +11,7 @@ export default class App extends React.Component {
     this.state = {
       isLoadingComplete: false
     };
+    console.disableYellowBox = true;
     this.storageManager = new StorageManager();
   }
 
