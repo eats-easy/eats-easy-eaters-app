@@ -18,6 +18,40 @@ export default class DishStatusStepper extends React.Component {
     this.storageManager = new StorageManager();
   }
 
+  async componentWillMount() {
+    try {
+      const user = await this.storageManager._retrieveUserData();
+      const restaurant = await this.storageManager._retrieveRestaurantData();
+
+      if (user && restaurant) {
+        const orderStatuses = await getApiOrderStatusByRestIdAndUserId(user.userId, restaurant.restaurantId);
+
+        let sortedOrderStatuses =
+          orderStatuses &&
+          orderStatuses.length &&
+          (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
+
+        console.log(
+          'sortedOrderStatuses',
+          sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0]
+        );
+
+        this.setState({
+          status:
+            sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0] !== this.state.status
+              ? sortedOrderStatuses[0].orderStatus
+              : 0
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        status: 0,
+        status: 'failed'
+      });
+    }
+  }
+
   componentDidMount() {
     this.setState({
       intervalId: setInterval(async () => {
@@ -33,8 +67,16 @@ export default class DishStatusStepper extends React.Component {
               orderStatuses.length &&
               (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
 
+            console.log(
+              'sortedOrderStatuses',
+              sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0]
+            );
+
             this.setState({
-              status: sortedOrderStatuses && sortedOrderStatuses.length > 0 ? sortedOrderStatuses[0] : 0
+              status:
+                sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0] !== this.state.status
+                  ? sortedOrderStatuses[0].orderStatus
+                  : 0
             });
           }
         } catch (err) {
