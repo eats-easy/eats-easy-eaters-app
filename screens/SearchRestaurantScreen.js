@@ -47,19 +47,25 @@ class SearchRestaurantScreen extends React.Component {
     };
   };
 
+
+  handleInput = name => {
+    this.setState({name});
+  }
+  
   handleSearch() {
-    searchExp = '?search=name==*' + this.state.name + '*';
+
+    expression = '?search=name==*' + this.state.name + '*';
     for (var type of this.state.selectedTypes)
     {
       if (this.state.selectedTypes[type])
       {
-        searchExp = searchExp + ';restTypes==*' + type + '*'
+        expression = expression + ';restTypes==*' + type + '*'
       }
     }
-
-  handleInput = name => {
-    this.setState({name});
+    this.state.searchExp = expression;
   };
+
+ 
 
 
   render() {
