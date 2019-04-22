@@ -70,11 +70,18 @@ class SearchRestaurantResultGrid extends Component {
     return (
       <View key={'restaurant_' + i} style={commonStyles.flexed}>
         <Row style={commonStyles.row}>
-          <View style={[ commonStyles.shadowMedium, { marginBottom: 10 }, isLast ? commonStyles.tileLast : {} ]}>
+          <View
+            style={[
+              commonStyles.shadowMedium,
+              { marginBottom: 10, height: 260 },
+              isLast ? commonStyles.tileLast : {}
+            ]}
+          >
             <Tile
-              imageSrc={{ uri: restaurant.image_url }}
+              imageSrc={{ uri: restaurant.imageUrl }}
               title={restaurant.name}
               contentContainerStyle={{ height: 100 }}
+              imageContainerStyle={{ maxHeight: 160 }}
               onPress={() =>
                 this.props.navigation.navigate({
                   routeName: 'Restaurant',

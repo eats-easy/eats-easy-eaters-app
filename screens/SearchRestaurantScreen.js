@@ -80,7 +80,7 @@ class SearchRestaurantScreen extends React.Component {
                 <TextInput
                   style={[ commonStyles.input, commonStyles.textSmall ]}
                   underlineColorAndroid="transparent"
-                  placeholder="Start typying a name or type..."
+                  placeholder="Enter restaurant name..."
                   placeholderTextColor={Colors.lightGrey}
                   autoCapitalize="none"
                   onChangeText={(name) => this.setState({ name: name })}
