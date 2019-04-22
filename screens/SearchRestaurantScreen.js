@@ -52,9 +52,19 @@ class SearchRestaurantScreen extends React.Component {
 
   handleSearch() {
     let expression = '?search=name==*' + this.state.name + '*';
+    let found = false;
+    let count = 0;
     for (var type of types) {
       if (this.state.selectedTypes[type]) {
-        expression = expression + ';restTypes==*' + type + '*';
+        if (!found) {
+          expression = expression + ';';
+          found = true;
+        }
+        if (count > 0) {
+          expression = expression + ' or ';
+        }
+        expression = expression + 'restTypes==*' + type + '*';
+        count++;
       }
     }
     this.setState({ searchExp: expression });
@@ -108,7 +118,7 @@ class SearchRestaurantScreen extends React.Component {
                           {types.map((type, i) => i % 2 !== 0 && this.renderCheckBox(type, i))}
                         </Col>
                       </Row>
-                      <Row
+                      {/* <Row
                         style={{
                           paddingLeft: 10,
                           paddingRight: 10
@@ -131,7 +141,7 @@ class SearchRestaurantScreen extends React.Component {
                           />
                           <Text>Distance: {Number(this.state.value).toFixed(1)} km</Text>
                         </Col>
-                      </Row>
+                      </Row> */}
                       <Row style={[ commonStyles.justifyCenter, commonStyles.centered ]} size={2}>
                         <Button
                           title={'Search'.toUpperCase()}
