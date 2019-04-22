@@ -10,11 +10,12 @@ import { commonStyles, searchRestaurantStyles } from '../../styles';
 import LoadingCircle from '../../components/LoadingCircle';
 
 class SearchRestaurantResultGrid extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       status: 'loading',
       data: []
+      
     };
   }
 
@@ -34,7 +35,7 @@ class SearchRestaurantResultGrid extends Component {
 
   async componentWillMount() {
     try {
-      const restaurants = await getApiAllRestaurants();
+      const restaurants = await getApiFilteredSearchRestaurants(this.props.searchExp);
       this.setState({
         data: restaurants || [],
         status: 'loaded'

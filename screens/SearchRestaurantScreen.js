@@ -21,7 +21,9 @@ class SearchRestaurantScreen extends React.Component {
       filterExpanded: false,
       searching: false,
       selectedTypes: selectedTypes,
-      value: 50
+      value: 50,
+      name: '',
+      searchExp: ''
     };
   }
 
@@ -45,9 +47,26 @@ class SearchRestaurantScreen extends React.Component {
     };
   };
 
-  handleSearch() {
-    // TODO: Create an API search call with filter
+
+  handleInput = name => {
+    this.setState({name});
   }
+  
+  handleSearch() {
+
+    expression = '?search=name==*' + this.state.name + '*';
+    for (var type of this.state.selectedTypes)
+    {
+      if (this.state.selectedTypes[type])
+      {
+        expression = expression + ';restTypes==*' + type + '*'
+      }
+    }
+    this.state.searchExp = expression;
+  };
+
+ 
+
 
   render() {
     return (
@@ -62,7 +81,8 @@ class SearchRestaurantScreen extends React.Component {
                   placeholder="Start typying a name or type..."
                   placeholderTextColor={Colors.lightGrey}
                   autoCapitalize="none"
-                  // onChangeText={this.handleInput}
+                  onChangeText={this.handleInput}
+                  value = {name}
                 />
               </Col>
               {!this.state.filterExpanded && (
@@ -152,7 +172,7 @@ class SearchRestaurantScreen extends React.Component {
           </Grid>
         </View>
         <ScrollView>
-          <SearchRestaurantResultGrid />
+          <SearchRestaurantResultGrid searchExp = {this.state.searchExp}  />
         </ScrollView>
       </View>
     );

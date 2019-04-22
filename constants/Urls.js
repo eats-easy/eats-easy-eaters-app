@@ -3,6 +3,7 @@ export default {
   // apiRootUrl: 'http://192.168.2.140:8080/api/',
   apiVersionUrl: 'whoami',
   apiAllRestaurants: 'restaurants',
+  apiFilteredRestaurants: 'restaurants/filtered',
   apiOrders: 'orders',
   apiOrderItem: 'orderitems',
   apiUsers: 'users',
