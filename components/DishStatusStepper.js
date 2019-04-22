@@ -33,13 +33,14 @@ export default class DishStatusStepper extends React.Component {
 
         console.log(
           'sortedOrderStatuses',
-          sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0]
+          sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0],
+          sortedOrderStatuses[0].orderStatus % this.state.statuses.length
         );
 
         this.setState({
           status:
             sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0] !== this.state.status
-              ? sortedOrderStatuses[0].orderStatus
+              ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
               : 0
         });
       }
@@ -75,7 +76,7 @@ export default class DishStatusStepper extends React.Component {
             this.setState({
               status:
                 sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0] !== this.state.status
-                  ? sortedOrderStatuses[0].orderStatus
+                  ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
                   : 0
             });
           }
