@@ -6,6 +6,7 @@ import { withNavigation } from 'react-navigation';
 import SearchRestaurantResultGrid from './subscreens/SearchRestaurantResultGrid';
 import { commonStyles, searchRestaurantStyles } from '../styles';
 import Colors from '../constants/Colors';
+import { getApiFilteredRestaurants } from '../network/getApiFilteredRestaurants';
 
 const types = [ 'Asian', 'Italian', 'Israeli', 'Pizza', 'Meat', 'Vegan' ];
 
@@ -15,7 +16,7 @@ class SearchRestaurantScreen extends React.Component {
 
     let selectedTypes = [];
 
-    for (var type of types) selectedTypes[type] = true;
+    for (var type of types) selectedTypes[type] = false;
 
     this.state = {
       filterExpanded: false,
@@ -25,6 +26,8 @@ class SearchRestaurantScreen extends React.Component {
       name: '',
       searchExp: ''
     };
+
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -47,26 +50,15 @@ class SearchRestaurantScreen extends React.Component {
     };
   };
 
-
-  handleInput = name => {
-    this.setState({name});
-  }
-  
   handleSearch() {
-
-    expression = '?search=name==*' + this.state.name + '*';
-    for (var type of this.state.selectedTypes)
-    {
-      if (this.state.selectedTypes[type])
-      {
-        expression = expression + ';restTypes==*' + type + '*'
+    let expression = '?search=name==*' + this.state.name + '*';
+    for (var type of types) {
+      if (this.state.selectedTypes[type]) {
+        expression = expression + ';restTypes==*' + type + '*';
       }
     }
-    this.state.searchExp = expression;
-  };
-
- 
-
+    this.setState({ searchExp: expression });
+  }
 
   render() {
     return (
@@ -81,8 +73,8 @@ class SearchRestaurantScreen extends React.Component {
                   placeholder="Start typying a name or type..."
                   placeholderTextColor={Colors.lightGrey}
                   autoCapitalize="none"
-                  onChangeText={this.handleInput}
-                  value = {name}
+                  onChangeText={(name) => this.setState({ name: name })}
+                  value={this.state.name}
                 />
               </Col>
               {!this.state.filterExpanded && (
@@ -172,7 +164,7 @@ class SearchRestaurantScreen extends React.Component {
           </Grid>
         </View>
         <ScrollView>
-          <SearchRestaurantResultGrid searchExp = {this.state.searchExp}  />
+          <SearchRestaurantResultGrid searchExp={this.state.searchExp} />
         </ScrollView>
       </View>
     );

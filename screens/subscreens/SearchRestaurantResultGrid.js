@@ -5,6 +5,7 @@ import { Tile } from 'react-native-elements';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { withNavigation } from 'react-navigation';
 import { getApiAllRestaurants } from '../../network/getApiAllRestaurants';
+import { getApiFilteredRestaurants } from '../../network/getApiFilteredRestaurants';
 import { commonStyles, searchRestaurantStyles } from '../../styles';
 
 import LoadingCircle from '../../components/LoadingCircle';
@@ -14,9 +15,40 @@ class SearchRestaurantResultGrid extends Component {
     super(props);
     this.state = {
       status: 'loading',
+      searchExp: '',
       data: []
-      
     };
+  }
+
+  async componentDidMount() {
+    console.log('componentDidMount', this.state);
+    let restaurants;
+    if (this.state.searchExp === '') restaurants = await getApiAllRestaurants();
+    else restaurants = await getApiFilteredRestaurants(this.state.searchExp);
+    this.setState({
+      data: restaurants || [],
+      status: 'loaded'
+    });
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    console.log('componentDidUpdate', this.state);
+    if (prevState.searchExp !== this.state.searchExp) {
+      let restaurants;
+      if (this.state.searchExp === '') restaurants = await getApiAllRestaurants();
+      else restaurants = await getApiFilteredRestaurants(this.state.searchExp);
+      this.setState({
+        data: restaurants || [],
+        status: 'updated'
+      });
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log('getDerivedStateFromProps', prevState);
+    if (nextProps.searchExp !== prevState.searchExp) {
+      return { searchExp: nextProps.searchExp };
+    } else return null;
   }
 
   render() {
@@ -31,22 +63,6 @@ class SearchRestaurantResultGrid extends Component {
         )}
       </View>
     );
-  }
-
-  async componentWillMount() {
-    try {
-      const restaurants = await getApiFilteredSearchRestaurants(this.props.searchExp);
-      this.setState({
-        data: restaurants || [],
-        status: 'loaded'
-      });
-    } catch (err) {
-      console.error(err);
-      this.setState({
-        data: [],
-        status: 'failed'
-      });
-    }
   }
 
   renderItem = (restaurant, i) => {
