@@ -31,15 +31,12 @@ export default class DishStatusStepper extends React.Component {
           orderStatuses.length &&
           (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
 
-        console.log(
-          'sortedOrderStatuses',
-          sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0],
-          sortedOrderStatuses[0].orderStatus % this.state.statuses.length
-        );
-
         this.setState({
           status:
-            sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0] !== this.state.status
+            sortedOrderStatuses &&
+            sortedOrderStatuses.length > 0 &&
+            sortedOrderStatuses[0].orderStatus &&
+            sortedOrderStatuses[0].orderStatus !== this.state.status
               ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
               : 0
         });
@@ -68,14 +65,12 @@ export default class DishStatusStepper extends React.Component {
               orderStatuses.length &&
               (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
 
-            console.log(
-              'sortedOrderStatuses',
-              sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0]
-            );
-
             this.setState({
               status:
-                sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0] !== this.state.status
+                sortedOrderStatuses &&
+                sortedOrderStatuses.length > 0 &&
+                sortedOrderStatuses[0].orderStatus &&
+                sortedOrderStatuses[0].orderStatus !== this.state.status
                   ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
                   : 0
             });
