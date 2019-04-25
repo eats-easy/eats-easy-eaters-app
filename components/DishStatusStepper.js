@@ -25,21 +25,7 @@ export default class DishStatusStepper extends React.Component {
 
       if (user && restaurant) {
         const orderStatuses = await getApiOrderStatusByRestIdAndUserId(user.userId, restaurant.restaurantId);
-
-        let sortedOrderStatuses =
-          orderStatuses &&
-          orderStatuses.length &&
-          (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
-
-        this.setState({
-          status:
-            sortedOrderStatuses &&
-            sortedOrderStatuses.length > 0 &&
-            sortedOrderStatuses[0].orderStatus &&
-            sortedOrderStatuses[0].orderStatus !== this.state.status
-              ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
-              : 0
-        });
+        await this.updateOrderStatus(orderStatuses);
       }
     } catch (err) {
       console.error(err);
@@ -59,21 +45,7 @@ export default class DishStatusStepper extends React.Component {
 
           if (user && restaurant) {
             const orderStatuses = await getApiOrderStatusByRestIdAndUserId(user.userId, restaurant.restaurantId);
-
-            let sortedOrderStatuses =
-              orderStatuses &&
-              orderStatuses.length &&
-              (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
-
-            this.setState({
-              status:
-                sortedOrderStatuses &&
-                sortedOrderStatuses.length > 0 &&
-                sortedOrderStatuses[0].orderStatus &&
-                sortedOrderStatuses[0].orderStatus !== this.state.status
-                  ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
-                  : 0
-            });
+            await this.updateOrderStatus(orderStatuses);
           }
         } catch (err) {
           console.error(err);
@@ -88,6 +60,20 @@ export default class DishStatusStepper extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
+  }
+
+  async updateOrderStatus(orderStatuses) {
+    let sortedOrderStatuses =
+      orderStatuses &&
+      orderStatuses.length &&
+      (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
+
+    this.setState({
+      status:
+        sortedOrderStatuses && sortedOrderStatuses.length > 0 && sortedOrderStatuses[0].orderStatus
+          ? sortedOrderStatuses[0].orderStatus % (this.state.statuses.length + 1)
+          : this.setState.status
+    });
   }
 
   render() {
