@@ -13,6 +13,7 @@ import StorageManager from '../services/storage_manager';
 import { commonStyles, dishStatusStepperStyles } from '../styles';
 import Colors from '../constants/Colors';
 
+import { getApiOrderStatusByRestIdAndUserId } from '../network/getApiOrderStatusByRestIdAndUserId';
 import { postApiPayment } from '../network/postApiPayment';
 
 export default class PaymentScreen extends React.Component {
@@ -50,12 +51,19 @@ export default class PaymentScreen extends React.Component {
 
       // TODO: Use external service for "real" payment procedure
 
-      // TODO: Fill real data
       let user = await this.storageManager._retrieveUserData();
       let orders = await this.storageManager._retrieveAllOrdersOfRest(this.state.restaurant.restaurantId);
-      let order = await this.storageManager._retrieveOrderStatusOfRest(this.state.restaurant.restaurantId);
 
-      if (!orders || orders.length === 0 || !order || !order.orderId) return;
+      const orderStatuses = await getApiOrderStatusByRestIdAndUserId(user.userId, this.state.restaurant.restaurantId);
+      let sortedOrderStatuses =
+        orderStatuses &&
+        orderStatuses.length &&
+        (await orderStatuses.sort((a, b) => (a.orderId > b.orderId ? -1 : b.orderId > a.orderId ? 1 : 0)));
+
+      // console.log('orderStatuses', orderStatuses);
+      // console.log('sortedOrderStatuses', sortedOrderStatuses);
+
+      if (!sortedOrderStatuses || !sortedOrderStatuses.length > 0 || !sortedOrderStatuses[0].orderId) return;
 
       let sum = 0;
       for (item of orders) {
@@ -63,14 +71,14 @@ export default class PaymentScreen extends React.Component {
       }
 
       let newPayment = {
-        orderId: order.orderId,
+        orderId: sortedOrderStatuses[0].orderId,
         userId: user.userId,
         restId: this.state.restaurant.restaurantId,
         amount: sum,
         dateAccepted: new Date()
       };
 
-      console.log('order', order);
+      console.log('order', sortedOrderStatuses[0]);
       console.log('newPayment', newPayment);
 
       // TODO: Do something with this payment response data

@@ -35,7 +35,7 @@ export const commonStyles = {
   flexed: { flex: 1 },
   // Containers
   container: {
-    backgroundColor: Colors.containerBaredckground,
+    backgroundColor: Colors.containerBackground,
     flex: 1,
     padding: 5
   },
