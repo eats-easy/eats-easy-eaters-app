@@ -16,7 +16,7 @@ export default class App extends React.Component {
   }
 
   async componentWillMount() {
-    let DEBUG = false;
+    let DEBUG = true;
     if (DEBUG) {
       // await this.storageManager._removeAllData();
       console.log('_retrieveUserData', await this.storageManager._retrieveUserData());

@@ -84,7 +84,8 @@ export default class TablePickerDialog extends React.Component {
                 return (
                   <View key={'picker_' + index} style={commonStyles.marginSmall}>
                     <Button
-                      title={'[ID: ' + value.tableId + '] ' + value.tableCodeName.toUpperCase()}
+                      // title={'[ID: ' + value.tableId + '] ' + value.tableCodeName.toUpperCase()}
+                      title={value.tableCodeName.toUpperCase()}
                       onPress={async () => {
                         this.pickTableHandler(value);
                         this.setState({ table: value });
